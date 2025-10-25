@@ -55,7 +55,7 @@ export const BuildingFormSection = ({
       const flatData = {
         nama_gedung: selectedBuilding.nama_gedung,
         kode_gedung: selectedBuilding.kode_gedung,
-        C1_Usia: selectedBuilding.kriteria.C1_Usia,
+        C1_Usia: `${selectedBuilding.kriteria.C1_Usia}`,
         C2_Kondisi_Struktur: selectedBuilding.kriteria.C2_Kondisi_Struktur,
         C2_Kondisi_Arsitektural:
           selectedBuilding.kriteria.C2_Kondisi_Arsitektural,

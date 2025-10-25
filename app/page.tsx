@@ -1,6 +1,6 @@
 // import Image from "next/image";
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 // import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,12 +19,11 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import MapView, { MapViewRef } from "@/components/home/MapView";
+// import MapView, { MapViewRef } from "@/components/home/MapView";
 // import BuildingFilters from "@/components/home/BuildingFilters";
 // import RankingTable from "@/components/home/RankingTable";
-import SidebarContent from "@/components/home/SidebarContent";
+// import SidebarContent from "@/components/home/SidebarContent";
 import { Building, PriorityFilter } from "@/types/building";
-import { getBuildings } from "@/api/buildings";
 import {
   LogIn,
   // Settings,
@@ -37,6 +36,8 @@ import {
 import Link from "next/link";
 
 import { ModeToggle } from "@/components/ModeToggle";
+import { useBuildings } from "@/hooks/useBuildings";
+import { MapView, SidebarContent, type MapViewRef } from "@/components/home";
 // import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
@@ -44,36 +45,33 @@ export default function Home() {
   // const { user, logout, isAuthenticated } = useAuth();
   const router = useRouter();
   const mapRef = useRef<MapViewRef>(null);
-  const [buildings, setBuildings] = useState<Building[]>([]);
+  const { data: buildings, isLoading, error } = useBuildings();
   const [filter, setFilter] = useState<PriorityFilter>("Semua");
   const [searchQuery, setSearchQuery] = useState("");
   const [, setIsSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const loadBuildings = async () => {
-      const data = await getBuildings();
-      setBuildings(data);
-    };
-    loadBuildings();
-  }, []);
 
   // const handleLogout = () => {
   //   // For demonstration, this will now navigate to /auth
   //   router.push("/auth");
   // };
 
-  const filteredBuildings = buildings
-    .filter((building) => {
-      const matchesFilter =
-        filter === "Semua" || building.status_prioritas === filter;
-      const matchesSearch =
-        building.nama_gedung
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        building.kode_gedung.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesFilter && matchesSearch;
-    })
-    .sort((a, b) => b.skor_akhir - a.skor_akhir);
+  const filteredBuildings = useMemo(() => {
+    if (!buildings) return [];
+    return buildings
+      .filter((building) => {
+        const matchesFilter =
+          filter === "Semua" || building.status_prioritas === filter;
+        const matchesSearch =
+          building.nama_gedung
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          building.kode_gedung
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
+        return matchesFilter && matchesSearch;
+      })
+      .sort((a, b) => b.skor_akhir - a.skor_akhir);
+  }, [buildings, filter, searchQuery]);
 
   const handleBuildingClick = (building: Building) => {
     mapRef.current?.flyToBuilding(building);
@@ -106,6 +104,8 @@ export default function Home() {
                 setSearchQuery={setSearchQuery}
                 filter={filter}
                 setFilter={setFilter}
+                isLoading={isLoading}
+                error={error}
                 filteredBuildings={filteredBuildings}
                 handleBuildingClick={handleBuildingClick}
               />
@@ -170,6 +170,8 @@ export default function Home() {
           setSearchQuery={setSearchQuery}
           filter={filter}
           setFilter={setFilter}
+          isLoading={isLoading}
+          error={error}
           filteredBuildings={filteredBuildings}
           handleBuildingClick={handleBuildingClick}
         />

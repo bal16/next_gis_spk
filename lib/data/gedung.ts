@@ -284,4 +284,4 @@ export const buildingsData = [
       C4_Dampak: "Rendah" as const
     }
   }
-];
+]

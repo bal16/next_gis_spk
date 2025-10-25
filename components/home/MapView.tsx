@@ -27,7 +27,7 @@ export interface MapViewRef {
   resetView: () => void;
 }
 
-const MapView = forwardRef<MapViewRef, MapViewProps>(({ buildings }, ref) => {
+export const MapView = forwardRef<MapViewRef, MapViewProps>(({ buildings }, ref) => {
   const mapRef = useRef<MapRef>(null);
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
     null
@@ -218,5 +218,3 @@ const MapView = forwardRef<MapViewRef, MapViewProps>(({ buildings }, ref) => {
 });
 
 MapView.displayName = "MapView";
-
-export default MapView;

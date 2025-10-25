@@ -6,7 +6,7 @@ interface BuildingFiltersProps {
   onFilterChange: (filter: PriorityFilter) => void;
 }
 
-const BuildingFilters = ({ activeFilter, onFilterChange }: BuildingFiltersProps) => {
+export const BuildingFilters = ({ activeFilter, onFilterChange }: BuildingFiltersProps) => {
   const filters: PriorityFilter[] = ["Semua", "Prioritas Tinggi", "Prioritas Sedang", "Prioritas Rendah"];
 
   const getFilterVariant = (filter: PriorityFilter) => {
@@ -29,5 +29,3 @@ const BuildingFilters = ({ activeFilter, onFilterChange }: BuildingFiltersProps)
     </div>
   );
 };
-
-export default BuildingFilters;

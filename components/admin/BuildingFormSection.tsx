@@ -2,21 +2,19 @@
 
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { BuildingFormData, buildingSchema } from "@/lib/validators/building";
-
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Building } from "@/types/building";
-import { addBuilding, updateBuilding } from "@/api/buildings";
-import { toast } from "sonner";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
-import { logger } from "@/lib/utils";
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
-
+import { useAddBuilding, useUpdateBuilding } from "@/hooks/useBuildings";
+import { Building } from "@/types/building";
+import { logger } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { BuildingFormData, buildingSchema } from "@/lib/validators/building";
 
 interface BuildingFormSectionProps {
   selectedBuilding: Building | null;
@@ -29,19 +27,22 @@ export const BuildingFormSection = ({
   onSave,
   onCancel,
 }: BuildingFormSectionProps) => {
+  const addBuildingMutation = useAddBuilding(onSave);
+  const updateBuildingMutation = useUpdateBuilding(onSave);
+
   const form = useForm({
     resolver: zodResolver(buildingSchema),
     defaultValues: {
-      nama_gedung: "",
-      kode_gedung: "",
-      C1_Usia: 0,
+      nama_gedung: undefined,
+      kode_gedung: undefined,
+      C1_Usia: undefined,
       C2_Kondisi_Struktur: undefined,
       C2_Kondisi_Arsitektural: undefined,
       C2_Kondisi_MEP: undefined,
       C3_Utilitas: undefined,
       C4_Dampak: undefined,
-      lat: -7.0515,
-      lng: 110.402,
+      lat: undefined,
+      lng: undefined,
     },
   });
 
@@ -66,34 +67,38 @@ export const BuildingFormSection = ({
       };
       form.reset(flatData);
     } else {
-      form.reset();
+      form.reset({});
     }
   }, [selectedBuilding, form]);
 
   const onSubmit = async (data: BuildingFormData) => {
-    const promise = selectedBuilding
-      ? updateBuilding(selectedBuilding.id, data)
-      : addBuilding(data);
-
-    toast.promise(promise, {
-      loading: "Menyimpan data...",
-      success: () => {
-        onSave(); // Panggil onSave setelah berhasil
-        return "Data gedung berhasil disimpan.";
-      },
-      error: "Gagal menyimpan data.",
-    });
+    if (selectedBuilding) {
+      updateBuildingMutation.mutate({ id: selectedBuilding.id, data });
+    } else {
+      addBuildingMutation.mutate(data);
+    }
   };
-
+  const isSubmitting =
+    addBuildingMutation.isPending || updateBuildingMutation.isPending;
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-      <div>
-        <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-          Formulir Gedung
-        </h2>
-        <p className="text-muted-foreground mt-1">
-          {selectedBuilding ? "Edit data gedung" : "Tambah gedung baru"}
-        </p>
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
+            Formulir Gedung
+          </h2>
+          <p className="text-muted-foreground mt-1">
+            {selectedBuilding ? "Edit data gedung" : "Tambah gedung baru"}
+          </p>
+        </div>
+        <Button
+          onClick={onCancel}
+          variant="outline"
+          className="w-full md:w-auto"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Kembali ke Dashboard
+        </Button>
       </div>
 
       <div className="space-y-8 max-w-3xl">
@@ -108,7 +113,11 @@ export const BuildingFormSection = ({
                 <FieldLabel data-invalid={fieldState.invalid}>
                   {field.name}
                 </FieldLabel>
-                <Input placeholder="Masukkan nama gedung" {...field} />
+                <Input
+                  {...field}
+                  placeholder="Masukkan nama gedung"
+                  value={field.value || ""}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -123,7 +132,11 @@ export const BuildingFormSection = ({
                 <FieldLabel data-invalid={fieldState.invalid}>
                   {field.name}
                 </FieldLabel>
-                <Input placeholder="Masukkan kode gedung" {...field} />
+                <Input
+                  {...field}
+                  placeholder="Masukkan kode gedung"
+                  value={field.value || ""}
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -148,7 +161,7 @@ export const BuildingFormSection = ({
                   {...field}
                   type="number"
                   placeholder="0"
-                  // value={field.value || ''} // Pastikan value tidak pernah undefined
+                  value={field.value || ""} // Pastikan value tidak pernah undefined
                   onChange={(event) =>
                     field.onChange(event.target.valueAsNumber)
                   } // Gunakan valueAsNumber untuk input number
@@ -168,7 +181,7 @@ export const BuildingFormSection = ({
                   C2.1: Kondisi Struktur
                 </FieldLabel>
                 <NativeSelect {...field}>
-                  <NativeSelectOption value="" disabled>
+                  <NativeSelectOption value="" className="text-secondary">
                     Pilih Kondisi Struktur
                   </NativeSelectOption>
                   {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
@@ -193,7 +206,7 @@ export const BuildingFormSection = ({
                 </FieldLabel>
                 {logger(`${field.name}: ${field.value}`)}
                 <NativeSelect {...field}>
-                  <NativeSelectOption value="" disabled>
+                  <NativeSelectOption value="" className="text-secondary">
                     Pilih Kondisi Arsitektural
                   </NativeSelectOption>
                   {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
@@ -217,7 +230,7 @@ export const BuildingFormSection = ({
                   C2.3: Kondisi MEP
                 </FieldLabel>
                 <NativeSelect {...field}>
-                  <NativeSelectOption value="" disabled>
+                  <NativeSelectOption value="" className="text-secondary">
                     Pilih Kondisi MEP
                   </NativeSelectOption>
                   {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
@@ -241,7 +254,7 @@ export const BuildingFormSection = ({
                   C3: Tingkat Utilitas
                 </FieldLabel>
                 <NativeSelect {...field}>
-                  <NativeSelectOption value="" disabled>
+                  <NativeSelectOption value="" className="text-secondary">
                     Pilih Tingkat Utilitas
                   </NativeSelectOption>
                   {["Rendah", "Sedang", "Tinggi"].map((option) => (
@@ -265,7 +278,7 @@ export const BuildingFormSection = ({
                   C4: Dampak Kerusakan
                 </FieldLabel>
                 <NativeSelect {...field}>
-                  <NativeSelectOption value="" disabled>
+                  <NativeSelectOption value="" className="text-secondary">
                     Pilih Dampak Kerusakan
                   </NativeSelectOption>
                   {["Rendah", "Sedang", "Tinggi"].map((option) => (
@@ -295,10 +308,12 @@ export const BuildingFormSection = ({
                     {field.name}
                   </FieldLabel>
                   <Input
+                    {...field}
                     type="number"
                     step="any"
                     placeholder="-7.0515"
-                    {...field}
+                    value={field.value ?? ""}
+                    aria-invalid={Boolean(fieldState.invalid)}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -315,10 +330,12 @@ export const BuildingFormSection = ({
                     {field.name}
                   </FieldLabel>
                   <Input
+                    {...field}
                     type="number"
                     step="any"
                     placeholder="110.4020"
-                    {...field}
+                    value={String(field.value)}
+                    aria-invalid={Boolean(fieldState.invalid)}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -331,12 +348,8 @@ export const BuildingFormSection = ({
 
         {/* Action Button */}
         <FieldGroup className="flex items-center gap-3 pt-4">
-          <Button
-            type="submit"
-            size="lg"
-            disabled={form.formState.isSubmitting}
-          >
-            {form.formState.isSubmitting
+          <Button type="submit" size="lg" disabled={isSubmitting}>
+            {isSubmitting
               ? "Menyimpan..."
               : selectedBuilding
               ? "Perbarui Data"

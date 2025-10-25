@@ -1,6 +1,24 @@
 import { buildingsData } from "@/lib/data/gedung";
-import type { BuildingFormData } from "@/lib/validators/building";
+import { BuildingFormData } from "@/lib/validators/building";
 import { Building } from "@/types/building";
+
+
+const buildingDTO = (building:BuildingFormData) => ({
+      nama_gedung: building.nama_gedung,
+      kode_gedung: building.kode_gedung,
+      kriteria: {
+        C1_Usia: building.C1_Usia,
+        C2_Kondisi_Struktur: building.C2_Kondisi_Struktur,
+        C2_Kondisi_Arsitektural: building.C2_Kondisi_Arsitektural,
+        C2_Kondisi_MEP: building.C2_Kondisi_MEP,
+        C3_Utilitas: building.C3_Utilitas,
+        C4_Dampak: building.C4_Dampak,
+      },
+      lokasi: {
+        lat: building.lat,
+        lng: building.lng,
+      }
+    })
 
 /**
  * Mensimulasikan pengambilan semua data gedung dari API.
@@ -17,33 +35,38 @@ export const getBuildings = async (): Promise<Building[]> => {
   return buildingsData;
 };
 
+
+export const getBuildingById = async (id: number): Promise<Building | undefined> => {
+  console.log(`Fetching building with ID ${id}...`);
+  await new Promise(resolve => setTimeout(resolve, 500));
+  return buildingsData.find(building => building.id === id);
+};
+
+
 /**
  * Mensimulasikan penambahan gedung baru.
  * @param buildingData - Data gedung baru.
  * @returns Promise<{ success: boolean }>
  */
-export const addBuilding = async (buildingData: BuildingFormData): Promise<{ success: boolean }> => {
+export const addBuilding = async (buildingData: BuildingFormData): Promise<Building> => {
     // Mengubah data dari form (datar) menjadi struktur data Building (nested)
-    const newBuilding: Partial<Building> = {
-      nama_gedung: buildingData.nama_gedung,
-      kode_gedung: buildingData.kode_gedung,
-      kriteria: {
-        C1_Usia: buildingData.C1_Usia,
-        C2_Kondisi_Struktur: buildingData.C2_Kondisi_Struktur,
-        C2_Kondisi_Arsitektural: buildingData.C2_Kondisi_Arsitektural,
-        C2_Kondisi_MEP: buildingData.C2_Kondisi_MEP,
-        C3_Utilitas: buildingData.C3_Utilitas,
-        C4_Dampak: buildingData.C4_Dampak,
-      },
-      lokasi: {
-        lat: buildingData.lat,
-        lng: buildingData.lng,
-      },
+    const newBuildingData: Omit<Building, 'id' | 'skor_akhir' | 'status_prioritas'> = buildingDTO(buildingData);
+    
+    // Simulasi penambahan ke database
+    const newId = Math.max(...buildingsData.map(b => b.id)) + 1;
+    const newBuildingWithId: Building = {
+      ...newBuildingData,
+      id: newId,
+      // Skor dan status akan dihitung di backend pada aplikasi nyata
+      skor_akhir: Math.random() * 100, 
+      status_prioritas: "Prioritas Sedang",
     };
-    console.log("Adding new building:", newBuilding);
+
+    console.log("Adding new building:", newBuildingWithId);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    // Logika untuk menambahkan ke `buildingsData` bisa ditambahkan di sini jika perlu
-    return { success: true };
+    
+    // buildingsData.push(newBuildingWithId); // Uncomment untuk memodifikasi data di memori
+    return newBuildingWithId;
 };
 
 /**
@@ -52,26 +75,18 @@ export const addBuilding = async (buildingData: BuildingFormData): Promise<{ suc
  * @param buildingData - Data gedung yang diperbarui dari form.
  * @returns Promise<{ success: boolean }>
  */
-export const updateBuilding = async (buildingId: number, buildingData: BuildingFormData): Promise<{ success: boolean }> => {
-    const updatedBuilding: Partial<Building> = {
-      nama_gedung: buildingData.nama_gedung,
-      kode_gedung: buildingData.kode_gedung,
-      kriteria: {
-        C1_Usia: buildingData.C1_Usia,
-        C2_Kondisi_Struktur: buildingData.C2_Kondisi_Struktur,
-        C2_Kondisi_Arsitektural: buildingData.C2_Kondisi_Arsitektural,
-        C2_Kondisi_MEP: buildingData.C2_Kondisi_MEP,
-        C3_Utilitas: buildingData.C3_Utilitas,
-        C4_Dampak: buildingData.C4_Dampak,
-      },
-      lokasi: {
-        lat: buildingData.lat,
-        lng: buildingData.lng,
-      },
-    };
-    console.log(`Updating building ${buildingId}:`, updatedBuilding);
+export const updateBuilding = async (buildingId: number, buildingData: BuildingFormData): Promise<Building> => {
+    const updatedBuildingData: Omit<Building, 'id' | 'skor_akhir' | 'status_prioritas'> = buildingDTO(buildingData);
+    
+    const existingBuilding = buildingsData.find(b => b.id === buildingId);
+    if (!existingBuilding) {
+      throw new Error("Building not found");
+    }
+
+    const updatedBuilding = { ...existingBuilding, ...updatedBuildingData };
+    console.log(`Updating building ${buildingId}:`, updatedBuildingData);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    return { success: true };
+    return updatedBuilding;
 };
 
 /**

@@ -7,7 +7,6 @@ import { SettingsSection } from "./SettingsSection";
 
 interface AdminMainContentProps {
   activeSection: "dashboard" | "form" | "settings";
-  buildings: Building[];
   selectedBuilding: Building | null;
   onAddNew: () => void;
   onEdit: (building: Building) => void;
@@ -17,7 +16,6 @@ interface AdminMainContentProps {
 
 export const AdminMainContent = ({
   activeSection,
-  buildings,
   selectedBuilding,
   onAddNew,
   onEdit,
@@ -26,11 +24,16 @@ export const AdminMainContent = ({
 }: AdminMainContentProps) => {
   switch (activeSection) {
     case "form":
-      return <BuildingFormSection 
- selectedBuilding={selectedBuilding} onSave={onSave} onCancel={onCancel} />;
+      return (
+        <BuildingFormSection
+          selectedBuilding={selectedBuilding}
+          onSave={onSave}
+          onCancel={onCancel}
+        />
+      );
     case "settings":
       return <SettingsSection />;
     default:
-      return <DashboardSection buildings={buildings} onAddNew={onAddNew} onEdit={onEdit} />;
+      return <DashboardSection onAddNew={onAddNew} onEdit={onEdit} />;
   }
 };

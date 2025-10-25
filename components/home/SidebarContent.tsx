@@ -1,25 +1,29 @@
 import { Input } from "@/components/ui/input";
-import BuildingFilters from "@/components/home/BuildingFilters";
-import RankingTable from "@/components/home/RankingTable";
 import { Building, PriorityFilter } from "@/types/building";
 import { Search } from "lucide-react";
+import { RankingTable } from "./RankingTable";
+import { BuildingFilters } from "./BuildingFilters";
 
 interface SidebarContentProps {
   searchQuery: string;
   setSearchQuery: (value: string) => void;
   filter: PriorityFilter;
   setFilter: (value: PriorityFilter) => void;
+  isLoading: boolean;
+  error: Error | null;
   filteredBuildings: Building[];
   handleBuildingClick: (building: Building) => void;
 }
 
-export default function SidebarContent({ 
-  searchQuery, 
-  setSearchQuery, 
-  filter, 
-  setFilter, 
-  filteredBuildings, 
-  handleBuildingClick 
+export function SidebarContent({
+  searchQuery,
+  setSearchQuery,
+  filter,
+  setFilter,
+  isLoading,
+  error,
+  filteredBuildings,
+  handleBuildingClick,
 }: SidebarContentProps) {
   return (
     <>
@@ -58,7 +62,12 @@ export default function SidebarContent({
         {/* Ranking Table */}
         <div className="p-4">
           <h2 className="text-sm font-semibold mb-3">Daftar Peringkat</h2>
-          <RankingTable buildings={filteredBuildings} onBuildingClick={handleBuildingClick} />
+          <RankingTable
+            buildings={filteredBuildings}
+            onBuildingClick={handleBuildingClick}
+            isLoading={isLoading}
+            error={error}
+          />
         </div>
       </div>
     </>

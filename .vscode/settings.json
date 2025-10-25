@@ -1,0 +1,8 @@
+// .vscode/settings.json
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  // "tailwindCSS.experimental.configFile": "app/globals.css",
+  "files.associations": {
+    "globals.css": "tailwindcss"
+  }
+}

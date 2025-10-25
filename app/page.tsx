@@ -1,65 +1,179 @@
-import Image from "next/image";
+// import Image from "next/image";
+"use client";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import MapView, { MapViewRef } from "@/components/home/MapView";
+// import BuildingFilters from "@/components/home/BuildingFilters";
+// import RankingTable from "@/components/home/RankingTable";
+import SidebarContent from "@/components/home/SidebarContent";
+import { Building, PriorityFilter } from "@/types/building";
+import { getBuildings } from "@/api/buildings";
+import {
+  LogIn,
+  // Settings,
+  //  LogIn,
+  // LogOut,
+  Search,
+  Settings,
+  // Menu
+} from "lucide-react";
+import Link from "next/link";
+
+import { ModeToggle } from "@/components/ModeToggle";
+// import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
+  // const navigate = useNavigate();
+  // const { user, logout, isAuthenticated } = useAuth();
+  const router = useRouter();
+  const mapRef = useRef<MapViewRef>(null);
+  const [buildings, setBuildings] = useState<Building[]>([]);
+  const [filter, setFilter] = useState<PriorityFilter>("Semua");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const loadBuildings = async () => {
+      const data = await getBuildings();
+      setBuildings(data);
+    };
+    loadBuildings();
+  }, []);
+
+  // const handleLogout = () => {
+  //   // For demonstration, this will now navigate to /auth
+  //   router.push("/auth");
+  // };
+
+  const filteredBuildings = buildings
+    .filter((building) => {
+      const matchesFilter =
+        filter === "Semua" || building.status_prioritas === filter;
+      const matchesSearch =
+        building.nama_gedung
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        building.kode_gedung.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    })
+    .sort((a, b) => b.skor_akhir - a.skor_akhir);
+
+  const handleBuildingClick = (building: Building) => {
+    mapRef.current?.flyToBuilding(building);
+    setIsSidebarOpen(false); // Close sidebar on mobile after selection
+  };
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* Fullscreen Map */}
+      <div className="absolute inset-0 z-0">
+        <MapView ref={mapRef} buildings={filteredBuildings} />
+      </div>
+
+      {/* Mobile Bottom Dock - Hidden on Desktop */}
+      <div className="md:hidden">
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button
+              variant="default"
+              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 shadow-2xl px-6"
+            >
+              <Search className="h-4 w-4 mr-2" />
+              Lihat Daftar
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent className="max-h-[90vh]">
+            <div className="overflow-y-auto">
+              <DrawerTitle className="hidden">Docker</DrawerTitle>
+              <SidebarContent
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                filter={filter}
+                setFilter={setFilter}
+                filteredBuildings={filteredBuildings}
+                handleBuildingClick={handleBuildingClick}
+              />
+            </div>
+          </DrawerContent>
+        </Drawer>
+      </div>
+
+      {/* Admin & User Controls - Top Right */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-3">
+        <ModeToggle />
+        <Link href="/admin">
+          <Button
+            variant="outline"
+            className="bg-background shadow-lg hover:bg-accent"
+          >
+            <Settings className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Admin</span>
+          </Button>
+        </Link>
+
+        {/* {isAuthenticated ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-background shadow-lg">
+                <Avatar>
+                  <AvatarImage src={user?.avatar} alt={user?.name} />
+                  <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="z-50">
+              <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : ( */}
+        <Button
+          variant="default"
+          onClick={() => router.push("/auth")}
+          className="shadow-lg"
+        >
+          <LogIn className="mr-2 h-4 w-4" />
+          <span className="hidden sm:inline">Login</span>
+        </Button>
+        {/* )} */}
+      </div>
+
+      {/* Desktop Floating Sidebar - Hidden on Mobile */}
+      <div className="absolute top-4 left-4 z-10 w-[380px] max-h-[calc(100vh-2rem)] bg-background rounded-lg shadow-xl overflow-hidden flex-col hidden md:flex">
+        <SidebarContent
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          filter={filter}
+          setFilter={setFilter}
+          filteredBuildings={filteredBuildings}
+          handleBuildingClick={handleBuildingClick}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }

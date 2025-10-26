@@ -1,19 +1,15 @@
 "use client";
+
 import { useState, useRef, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Building, PriorityFilter } from "@/types/building";
-import { LogIn, LogOut, Search, Settings } from "lucide-react";
 import Link from "next/link";
+import { LogIn, LogOut, Search, Settings } from "lucide-react";
+import { Building, PriorityFilter } from "@/types/building";
 
-import { ModeToggle } from "@/components/ModeToggle";
+import { logoutAction } from "@/app/actions/auth";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useBuildings } from "@/hooks/useBuildings";
+
 import {
   MapView,
   SidebarFilters,
@@ -22,7 +18,14 @@ import {
   RankingTable,
   type MapViewRef,
 } from "@/components/home";
-import { IS_AUTHENTICATED, USER } from "@/lib/config";
+import { ModeToggle } from "@/components/ModeToggle";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,12 +35,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { logoutAction } from "./actions/auth";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const mapRef = useRef<MapViewRef>(null);
+  const { user, isLoading: isUserLoading, isAuthenticated } = useCurrentUser();
   const { data: buildings, isLoading, error } = useBuildings();
   const [filter, setFilter] = useState<PriorityFilter>("Semua");
   const [searchQuery, setSearchQuery] = useState("");
@@ -117,7 +121,7 @@ export default function Home() {
       {/* Admin & USER Controls - Top Right */}
       <div className="absolute top-4 right-4 z-20 flex items-center gap-3">
         <ModeToggle />
-        {IS_AUTHENTICATED && USER.admin && (
+        {isAuthenticated && user?.admin && (
           <Link href="/admin">
             <Button
               variant="outline"
@@ -128,8 +132,9 @@ export default function Home() {
             </Button>
           </Link>
         )}
-
-        {IS_AUTHENTICATED ? (
+        {isUserLoading ? (
+          <Skeleton className="h-12 w-12 rounded-full" />
+        ) : isAuthenticated ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -137,16 +142,16 @@ export default function Home() {
                 className="relative h-10 w-10 rounded-full bg-background shadow-lg"
               >
                 <Avatar>
-                  <AvatarImage src={USER?.avatar} alt={USER?.name} />
-                  <AvatarFallback>{USER?.name?.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={user?.avatarUrl} alt={user?.name} />
+                  <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="z-50">
               <DropdownMenuLabel>
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">{USER?.name}</p>
-                  <p className="text-xs text-muted-foreground">{USER?.email}</p>
+                  <p className="text-sm font-medium">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />

@@ -1,24 +1,10 @@
 import { buildingsData } from "@/lib/data/gedung";
+import { buildingResDTO } from "@/lib/dto";
 import { BuildingFormData } from "@/lib/validators/building";
 import { Building } from "@/types/building";
 
 
-const buildingDTO = (building:BuildingFormData) => ({
-      nama_gedung: building.nama_gedung,
-      kode_gedung: building.kode_gedung,
-      kriteria: {
-        C1_Usia: building.C1_Usia,
-        C2_Kondisi_Struktur: building.C2_Kondisi_Struktur,
-        C2_Kondisi_Arsitektural: building.C2_Kondisi_Arsitektural,
-        C2_Kondisi_MEP: building.C2_Kondisi_MEP,
-        C3_Utilitas: building.C3_Utilitas,
-        C4_Dampak: building.C4_Dampak,
-      },
-      lokasi: {
-        lat: building.lat,
-        lng: building.lng,
-      }
-    })
+
 
 /**
  * Mensimulasikan pengambilan semua data gedung dari API.
@@ -50,7 +36,7 @@ export const getBuildingById = async (id: number): Promise<Building | undefined>
  */
 export const addBuilding = async (buildingData: BuildingFormData): Promise<Building> => {
     // Mengubah data dari form (datar) menjadi struktur data Building (nested)
-    const newBuildingData: Omit<Building, 'id' | 'skor_akhir' | 'status_prioritas'> = buildingDTO(buildingData);
+    const newBuildingData: Omit<Building, 'id' | 'skor_akhir' | 'status_prioritas'> = buildingResDTO(buildingData);
     
     // Simulasi penambahan ke database
     const newId = Math.max(...buildingsData.map(b => b.id)) + 1;
@@ -76,7 +62,7 @@ export const addBuilding = async (buildingData: BuildingFormData): Promise<Build
  * @returns Promise<{ success: boolean }>
  */
 export const updateBuilding = async (buildingId: number, buildingData: BuildingFormData): Promise<Building> => {
-    const updatedBuildingData: Omit<Building, 'id' | 'skor_akhir' | 'status_prioritas'> = buildingDTO(buildingData);
+    const updatedBuildingData: Omit<Building, 'id' | 'skor_akhir' | 'status_prioritas'> = buildingResDTO(buildingData);
     
     const existingBuilding = buildingsData.find(b => b.id === buildingId);
     if (!existingBuilding) {

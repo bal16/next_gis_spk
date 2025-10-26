@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 // import { logger } from "@/lib/utils";
+import { buildingFormDTO } from "@/lib/dto";
 import { BuildingFormData, buildingSchema } from "@/lib/validators/building";
 import { Building } from "@/types/building";
 import { useAddBuilding, useUpdateBuilding } from "@/hooks/useBuildings";
@@ -53,19 +54,7 @@ export const BuildingFormSection = ({
 
   useEffect(() => {
     if (selectedBuilding) {
-      const flatData = {
-        nama_gedung: selectedBuilding.nama_gedung,
-        kode_gedung: selectedBuilding.kode_gedung,
-        C1_Usia: `${selectedBuilding.kriteria.C1_Usia}`,
-        C2_Kondisi_Struktur: selectedBuilding.kriteria.C2_Kondisi_Struktur,
-        C2_Kondisi_Arsitektural:
-          selectedBuilding.kriteria.C2_Kondisi_Arsitektural,
-        C2_Kondisi_MEP: selectedBuilding.kriteria.C2_Kondisi_MEP,
-        C3_Utilitas: selectedBuilding.kriteria.C3_Utilitas,
-        C4_Dampak: selectedBuilding.kriteria.C4_Dampak,
-        lat: selectedBuilding.lokasi.lat,
-        lng: selectedBuilding.lokasi.lng,
-      };
+      const flatData = buildingFormDTO(selectedBuilding);
       form.reset(flatData);
     } else {
       form.reset({});

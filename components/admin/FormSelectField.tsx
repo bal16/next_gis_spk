@@ -1,24 +1,15 @@
-import { Controller, Control, FieldValues, Path } from "react-hook-form"
-import {
-  Field,
-  FieldLabel,
-  FieldError,
-} from "@/components/ui/field"
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select"
-import { logger } from "@/lib/utils"
+import { Controller, Control, FieldValues, Path } from "react-hook-form";
+import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { logger } from "@/lib/utils";
+
 
 interface FormSelectFieldProps<T extends FieldValues> {
-  control: Control<T>
-  name: Path<T>
-  label: string
-  options: string[]
-  placeholder?: string
+  control: Control<T>;
+  name: Path<T>;
+  label: string;
+  options: string[];
+  placeholder?: string;
 }
 
 export function FormSelectField<T extends FieldValues>({
@@ -28,37 +19,34 @@ export function FormSelectField<T extends FieldValues>({
   options,
   placeholder,
 }: FormSelectFieldProps<T>) {
-    
   return (
     <Controller
       control={control}
       name={name}
-      render={({ field, fieldState }) =>{ 
+      render={({ field, fieldState }) => {
         // console.log("render select:", name, "value:", field.value)
         return (
-        <Field data-invalid={fieldState.invalid}>
-          <FieldLabel data-invalid={fieldState.invalid}>{label}</FieldLabel>
-                            {logger(`${field.name}: ${field.value}`)}
-          
-          <Select
-            value={field.value ?? ""}
-            onValueChange={field.onChange}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={placeholder ?? `Pilih ${label}`} />
-            </SelectTrigger>
-            <SelectContent>
-              {options.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel data-invalid={fieldState.invalid}>{label}</FieldLabel>
+            {logger(`${field.name}: ${field.value}`)}
 
-          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-        </Field>
-      )}}
+            <NativeSelect {...field}>
+              {placeholder && (
+                <NativeSelectOption value="" disabled>
+                  {placeholder ?? `Pilih ${label}`}
+                </NativeSelectOption>
+              )}
+              {options.map((option) => (
+                <NativeSelectOption key={option} value={option}>
+                  {option}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        );
+      }}
     />
-  )
+  );
 }

@@ -17,14 +17,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 
 interface BuildingFormSectionProps {
   selectedBuilding: Building | null;
@@ -57,11 +52,7 @@ export const BuildingFormSection = ({
   });
 
   useEffect(() => {
-    // if (!selectedBuilding) return;
-    // if (!selectedBuilding.kriteria) return; // <-- jangan reset kalau belum ada datanya
-
     if (selectedBuilding) {
-      // Map data dari struktur Building (nested) ke struktur BuildingFormData (flat)
       const flatData = {
         nama_gedung: selectedBuilding.nama_gedung,
         kode_gedung: selectedBuilding.kode_gedung,
@@ -120,11 +111,15 @@ export const BuildingFormSection = ({
             name="nama_gedung"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel data-invalid={fieldState.invalid}>
+                <FieldLabel
+                  data-invalid={fieldState.invalid}
+                  htmlFor={field.name}
+                >
                   Nama Gedung
                 </FieldLabel>
                 <Input
                   {...field}
+                  id={field.name}
                   placeholder="Masukkan nama gedung"
                   value={field.value || ""}
                   aria-invalid={Boolean(fieldState.invalid)}
@@ -140,11 +135,16 @@ export const BuildingFormSection = ({
             name="kode_gedung"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel data-invalid={fieldState.invalid}>
+                {" "}
+                <FieldLabel
+                  data-invalid={fieldState.invalid}
+                  htmlFor={field.name}
+                >
                   Kode Gedung
                 </FieldLabel>
                 <Input
                   {...field}
+                  id={field.name}
                   placeholder="Masukkan kode gedung"
                   value={field.value || ""}
                   aria-invalid={Boolean(fieldState.invalid)}
@@ -165,19 +165,23 @@ export const BuildingFormSection = ({
             name="C1_Usia"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                {/* {logger(`${field.name}: ${field.value}`)} */}
-                <FieldLabel data-invalid={fieldState.invalid}>
+                {" "}
+                <FieldLabel
+                  data-invalid={fieldState.invalid}
+                  htmlFor={field.name}
+                >
                   C1: Usia
                 </FieldLabel>
                 <Input
                   {...field}
+                  id={field.name}
                   type="number"
                   placeholder="0"
                   value={field.value || ""} // Pastikan value tidak pernah undefined
                   aria-invalid={Boolean(fieldState.invalid)}
                   onChange={(event) =>
                     field.onChange(event.target.valueAsNumber)
-                  } // Gunakan valueAsNumber untuk input number
+                  }
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -190,34 +194,31 @@ export const BuildingFormSection = ({
             name="C2_Kondisi_Struktur"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel data-invalid={fieldState.invalid}>
+                <FieldLabel
+                  data-invalid={fieldState.invalid}
+                  htmlFor={field.name}
+                >
                   C2.1: Kondisi Struktur
                 </FieldLabel>
-                <Select
+                <NativeSelect
                   {...field}
-                  onValueChange={field.onChange}
-                  // value={field.value}
-                  // defaultValue={field.value}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
                 >
-                  <SelectTrigger
-                    aria-invalid={Boolean(fieldState.invalid)}
-                    value={field.value || ""}
+                  <NativeSelectOption
+                    value=""
+                    className="text-muted-foreground"
+                    defaultChecked
+                    disabled={Boolean(field.value)}
                   >
-                    <SelectValue
-                      placeholder={field.value || "Pilih kondisi struktur"}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Pilih Kondisi Struktur</SelectLabel>
-                      {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                    Pilih kondisi struktur
+                  </NativeSelectOption>
+                  {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
+                    <NativeSelectOption key={option} value={option}>
+                      {option}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -229,29 +230,31 @@ export const BuildingFormSection = ({
             name="C2_Kondisi_Arsitektural"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel data-invalid={fieldState.invalid}>
+                <FieldLabel
+                  data-invalid={fieldState.invalid}
+                  htmlFor={field.name}
+                >
                   C2.2: Kondisi Arsitektural
                 </FieldLabel>
-                <Select {...field} onValueChange={field.onChange}>
-                  <SelectTrigger
-                    aria-invalid={Boolean(fieldState.invalid)}
-                    value={field.value || ""}
+                <NativeSelect
+                  {...field}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
+                >
+                  <NativeSelectOption
+                    value=""
+                    className="text-muted-foreground"
+                    defaultChecked
+                    disabled={Boolean(field.value)}
                   >
-                    <SelectValue
-                      placeholder={field.value || "Pilih Kondisi Arsitektural"}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Pilih Kondisi Arsitektural</SelectLabel>
-                      {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                    Pilih kondisi arsitektural
+                  </NativeSelectOption>
+                  {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
+                    <NativeSelectOption key={option} value={option}>
+                      {option}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -263,33 +266,31 @@ export const BuildingFormSection = ({
             name="C2_Kondisi_MEP"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel data-invalid={fieldState.invalid}>
+                <FieldLabel
+                  data-invalid={fieldState.invalid}
+                  htmlFor={field.name}
+                >
                   C2.3: Kondisi MEP
                 </FieldLabel>
-                <Select
+                <NativeSelect
                   {...field}
-                  onValueChange={field.onChange}
-                  // value={field.value || ""}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
                 >
-                  <SelectTrigger
-                    aria-invalid={Boolean(fieldState.invalid)}
-                    value={field.value || ""}
+                  <NativeSelectOption
+                    value=""
+                    className="text-muted-foreground"
+                    defaultChecked
+                    disabled={Boolean(field.value)}
                   >
-                    <SelectValue
-                      placeholder={field.value || "Pilih Kondisi MEP"}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Pilih Kondisi MEP</SelectLabel>
-                      {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                    Pilih kondisi MEP
+                  </NativeSelectOption>
+                  {["Baik", "Rusak Ringan", "Rusak Berat"].map((option) => (
+                    <NativeSelectOption key={option} value={option}>
+                      {option}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -301,33 +302,31 @@ export const BuildingFormSection = ({
             name="C3_Utilitas"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel data-invalid={fieldState.invalid}>
+                <FieldLabel
+                  data-invalid={fieldState.invalid}
+                  htmlFor={field.name}
+                >
                   C3: Tingkat Utilitas
                 </FieldLabel>
-                <Select
+                <NativeSelect
                   {...field}
-                  onValueChange={field.onChange}
-                  // value={field.value || ""}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
                 >
-                  <SelectTrigger
-                    aria-invalid={Boolean(fieldState.invalid)}
-                    value={field.value || ""}
+                  <NativeSelectOption
+                    value=""
+                    className="text-muted-foreground"
+                    defaultChecked
+                    disabled={Boolean(field.value)}
                   >
-                    <SelectValue
-                      placeholder={field.value || "Pilih Tingkat Utilitas"}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Pilih Tingkat Utilitas</SelectLabel>
-                      {["Rendah", "Sedang", "Tinggi"].map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                    Pilih tingkat utilitas
+                  </NativeSelectOption>
+                  {["Rendah", "Sedang", "Tinggi"].map((option) => (
+                    <NativeSelectOption key={option} value={option}>
+                      {option}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -339,33 +338,31 @@ export const BuildingFormSection = ({
             name="C4_Dampak"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel data-invalid={fieldState.invalid}>
+                <FieldLabel
+                  data-invalid={fieldState.invalid}
+                  htmlFor={field.name}
+                >
                   C4: Dampak Kerusakan
                 </FieldLabel>
-                <Select
+                <NativeSelect
                   {...field}
-                  onValueChange={field.onChange}
-                  // value={field.value || ""}
+                  id={field.name}
+                  aria-invalid={fieldState.invalid}
                 >
-                  <SelectTrigger
-                    aria-invalid={Boolean(fieldState.invalid)}
-                    value={field.value || ""}
+                  <NativeSelectOption
+                    value=""
+                    className="text-muted-foreground"
+                    defaultChecked
+                    disabled={Boolean(field.value)}
                   >
-                    <SelectValue
-                      placeholder={field.value || "Pilih Dampak Kerusakan"}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Pilih Dampak Kerusakan</SelectLabel>
-                      {["Rendah", "Sedang", "Tinggi"].map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                    Pilih dampak kerusakan
+                  </NativeSelectOption>
+                  {["Rendah", "Sedang", "Tinggi"].map((option) => (
+                    <NativeSelectOption key={option} value={option}>
+                      {option}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -383,11 +380,16 @@ export const BuildingFormSection = ({
               name="lat"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel data-invalid={fieldState.invalid}>
+                  {" "}
+                  <FieldLabel
+                    data-invalid={fieldState.invalid}
+                    htmlFor={field.name}
+                  >
                     Latitude
                   </FieldLabel>
                   <Input
                     {...field}
+                    id={field.name}
                     type="number"
                     step="any"
                     placeholder="-7.0515"
@@ -408,11 +410,16 @@ export const BuildingFormSection = ({
               name="lng"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel data-invalid={fieldState.invalid}>
+                  {" "}
+                  <FieldLabel
+                    data-invalid={fieldState.invalid}
+                    htmlFor={field.name}
+                  >
                     Longitude
                   </FieldLabel>
                   <Input
                     {...field}
+                    id={field.name}
                     type="number"
                     step="any"
                     placeholder="110.4020"

@@ -194,11 +194,18 @@ export const BuildingFormSection = ({
                   C2.1: Kondisi Struktur
                 </FieldLabel>
                 <Select
+                  {...field}
                   onValueChange={field.onChange}
-                  value={field.value ?? ""}
+                  // value={field.value}
+                  // defaultValue={field.value}
                 >
-                  <SelectTrigger aria-invalid={Boolean(fieldState.invalid)}>
-                    <SelectValue placeholder="Pilih Kondisi Struktur" />
+                  <SelectTrigger
+                    aria-invalid={Boolean(fieldState.invalid)}
+                    value={field.value || ""}
+                  >
+                    <SelectValue
+                      placeholder={field.value || "Pilih kondisi struktur"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -225,13 +232,14 @@ export const BuildingFormSection = ({
                 <FieldLabel data-invalid={fieldState.invalid}>
                   C2.2: Kondisi Arsitektural
                 </FieldLabel>
-                {/* {logger(`${field.name}: ${field.value}`)} */}
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value ?? ""}
-                >
-                  <SelectTrigger aria-invalid={Boolean(fieldState.invalid)}>
-                    <SelectValue placeholder="Pilih Kondisi Arsitektural" />
+                <Select {...field} onValueChange={field.onChange}>
+                  <SelectTrigger
+                    aria-invalid={Boolean(fieldState.invalid)}
+                    value={field.value || ""}
+                  >
+                    <SelectValue
+                      placeholder={field.value || "Pilih Kondisi Arsitektural"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -259,11 +267,17 @@ export const BuildingFormSection = ({
                   C2.3: Kondisi MEP
                 </FieldLabel>
                 <Select
+                  {...field}
                   onValueChange={field.onChange}
-                  value={field.value ?? ""}
+                  // value={field.value || ""}
                 >
-                  <SelectTrigger aria-invalid={Boolean(fieldState.invalid)}>
-                    <SelectValue placeholder="Pilih Kondisi MEP" />
+                  <SelectTrigger
+                    aria-invalid={Boolean(fieldState.invalid)}
+                    value={field.value || ""}
+                  >
+                    <SelectValue
+                      placeholder={field.value || "Pilih Kondisi MEP"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -291,11 +305,17 @@ export const BuildingFormSection = ({
                   C3: Tingkat Utilitas
                 </FieldLabel>
                 <Select
+                  {...field}
                   onValueChange={field.onChange}
-                  value={field.value ?? ""}
+                  // value={field.value || ""}
                 >
-                  <SelectTrigger aria-invalid={Boolean(fieldState.invalid)}>
-                    <SelectValue placeholder="Pilih Tingkat Utilitas" />
+                  <SelectTrigger
+                    aria-invalid={Boolean(fieldState.invalid)}
+                    value={field.value || ""}
+                  >
+                    <SelectValue
+                      placeholder={field.value || "Pilih Tingkat Utilitas"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -323,11 +343,17 @@ export const BuildingFormSection = ({
                   C4: Dampak Kerusakan
                 </FieldLabel>
                 <Select
+                  {...field}
                   onValueChange={field.onChange}
-                  value={field.value ?? ""}
+                  // value={field.value || ""}
                 >
-                  <SelectTrigger aria-invalid={Boolean(fieldState.invalid)}>
-                    <SelectValue placeholder="Pilih Dampak Kerusakan" />
+                  <SelectTrigger
+                    aria-invalid={Boolean(fieldState.invalid)}
+                    value={field.value || ""}
+                  >
+                    <SelectValue
+                      placeholder={field.value || "Pilih Dampak Kerusakan"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -365,7 +391,10 @@ export const BuildingFormSection = ({
                     type="number"
                     step="any"
                     placeholder="-7.0515"
-                    value={field.value ?? ""}
+                    value={field.value || ""}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
                     aria-invalid={Boolean(fieldState.invalid)}
                   />
                   {fieldState.invalid && (
@@ -387,7 +416,10 @@ export const BuildingFormSection = ({
                     type="number"
                     step="any"
                     placeholder="110.4020"
-                    value={String(field.value)}
+                    value={field.value || ""}
+                    onChange={(event) =>
+                      field.onChange(event.target.valueAsNumber)
+                    }
                     aria-invalid={Boolean(fieldState.invalid)}
                   />
                   {fieldState.invalid && (

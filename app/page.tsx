@@ -10,17 +10,19 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Building, PriorityFilter } from "@/types/building";
-import {
-  LogIn,
-  LogOut,
-  Search,
-  Settings,
-} from "lucide-react";
+import { LogIn, LogOut, Search, Settings } from "lucide-react";
 import Link from "next/link";
 
 import { ModeToggle } from "@/components/ModeToggle";
 import { useBuildings } from "@/hooks/useBuildings";
-import { MapView, SidebarContent, type MapViewRef } from "@/components/home";
+import {
+  MapView,
+  SidebarFilters,
+  SidebarHeader,
+  SidebarSearch,
+  RankingTable,
+  type MapViewRef,
+} from "@/components/home";
 import { IS_AUTHENTICATED, USER } from "@/lib/config";
 import {
   DropdownMenu,
@@ -32,14 +34,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-/* TODO: ui and refactor
-1. UI for authenticate and guest USER ✅
-2. Refactor sidebar content -> for mobile compatiblity
-*/
-
 export default function Home() {
-  // const navigate = useNavigate();
-  // const { USER, logout, isAuthenticated } = useAuth();
   const router = useRouter();
   const mapRef = useRef<MapViewRef>(null);
   const { data: buildings, isLoading, error } = useBuildings();
@@ -84,28 +79,34 @@ export default function Home() {
       {/* Mobile Bottom Dock - Hidden on Desktop */}
       <div className="md:hidden">
         <Drawer>
-          <DrawerTrigger asChild>
-            <Button
-              variant="default"
-              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 shadow-2xl px-6"
-            >
-              <Search className="h-4 w-4 mr-2" />
-              Lihat Daftar
-            </Button>
-          </DrawerTrigger>
+          <DrawerTitle>
+            <DrawerTrigger asChild>
+              <Button
+                variant="default"
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 shadow-2xl px-6"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                Lihat Daftar
+              </Button>
+            </DrawerTrigger>
+          </DrawerTitle>
           <DrawerContent className="max-h-[90vh]">
             <div className="overflow-y-auto">
-              <DrawerTitle className="hidden">Docker</DrawerTitle>
-              <SidebarContent
+              <SidebarHeader />
+              <SidebarSearch
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                filter={filter}
-                setFilter={setFilter}
-                isLoading={isLoading}
-                error={error}
-                filteredBuildings={filteredBuildings}
-                handleBuildingClick={handleBuildingClick}
               />
+              <SidebarFilters filter={filter} setFilter={setFilter} />
+              <div className="p-4">
+                <h2 className="text-sm font-semibold mb-3">Daftar Peringkat</h2>
+                <RankingTable
+                  buildings={filteredBuildings}
+                  onBuildingClick={handleBuildingClick}
+                  isLoading={isLoading}
+                  error={error}
+                />
+              </div>
             </div>
           </DrawerContent>
         </Drawer>
@@ -167,16 +168,23 @@ export default function Home() {
 
       {/* Desktop Floating Sidebar - Hidden on Mobile */}
       <div className="absolute top-4 left-4 z-10 w-[380px] max-h-[calc(100vh-2rem)] bg-background rounded-lg shadow-xl overflow-hidden flex-col hidden md:flex">
-        <SidebarContent
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          filter={filter}
-          setFilter={setFilter}
-          isLoading={isLoading}
-          error={error}
-          filteredBuildings={filteredBuildings}
-          handleBuildingClick={handleBuildingClick}
-        />
+        <SidebarHeader />
+        <div className="flex-1 overflow-y-auto">
+          <SidebarSearch
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+          <SidebarFilters filter={filter} setFilter={setFilter} />
+          <div className="p-4">
+            <h2 className="text-sm font-semibold mb-3">Daftar Peringkat</h2>
+            <RankingTable
+              buildings={filteredBuildings}
+              onBuildingClick={handleBuildingClick}
+              isLoading={isLoading}
+              error={error}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

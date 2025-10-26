@@ -10,7 +10,12 @@ import { Building } from "@/types/building";
 import { useAddBuilding, useUpdateBuilding } from "@/hooks/useBuildings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -116,7 +121,7 @@ export const BuildingFormSection = ({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel data-invalid={fieldState.invalid}>
-                  {field.name}
+                  Nama Gedung
                 </FieldLabel>
                 <Input
                   {...field}
@@ -136,7 +141,7 @@ export const BuildingFormSection = ({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel data-invalid={fieldState.invalid}>
-                  {field.name}
+                  Kode Gedung
                 </FieldLabel>
                 <Input
                   {...field}
@@ -353,7 +358,7 @@ export const BuildingFormSection = ({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel data-invalid={fieldState.invalid}>
-                    {field.name}
+                    Latitude
                   </FieldLabel>
                   <Input
                     {...field}
@@ -375,7 +380,7 @@ export const BuildingFormSection = ({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel data-invalid={fieldState.invalid}>
-                    {field.name}
+                    Longitude
                   </FieldLabel>
                   <Input
                     {...field}

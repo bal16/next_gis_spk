@@ -2,6 +2,8 @@
 import { z } from "zod";
 import { LoginFormData, registerSchema } from "../validators/auth";
 import { mockUsers } from "@/lib/mock/auth";
+import type { User } from "@/types/user";
+import axios from "axios";
 
 // Praktik terbaik adalah menyimpan URL API di environment variable
 // const API_URL =
@@ -45,4 +47,29 @@ export const registerUser = async (data: RegistrationData) => {
   console.log("Mock register with:", data);
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return Promise.resolve({ data: { message: "Registrasi berhasil!" } });
+};
+
+export const getCurrentUser = async (token: string) => {
+  const response = {data: mockUsers[0]}
+  // const response =  await axios.get<User>('https://api.backend-eksternal.com/me', {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  // Penting jika backend Anda mengirim cookie juga
+  // withCredentials: true, 
+  console.log("Mock current user with:", response.data);
+  console.log(  "Authorization:", `Bearer ${token}`);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  return Promise.resolve({ data: { message: "Current User didapatkan!" } });
+};
+
+
+
+export const loadCurrentUser = async (): Promise<User> => {
+  try {
+    const { data } = await axios.get('/api/auth/me');
+    return data;
+  } catch {
+    throw new Error('User not authenticated');
+  }
 };

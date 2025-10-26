@@ -3,46 +3,43 @@
 import { useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-// import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Drawer,
   DrawerContent,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-// import MapView, { MapViewRef } from "@/components/home/MapView";
-// import BuildingFilters from "@/components/home/BuildingFilters";
-// import RankingTable from "@/components/home/RankingTable";
-// import SidebarContent from "@/components/home/SidebarContent";
 import { Building, PriorityFilter } from "@/types/building";
 import {
   LogIn,
-  // Settings,
-  //  LogIn,
-  // LogOut,
+  LogOut,
   Search,
   Settings,
-  // Menu
 } from "lucide-react";
 import Link from "next/link";
 
 import { ModeToggle } from "@/components/ModeToggle";
 import { useBuildings } from "@/hooks/useBuildings";
 import { MapView, SidebarContent, type MapViewRef } from "@/components/home";
-// import { useAuth } from "@/contexts/AuthContext";
+import { IS_AUTHENTICATED, USER } from "@/lib/config";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+/* TODO: ui and refactor
+1. UI for authenticate and guest USER ✅
+2. Refactor sidebar content -> for mobile compatiblity
+*/
 
 export default function Home() {
   // const navigate = useNavigate();
-  // const { user, logout, isAuthenticated } = useAuth();
+  // const { USER, logout, isAuthenticated } = useAuth();
   const router = useRouter();
   const mapRef = useRef<MapViewRef>(null);
   const { data: buildings, isLoading, error } = useBuildings();
@@ -114,53 +111,58 @@ export default function Home() {
         </Drawer>
       </div>
 
-      {/* Admin & User Controls - Top Right */}
+      {/* Admin & USER Controls - Top Right */}
       <div className="absolute top-4 right-4 z-20 flex items-center gap-3">
         <ModeToggle />
-        <Link href="/admin">
-          <Button
-            variant="outline"
-            className="bg-background shadow-lg hover:bg-accent"
-          >
-            <Settings className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Admin</span>
-          </Button>
-        </Link>
+        {IS_AUTHENTICATED && USER.admin && (
+          <Link href="/admin">
+            <Button
+              variant="outline"
+              className="bg-background shadow-lg hover:bg-accent"
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Admin</span>
+            </Button>
+          </Link>
+        )}
 
-        {/* {isAuthenticated ? (
+        {IS_AUTHENTICATED ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-10 w-10 rounded-full bg-background shadow-lg">
+              <Button
+                variant="ghost"
+                className="relative h-10 w-10 rounded-full bg-background shadow-lg"
+              >
                 <Avatar>
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
-                  <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={USER?.avatar} alt={USER?.name} />
+                  <AvatarFallback>{USER?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="z-50">
               <DropdownMenuLabel>
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">{user?.name}</p>
-                  <p className="text-xs text-muted-foreground">{user?.email}</p>
+                  <p className="text-sm font-medium">{USER?.name}</p>
+                  <p className="text-xs text-muted-foreground">{USER?.email}</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
+              <DropdownMenuItem onClick={() => {}}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        ) : ( */}
-        <Button
-          variant="default"
-          onClick={() => router.push("/auth")}
-          className="shadow-lg"
-        >
-          <LogIn className="mr-2 h-4 w-4" />
-          <span className="hidden sm:inline">Login</span>
-        </Button>
-        {/* )} */}
+        ) : (
+          <Button
+            variant="default"
+            onClick={() => router.push("/auth")}
+            className="shadow-lg"
+          >
+            <LogIn className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Login</span>
+          </Button>
+        )}
       </div>
 
       {/* Desktop Floating Sidebar - Hidden on Mobile */}

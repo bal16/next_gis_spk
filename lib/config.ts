@@ -7,3 +7,13 @@ export const INITIAL_VIEW = {
 };
 
 export const FONT = Inter({ subsets: ["latin"] });
+
+export const IS_AUTHENTICATED = false
+
+export const USER = {
+  name: "Aceng",
+  email: "aceng@mail.co",
+  admin: false
+}
+
+

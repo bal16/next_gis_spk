@@ -1,4 +1,4 @@
-import { buildingsData } from "@/lib/data/gedung";
+import { buildingsData } from "@/lib/mock/gedung";
 import { buildingResDTO } from "@/lib/dto";
 import { BuildingFormData } from "@/lib/validators/building";
 import { Building } from "@/types/building";

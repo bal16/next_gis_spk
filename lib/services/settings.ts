@@ -1,4 +1,4 @@
-import { weightData } from "@/lib/data/weights";
+import { weightData } from "@/lib/mock/weights";
 import { type Weights } from "@/lib/validators/settings";
 
 // Simulate initial weights data from a server

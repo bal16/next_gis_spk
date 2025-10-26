@@ -4,6 +4,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { FONT } from "@/lib/config";
 import { QueryProvider } from "@/hooks/QueryProvider";
+import { QueryParamNotifier } from "@/components/QueryParamNotifier";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "SPK Gedung",
@@ -26,6 +28,9 @@ export default function RootLayout({
         >
           <QueryProvider>
             <Toaster />
+            <Suspense>
+              <QueryParamNotifier />
+            </Suspense>
             {children}
           </QueryProvider>
         </ThemeProvider>

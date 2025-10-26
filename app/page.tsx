@@ -1,6 +1,5 @@
-// import Image from "next/image";
 "use client";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,19 +32,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { logoutAction } from "./actions/auth";
 
 export default function Home() {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const mapRef = useRef<MapViewRef>(null);
   const { data: buildings, isLoading, error } = useBuildings();
   const [filter, setFilter] = useState<PriorityFilter>("Semua");
   const [searchQuery, setSearchQuery] = useState("");
   const [, setIsSidebarOpen] = useState(false);
 
-  // const handleLogout = () => {
-  //   // For demonstration, this will now navigate to /auth
-  //   router.push("/auth");
-  // };
+  const handleLogout = () => {
+    startTransition(() => {
+      logoutAction();
+    });
+  };
 
   const filteredBuildings = useMemo(() => {
     if (!buildings) return [];
@@ -148,9 +150,15 @@ export default function Home() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => {}}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
+              <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
+                {isPending ? (
+                  "Logging out..."
+                ) : (
+                  <>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
+                  </>
+                )}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

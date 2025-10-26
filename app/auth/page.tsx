@@ -1,61 +1,22 @@
-"use client";
-
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 import { LoginForm } from "@/components/auth/LoginForm";
 import { RegisterForm } from "@/components/auth/RegisterForm";
-import { loginUser, registerUser, type LoginData, type RegisterData } from "@/api/auth";
+
+/* TODO: functionality and middleware
+1. auth functionality (partially, cookie not working for now, idk 😥)
+2. Add Middleware for auth (WORK! /dashboard cannot to open now.... check it out) ✅
+*/
 
 export default function Auth() {
-  const router = useRouter();
-
-  const [isLoading, setIsLoading] = useState(false);
-
-//   useEffect(() => {
-//     if (isAuthenticated) {
-//       navigate("/");
-//     }
-//   }, [isAuthenticated, navigate]);
-
-  const handleLogin = async (data: LoginData) => {
-    setIsLoading(true);
-    const result = await loginUser(data);
-    setIsLoading(false);
-
-    if (result.success) {
-      toast.success("Login berhasil",{
-        description: "Selamat datang kembali!",
-      });
-      router.push("/");
-    } else {
-      toast.error("Login gagal",{
-        description: result.error || "Terjadi kesalahan. Silakan coba lagi.",
-      });
-    }
-  };
-
-  const handleRegister = async (data: RegisterData) => {
-    setIsLoading(true);
-    const result = await registerUser(data);
-    setIsLoading(false);
-
-    if (result.success) {
-      toast.success("Registrasi berhasil",{
-        description: "Akun Anda telah dibuat!",
-      });
-      router.push("/");
-    } else {
-      toast.error("Registrasi gagal",{
-        description: result.error || "Terjadi kesalahan. Silakan coba lagi.",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary/10 via-background to-secondary/10 p-4">
       <Card className="w-full max-w-md">
@@ -68,9 +29,7 @@ export default function Auth() {
           <CardTitle className="text-2xl font-bold">
             SPK Prioritas Perawatan Gedung
           </CardTitle>
-          <CardDescription>
-            Fakultas Teknik UNNES
-          </CardDescription>
+          <CardDescription>Fakultas Teknik UNNES</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
@@ -80,11 +39,11 @@ export default function Auth() {
             </TabsList>
 
             <TabsContent value="login" className="pt-4">
-              <LoginForm onSubmit={handleLogin} isLoading={isLoading} />
+              <LoginForm />
             </TabsContent>
 
             <TabsContent value="register" className="pt-4">
-              <RegisterForm onSubmit={handleRegister} isLoading={isLoading} />
+              <RegisterForm />
             </TabsContent>
           </Tabs>
         </CardContent>

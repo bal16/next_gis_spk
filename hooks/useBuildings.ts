@@ -6,7 +6,7 @@ import {
   addBuilding,
   updateBuilding,
   deleteBuilding,
-} from "@/api/buildings";
+} from "@/lib/services/buildings";
 import { BuildingFormData } from "@/lib/validators/building";
 import { toast } from "sonner";
 

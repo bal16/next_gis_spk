@@ -1,5 +1,8 @@
 "use client";
 
+import { Pencil, Trash2, Plus } from "lucide-react";
+import { useBuildings, useDeleteBuilding } from "@/hooks/useBuildings";
+import { Building } from "@/types/building";
 import {
   Table,
   TableBody,
@@ -10,9 +13,17 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, Plus } from "lucide-react";
-import { useBuildings, useDeleteBuilding } from "@/hooks/useBuildings";
-import { Building } from "@/types/building";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface DashboardSectionProps {
   onAddNew: () => void;
@@ -39,13 +50,7 @@ export const DashboardSection = ({
   };
 
   const handleDelete = (building: Building) => {
-    if (
-      window.confirm(
-        `Apakah Anda yakin ingin menghapus ${building.nama_gedung}?`
-      )
-    ) {
-      deleteBuildingMutation.mutate({ id: building.id });
-    }
+    deleteBuildingMutation.mutate({ id: building.id });
   };
 
   return (
@@ -69,10 +74,12 @@ export const DashboardSection = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Kode</TableHead>
+              <TableHead className="w-20 hidden sm:table-cell">Kode</TableHead>
               <TableHead>Nama Gedung</TableHead>
               <TableHead>Status Prioritas</TableHead>
-              <TableHead className="text-right">Skor</TableHead>
+              <TableHead className="text-right hidden sm:table-cell">
+                Skor
+              </TableHead>
               <TableHead className="hidden md:table-cell">
                 Tanggal Update
               </TableHead>
@@ -97,7 +104,7 @@ export const DashboardSection = ({
             {buildings &&
               buildings.map((building) => (
                 <TableRow key={building.id}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium hidden sm:table-cell">
                     {building.kode_gedung}
                   </TableCell>
                   <TableCell className="font-medium">
@@ -112,7 +119,7 @@ export const DashboardSection = ({
                       {building.status_prioritas}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right font-semibold">
+                  <TableCell className="text-right font-semibold hidden sm:table-cell">
                     {building.skor_akhir}
                   </TableCell>
                   <TableCell className="text-muted-foreground hidden md:table-cell">
@@ -127,14 +134,35 @@ export const DashboardSection = ({
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(building)}
-                        disabled={deleteBuildingMutation.isPending}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={deleteBuildingMutation.isPending}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Konfirmasi Hapus Gedung
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Apakah Anda yakin ingin menghapus gedung{" "}
+                              <strong>{building.nama_gedung}</strong>? Tindakan
+                              ini tidak dapat dibatalkan.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Batal</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(building)}>
+                              Hapus
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

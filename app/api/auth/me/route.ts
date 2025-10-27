@@ -17,10 +17,10 @@ export async function GET() {
 
   try {
     // 2. Teruskan token ke API Backend Eksternal Anda
-    const response = await getCurrentUser(token)
+    const { data } = await getCurrentUser(token)
 
     // 3. Kembalikan data pengguna yang aman (tanpa token) ke client
-    return NextResponse.json(response.data);
+    return NextResponse.json(data.data);
 
   } catch (error) {
     // Jika token tidak valid, API eksternal mungkin mengembalikan 401

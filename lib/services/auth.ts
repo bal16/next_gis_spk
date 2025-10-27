@@ -4,6 +4,8 @@ import { LoginFormData, registerSchema } from "../validators/auth";
 import { mockUsers } from "@/lib/mock/auth";
 import type { User } from "@/types/user";
 import axios from "axios";
+import { jwtVerify, SignJWT } from "jose";
+import { getJwtSecretKey } from "../utils";
 
 // Praktik terbaik adalah menyimpan URL API di environment variable
 // const API_URL =
@@ -27,10 +29,16 @@ export const loginUser = async (credentials: LoginFormData) => {
       user.email === credentials.email && user.password === credentials.password,
   );
 
+  const token = await new SignJWT(user) // 'user' adalah payload Anda
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("30d") // Atur expired
+      .sign(getJwtSecretKey()); // Tanda tangani dengan secret yang sama
+
   if (user) {
     return Promise.resolve({
       data: {
-        token: `mock-session-token-for-${user.email}`,
+        token,
         refreshToken: `mock-refresh-token-for-${user.email}`,
         user: { id: user.id, name: user.name, email: user.email, role: user.role },
       },
@@ -50,7 +58,9 @@ export const registerUser = async (data: RegistrationData) => {
 };
 
 export const getCurrentUser = async (token: string) => {
-  const response = {data: mockUsers[0]}
+  const { payload } = await jwtVerify(token, getJwtSecretKey());
+  
+  const response = {data: mockUsers.find(user => user.id === payload.id)}
   // const response =  await axios.get<User>('https://api.backend-eksternal.com/me', {
   //     headers: {
   //       Authorization: `Bearer ${token}`,
@@ -60,7 +70,7 @@ export const getCurrentUser = async (token: string) => {
   console.log("Mock current user with:", response.data);
   console.log(  "Authorization:", `Bearer ${token}`);
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  return Promise.resolve({ data: { message: "Current User didapatkan!" } });
+  return Promise.resolve({ data: { message: "Current User didapatkan!", data: response.data} });
 };
 
 

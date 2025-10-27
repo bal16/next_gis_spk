@@ -11,7 +11,6 @@ import {
 } from "@/lib/validators/auth";
 import { loginUser, registerUser } from "@/lib/services/auth";
 import { revalidatePath } from "next/cache";
-import { toast } from "sonner";
 
 export async function loginAction(
   formData: LoginFormData
@@ -39,7 +38,6 @@ export async function loginAction(
 
     const { token, refreshToken } = data;
 
-    toast.success("Login berhasil!");
 
     (await cookies()).set("session-token", token, {
       httpOnly: true,
@@ -57,6 +55,11 @@ export async function loginAction(
         maxAge: 60 * 60 * 24 * 30, // Expire lebih lama
       });
     }
+
+    return {
+      status: "success",
+      message: "Login berhasil! Mengarahkan ke dashboard...",
+    };
   } catch (error) {
     console.error(error);
     if (axios.isAxiosError(error)) {

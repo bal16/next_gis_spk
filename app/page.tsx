@@ -1,13 +1,9 @@
 "use client";
 
-import { useState, useRef, useMemo, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { LogIn, LogOut, Search, Settings } from "lucide-react";
+import { useState, useRef, useMemo } from "react";
+import { Search,} from "lucide-react";
 import { Building, PriorityFilter } from "@/types/building";
 
-import { logoutAction } from "@/app/actions/auth";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useBuildings } from "@/hooks/useBuildings";
 
 import {
@@ -26,32 +22,15 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
+import { UserNav } from "@/components/UserNav";
 
 export default function Home() {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
   const mapRef = useRef<MapViewRef>(null);
-  const { user, isLoading: isUserLoading, isAuthenticated } = useCurrentUser();
   const { data: buildings, isLoading, error } = useBuildings();
   const [filter, setFilter] = useState<PriorityFilter>("Semua");
   const [searchQuery, setSearchQuery] = useState("");
   const [, setIsSidebarOpen] = useState(false);
 
-  const handleLogout = () => {
-    startTransition(() => {
-      logoutAction();
-    });
-  };
 
   const filteredBuildings = useMemo(() => {
     if (!buildings) return [];
@@ -121,62 +100,7 @@ export default function Home() {
       {/* Admin & USER Controls - Top Right */}
       <div className="absolute top-4 right-4 z-20 flex items-center gap-3">
         <ModeToggle />
-        {isAuthenticated && user?.admin && (
-          <Link href="/admin">
-            <Button
-              variant="outline"
-              className="bg-background shadow-lg hover:bg-accent"
-            >
-              <Settings className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Admin</span>
-            </Button>
-          </Link>
-        )}
-        {isUserLoading ? (
-          <Skeleton className="h-12 w-12 rounded-full" />
-        ) : isAuthenticated ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="relative h-10 w-10 rounded-full bg-background shadow-lg"
-              >
-                <Avatar>
-                  <AvatarImage src={user?.avatarUrl} alt={user?.name} />
-                  <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="z-50">
-              <DropdownMenuLabel>
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium">{user?.name}</p>
-                  <p className="text-xs text-muted-foreground">{user?.email}</p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
-                {isPending ? (
-                  "Logging out..."
-                ) : (
-                  <>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                  </>
-                )}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          <Button
-            variant="default"
-            onClick={() => router.push("/auth")}
-            className="shadow-lg"
-          >
-            <LogIn className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Login</span>
-          </Button>
-        )}
+        <UserNav adminLink={true}/>
       </div>
 
       {/* Desktop Floating Sidebar - Hidden on Mobile */}

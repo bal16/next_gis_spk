@@ -2,12 +2,13 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { LogIn, LogOut, Menu } from "lucide-react";
+import { LogIn, Menu } from "lucide-react";
 
 import { logoutAction } from "@/app/actions/auth";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 import { ModeToggle } from "@/components/ModeToggle";
+import { UserNav } from "@/components/UserNav";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -69,14 +70,7 @@ export const AdminHeader = () => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
-                  {isPending ? (
-                    "Logging out..."
-                  ) : (
-                    <>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Logout
-                    </>
-                  )}
+                  <UserNav />
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

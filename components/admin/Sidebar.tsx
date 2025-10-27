@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { LogIn, LayoutDashboard, Settings, Map } from "lucide-react";
+import { LayoutDashboard, Settings, Map } from "lucide-react";
 
 type ActiveSection = "dashboard" | "form" | "settings";
 
@@ -42,7 +40,6 @@ export const AdminSidebar = ({
   activeSection,
   onSectionChange,
 }: AdminSidebarProps) => {
-  const router = useRouter();
 
   return (
     <>
@@ -73,16 +70,6 @@ export const AdminSidebar = ({
           />
         </div>
       </nav>
-      <div className="p-4 border-t mt-auto">
-        <Button
-          variant="default"
-          onClick={() => router.push("/auth")}
-          className="w-full"
-        >
-          <LogIn className="mr-2 h-4 w-4" />
-          Login
-        </Button>
-      </div>
     </>
   );
 };

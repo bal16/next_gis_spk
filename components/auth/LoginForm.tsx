@@ -35,7 +35,10 @@ export function LoginForm() {
     startTransition(async () => {
       const response = await loginAction(data);
 
-      if (!response) return;
+      if (!response) {
+        console.log("Response is undefined");
+        return;
+      }
 
       if (response.status === "error") {
         toast.error("Login Gagal", {
@@ -47,7 +50,7 @@ export function LoginForm() {
         });
 
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push("/admin");
         }, 500);
       }
     });

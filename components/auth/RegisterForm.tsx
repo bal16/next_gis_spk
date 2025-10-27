@@ -14,7 +14,7 @@ import {
   FieldLabel,
   FieldError,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input"; 
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export function RegisterForm() {
@@ -32,7 +32,7 @@ export function RegisterForm() {
   });
 
   // Handler 'onSubmit' tetap sama persis
-  async function onSubmit(data: RegisterFormData) { 
+  async function onSubmit(data: RegisterFormData) {
     startTransition(async () => {
       const response = await registrationAction(data);
       if (response.status === "error") {
@@ -52,7 +52,6 @@ export function RegisterForm() {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
-        
         {/* Field: Nama Lengkap */}
         <Controller
           control={form.control}
@@ -72,9 +71,7 @@ export function RegisterForm() {
                 value={field.value || ""}
                 aria-invalid={Boolean(fieldState.invalid)}
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} /> 
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -99,9 +96,7 @@ export function RegisterForm() {
                 value={field.value || ""}
                 aria-invalid={Boolean(fieldState.invalid)}
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -126,9 +121,7 @@ export function RegisterForm() {
                 value={field.value || ""}
                 aria-invalid={Boolean(fieldState.invalid)}
               />
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
@@ -163,14 +156,13 @@ export function RegisterForm() {
 
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending ? (
-             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <>
               <UserPlus className="mr-2 h-4 w-4" /> Register
             </>
           )}
         </Button>
-        
       </FieldGroup>
     </form>
   );

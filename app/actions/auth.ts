@@ -95,7 +95,7 @@ export async function registrationAction(
     const { name, email, password } = validatedFields.data;
 
     await registerUser({ name, email, password });
-    console.log("Mendaftarkan pengguna (server):", { name, email });
+    // console.log("Mendaftarkan pengguna (server):", { name, email });
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     return {

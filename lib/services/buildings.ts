@@ -11,7 +11,7 @@ import { Building } from "@/types/building";
  * @returns Promise<Building[]> - Daftar semua gedung.
  */
 export const getBuildings = async (): Promise<Building[]> => {
-  console.log("Fetching all buildings...");
+  // console.log("Fetching all buildings...");
   // Simulasi penundaan jaringan
   await new Promise(resolve => setTimeout(resolve, 500));
   // Di aplikasi nyata, ini akan menjadi:
@@ -23,7 +23,7 @@ export const getBuildings = async (): Promise<Building[]> => {
 
 
 export const getBuildingById = async (id: number): Promise<Building | undefined> => {
-  console.log(`Fetching building with ID ${id}...`);
+  // console.log(`Fetching building with ID ${id}...`);
   await new Promise(resolve => setTimeout(resolve, 500));
   return buildingsData.find(building => building.id === id);
 };
@@ -48,7 +48,7 @@ export const addBuilding = async (buildingData: BuildingFormData): Promise<Build
       status_prioritas: "Prioritas Sedang",
     };
 
-    console.log("Adding new building:", newBuildingWithId);
+    // console.log("Adding new building:", newBuildingWithId);
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     // buildingsData.push(newBuildingWithId); // Uncomment untuk memodifikasi data di memori
@@ -70,7 +70,7 @@ export const updateBuilding = async (buildingId: number, buildingData: BuildingF
     }
 
     const updatedBuilding = { ...existingBuilding, ...updatedBuildingData };
-    console.log(`Updating building ${buildingId}:`, updatedBuildingData);
+    // console.log(`Updating building ${buildingId}:`, updatedBuildingData);
     await new Promise(resolve => setTimeout(resolve, 1000));
     return updatedBuilding;
 };
@@ -81,7 +81,7 @@ export const updateBuilding = async (buildingId: number, buildingData: BuildingF
  * @returns Promise<{ success: boolean }>
  */
 export const deleteBuilding = async (buildingId: number): Promise<{ success: boolean }> => {
-    console.log(`Deleting building ${buildingId}`);
+    // console.log(`Deleting building ${buildingId}`);
     await new Promise(resolve => setTimeout(resolve, 1000));
     return { success: true };
 };

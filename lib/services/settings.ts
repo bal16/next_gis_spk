@@ -8,7 +8,7 @@ let currentWeights = weightData;
  * Simulates fetching weights from an API.
  */
 export const getWeights = async (): Promise<Weights> => {
-  console.log("Fetching weights...");
+  // console.log("Fetching weights...");
   await new Promise((resolve) => setTimeout(resolve, 500));
   return currentWeights;
 };
@@ -17,7 +17,7 @@ export const getWeights = async (): Promise<Weights> => {
  * Simulates updating weights on the server.
  */
 export const updateWeights = async (newWeights: Weights): Promise<Weights> => {
-  console.log("Updating weights...", newWeights);
+  // console.log("Updating weights...", newWeights);
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const total = Object.values(newWeights).reduce(

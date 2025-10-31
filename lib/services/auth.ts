@@ -21,7 +21,7 @@ type RegistrationData = Omit<
 export const loginUser = async (credentials: LoginFormData) => {
   
   // return axios.post(`${API_URL}/login`, credentials);
-  console.log("Mock login with:", credentials);
+  // console.log("Mock login with:", credentials);
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const user = mockUsers.find(
@@ -52,7 +52,7 @@ export const loginUser = async (credentials: LoginFormData) => {
 
 export const registerUser = async (data: RegistrationData) => {
   // return axios.post(`${API_URL}/register`, data);
-  console.log("Mock register with:", data);
+  // console.log("Mock register with:", data);
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return Promise.resolve({ data: { message: "Registrasi berhasil!" } });
 };
@@ -67,8 +67,8 @@ export const getCurrentUser = async (token: string) => {
   //     },
   // Penting jika backend Anda mengirim cookie juga
   // withCredentials: true, 
-  console.log("Mock current user with:", response.data);
-  console.log(  "Authorization:", `Bearer ${token}`);
+  // console.log("Mock current user with:", response.data);
+  // console.log(  "Authorization:", `Bearer ${token}`);
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return Promise.resolve({ data: { message: "Current User didapatkan!", data: response.data} });
 };

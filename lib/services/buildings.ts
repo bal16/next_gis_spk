@@ -1,4 +1,4 @@
-import { buildingsData } from "@/lib/mock/gedung";
+import { buildingsData } from "@/lib/mock/buildings";
 import { buildingResDTO } from "@/lib/dto";
 import { BuildingFormData } from "@/lib/validators/building";
 import { Building } from "@/types/building";
@@ -36,7 +36,7 @@ export const getBuildingById = async (id: number): Promise<Building | undefined>
  */
 export const addBuilding = async (buildingData: BuildingFormData): Promise<Building> => {
     // Mengubah data dari form (datar) menjadi struktur data Building (nested)
-    const newBuildingData: Omit<Building, 'id' | 'skor_akhir' | 'status_prioritas'> = buildingResDTO(buildingData);
+    const newBuildingData: Omit<Building, 'id' | 'score' | 'priority'> = buildingResDTO(buildingData);
     
     // Simulasi penambahan ke database
     const newId = Math.max(...buildingsData.map(b => b.id)) + 1;
@@ -44,8 +44,8 @@ export const addBuilding = async (buildingData: BuildingFormData): Promise<Build
       ...newBuildingData,
       id: newId,
       // Skor dan status akan dihitung di backend pada aplikasi nyata
-      skor_akhir: Math.random() * 100, 
-      status_prioritas: "Prioritas Sedang",
+      score: Math.random() * 100, 
+      priority: "Prioritas Sedang",
     };
 
     // console.log("Adding new building:", newBuildingWithId);
@@ -62,7 +62,7 @@ export const addBuilding = async (buildingData: BuildingFormData): Promise<Build
  * @returns Promise<{ success: boolean }>
  */
 export const updateBuilding = async (buildingId: number, buildingData: BuildingFormData): Promise<Building> => {
-    const updatedBuildingData: Omit<Building, 'id' | 'skor_akhir' | 'status_prioritas'> = buildingResDTO(buildingData);
+    const updatedBuildingData: Omit<Building, 'id' | 'score' | 'priority'> = buildingResDTO(buildingData);
     
     const existingBuilding = buildingsData.find(b => b.id === buildingId);
     if (!existingBuilding) {

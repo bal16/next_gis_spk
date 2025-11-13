@@ -2,30 +2,30 @@ import { BuildingFormData } from "@/lib/validators/building";
 import type { Building } from "@/types/building";
 
 export const buildingFormDTO = (building: Building) => ({
-  nama_gedung: building.nama_gedung,
-  kode_gedung: building.kode_gedung,
-  C1_Usia: `${building.kriteria.C1_Usia}`,
-  C2_Kondisi_Struktur: building.kriteria.C2_Kondisi_Struktur,
-  C2_Kondisi_Arsitektural: building.kriteria.C2_Kondisi_Arsitektural,
-  C2_Kondisi_MEP: building.kriteria.C2_Kondisi_MEP,
-  C3_Utilitas: building.kriteria.C3_Utilitas,
-  C4_Dampak: building.kriteria.C4_Dampak,
-  lat: building.lokasi.lat,
-  lng: building.lokasi.lng,
+  name: building.name,
+  code: building.code,
+  age: `${building.criterias.age}`,
+  structure: building.criterias.structure,
+  architecture: building.criterias.architecture,
+  MEP: building.criterias.MEP,
+  utility: building.criterias.utility,
+  damage: building.criterias.damage,
+  lat: building.location.lat,
+  lng: building.location.lng,
 });
 
 export const buildingResDTO = (building: BuildingFormData) => ({
-  nama_gedung: building.nama_gedung,
-  kode_gedung: building.kode_gedung,
-  kriteria: {
-    C1_Usia: building.C1_Usia,
-    C2_Kondisi_Struktur: building.C2_Kondisi_Struktur,
-    C2_Kondisi_Arsitektural: building.C2_Kondisi_Arsitektural,
-    C2_Kondisi_MEP: building.C2_Kondisi_MEP,
-    C3_Utilitas: building.C3_Utilitas,
-    C4_Dampak: building.C4_Dampak,
+  name: building.name,
+  code: building.code,
+  criterias: {
+    age: building.age,
+    structure: building.structure,
+    architecture: building.architecture,
+    MEP: building.MEP,
+    utility: building.utility,
+    damage: building.damage,
   },
-  lokasi: {
+  location: {
     lat: building.lat,
     lng: building.lng,
   },

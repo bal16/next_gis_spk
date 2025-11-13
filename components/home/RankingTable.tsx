@@ -36,7 +36,7 @@ export const RankingTable = ({
   };
 
   const sortedBuildings = [...buildings].sort(
-    (a, b) => b.skor_akhir - a.skor_akhir
+    (a, b) => b.score - a.score
   );
 
   return (
@@ -82,25 +82,25 @@ export const RankingTable = ({
                   <TableCell>
                     <div className="flex flex-col gap-1">
                       <span className="font-medium text-sm">
-                        {building.nama_gedung}
+                        {building.name}
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">
-                          {building.kode_gedung}
+                          {building.code}
                         </span>
                         <Badge
                           variant={getPriorityBadgeVariant(
-                            building.status_prioritas
+                            building.priority
                           )}
                           className="text-[10px] px-1.5 py-0"
                         >
-                          {building.status_prioritas.replace("Prioritas ", "")}
+                          {building.priority.replace("Prioritas ", "")}
                         </Badge>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="text-right font-semibold">
-                    {building.skor_akhir}
+                    {building.score}
                   </TableCell>
                 </TableRow>
               ))}

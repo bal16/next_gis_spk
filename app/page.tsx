@@ -37,17 +37,17 @@ export default function Home() {
     return buildings
       .filter((building) => {
         const matchesFilter =
-          filter === "Semua" || building.status_prioritas === filter;
+          filter === "Semua" || building.priority === filter;
         const matchesSearch =
-          building.nama_gedung
+          building.name
             .toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
-          building.kode_gedung
+          building.code
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
         return matchesFilter && matchesSearch;
       })
-      .sort((a, b) => b.skor_akhir - a.skor_akhir);
+      .sort((a, b) => b.score - a.score);
   }, [buildings, filter, searchQuery]);
 
   const handleBuildingClick = (building: Building) => {

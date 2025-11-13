@@ -42,7 +42,7 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(
       flyToBuilding: (building: Building) => {
         if (mapRef.current) {
           mapRef.current.flyTo({
-            center: [building.lokasi.lng, building.lokasi.lat],
+            center: [building.location.lng, building.location.lat],
             zoom: 18,
             duration: 1000,
             essential: true,
@@ -150,8 +150,8 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(
           {buildings.map((building) => (
             <Marker
               key={building.id}
-              longitude={building.lokasi.lng}
-              latitude={building.lokasi.lat}
+              longitude={building.location.lng}
+              latitude={building.location.lat}
               anchor="bottom"
               onClick={(e) => {
                 e.originalEvent.stopPropagation();
@@ -159,15 +159,15 @@ export const MapView = forwardRef<MapViewRef, MapViewProps>(
               }}
             >
               <div className="cursor-pointer transform hover:scale-110 transition-transform">
-                {getPriorityIcon(building.status_prioritas)}
+                {getPriorityIcon(building.priority)}
               </div>
             </Marker>
           ))}
 
           {selectedBuilding && (
             <Popup
-              longitude={selectedBuilding.lokasi.lng}
-              latitude={selectedBuilding.lokasi.lat}
+              longitude={selectedBuilding.location.lng}
+              latitude={selectedBuilding.location.lat}
               anchor="top"
               onClose={() => setSelectedBuilding(null)}
               closeButton={false}

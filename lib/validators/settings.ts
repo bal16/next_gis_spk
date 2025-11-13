@@ -3,19 +3,19 @@ import { z } from "zod";
 export const weightsSchema = z
   .object({
     c1: z.coerce
-      .number<string>({ error: "Bobot harus berupa angka" })
+      .number<number>({ error: "Bobot harus berupa angka" })
       .min(0, "Bobot tidak boleh negatif")
       .max(100, "Bobot tidak boleh lebih dari 100"),
     c2: z.coerce
-      .number<string>({ error: "Bobot harus berupa angka" })
+      .number<number>({ error: "Bobot harus berupa angka" })
       .min(0, "Bobot tidak boleh negatif")
       .max(100, "Bobot tidak boleh lebih dari 100"),
     c3: z.coerce
-      .number<string>({ error: "Bobot harus berupa angka" })
+      .number<number>({ error: "Bobot harus berupa angka" })
       .min(0, "Bobot tidak boleh negatif")
       .max(100, "Bobot tidak boleh lebih dari 100"),
     c4: z.coerce
-      .number<string>({ error: "Bobot harus berupa angka" })
+      .number<number>({ error: "Bobot harus berupa angka" })
       .min(0, "Bobot tidak boleh negatif")
       .max(100, "Bobot tidak boleh lebih dari 100"),
   })

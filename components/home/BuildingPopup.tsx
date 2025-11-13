@@ -44,7 +44,7 @@ export const BuildingPopup: FC<Props> = ({
         </CardAction>
 
         <CardTitle>
-          <h3 className="font-bold text-xl">{building.nama_gedung}</h3>
+          <h3 className="font-bold text-xl">{building.name}</h3>
         </CardTitle>
       </CardHeader>
 
@@ -62,7 +62,7 @@ export const BuildingPopup: FC<Props> = ({
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            {Object.entries(building.kriteria).map(([key, value]) => (
+            {Object.entries(building.criterias).map(([key, value]) => (
               <div key={key} className="flex justify-between items-center mb-2">
                 <span className="text-sm text-muted-foreground capitalize">
                   {key.replace(/_/g, " ")}
@@ -80,7 +80,7 @@ export const BuildingPopup: FC<Props> = ({
             Skor Akhir
           </span>
           <span className="text-2xl font-bold text-foreground">
-            {building.skor_akhir}
+            {building.score}
           </span>
         </div>
       </CardContent>
@@ -95,26 +95,26 @@ export const BuildingPopup: FC<Props> = ({
           <TooltipTrigger>
             <span
               className={`px-3 py-1.5 rounded-full text-xs font-bold text-white ${
-                getPriorityColor?.(building.status_prioritas) ?? "bg-muted"
+                getPriorityColor?.(building.priority) ?? "bg-muted"
               }`}
             >
-              {building.status_prioritas} <small>?</small>
+              {building.priority} <small>?</small>
             </span>
           </TooltipTrigger>
           <TooltipContent side="bottom">
-            {building.status_prioritas === "Prioritas Tinggi" && (
+            {building.priority === "Prioritas Tinggi" && (
               <p>
                 Prioritas Tinggi: Gedung ini memerlukan perhatian segera untuk
                 perbaikan atau pemeliharaan.
               </p>
             )}
-            {building.status_prioritas === "Prioritas Sedang" && (
+            {building.priority === "Prioritas Sedang" && (
               <p>
                 Prioritas Sedang: Gedung ini perlu diperhatikan dalam waktu
                 dekat.
               </p>
             )}
-            {building.status_prioritas === "Prioritas Rendah" && (
+            {building.priority === "Prioritas Rendah" && (
               <p>
                 Prioritas Rendah: Gedung ini dalam kondisi baik, namun tetap
                 perlu pemantauan rutin.

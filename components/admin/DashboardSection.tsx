@@ -105,22 +105,22 @@ export const DashboardSection = ({
               buildings.map((building) => (
                 <TableRow key={building.id}>
                   <TableCell className="font-medium hidden sm:table-cell">
-                    {building.kode_gedung}
+                    {building.code}
                   </TableCell>
                   <TableCell className="font-medium">
-                    {building.nama_gedung}
+                    {building.name}
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant={getPriorityBadgeVariant(
-                        building.status_prioritas
+                        building.priority
                       )}
                     >
-                      {building.status_prioritas}
+                      {building.priority}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right font-semibold hidden sm:table-cell">
-                    {building.skor_akhir}
+                    {building.score}
                   </TableCell>
                   <TableCell className="text-muted-foreground hidden md:table-cell">
                     23 Okt 2025
@@ -151,7 +151,7 @@ export const DashboardSection = ({
                             </AlertDialogTitle>
                             <AlertDialogDescription>
                               Apakah Anda yakin ingin menghapus gedung{" "}
-                              <strong>{building.nama_gedung}</strong>? Tindakan
+                              <strong>{building.name}</strong>? Tindakan
                               ini tidak dapat dibatalkan.
                             </AlertDialogDescription>
                           </AlertDialogHeader>

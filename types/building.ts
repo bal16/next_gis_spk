@@ -1,20 +1,20 @@
 export interface Building {
   id: number;
-  kode_gedung: string;
-  nama_gedung: string;
-  lokasi: {
+  code: string;
+  name: string;
+  location: {
     lng: number;
     lat: number;
   };
-  skor_akhir: number;
-  status_prioritas: "Prioritas Tinggi" | "Prioritas Sedang" | "Prioritas Rendah";
-  kriteria: {
-    C1_Usia: number;
-    C2_Kondisi_Struktur: "Baik" | "Rusak Ringan" | "Rusak Berat";
-    C2_Kondisi_Arsitektural: "Baik" | "Rusak Ringan" | "Rusak Berat";
-    C2_Kondisi_MEP: "Baik" | "Rusak Ringan" | "Rusak Berat";
-    C3_Utilitas: "Rendah" | "Sedang" | "Tinggi";
-    C4_Dampak: "Rendah" | "Sedang" | "Tinggi";
+  score: number;
+  priority: "Prioritas Tinggi" | "Prioritas Sedang" | "Prioritas Rendah";
+  criterias: {
+    age: number;
+    structure: "Baik" | "Rusak Ringan" | "Rusak Berat";
+    architecture: "Baik" | "Rusak Ringan" | "Rusak Berat";
+    MEP: "Baik" | "Rusak Ringan" | "Rusak Berat";
+    utility: "Rendah" | "Sedang" | "Tinggi";
+    damage: "Rendah" | "Sedang" | "Tinggi";
   };
 }
 

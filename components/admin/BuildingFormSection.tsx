@@ -39,14 +39,14 @@ export const BuildingFormSection = ({
   const form = useForm({
     resolver: zodResolver(buildingSchema),
     defaultValues: {
-      nama_gedung: undefined,
-      kode_gedung: undefined,
-      C1_Usia: undefined,
-      C2_Kondisi_Struktur: undefined,
-      C2_Kondisi_Arsitektural: undefined,
-      C2_Kondisi_MEP: undefined,
-      C3_Utilitas: undefined,
-      C4_Dampak: undefined,
+      name: undefined,
+      code: undefined,
+      age: undefined,
+      structure: undefined,
+      architecture: undefined,
+      MEP: undefined,
+      utility: undefined,
+      damage: undefined,
       lat: undefined,
       lng: undefined,
     },
@@ -97,7 +97,7 @@ export const BuildingFormSection = ({
           <h3 className="text-xl font-bold">1. Informasi Dasar</h3>
           <Controller
             control={form.control}
-            name="nama_gedung"
+            name="name"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel
@@ -121,7 +121,7 @@ export const BuildingFormSection = ({
           />
           <Controller
             control={form.control}
-            name="kode_gedung"
+            name="code"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 {" "}
@@ -151,7 +151,7 @@ export const BuildingFormSection = ({
           <h3 className="text-xl font-bold">2. Penilaian Kriteria</h3>
           <Controller
             control={form.control}
-            name="C1_Usia"
+            name="age"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 {" "}
@@ -180,7 +180,7 @@ export const BuildingFormSection = ({
           />
           <Controller
             control={form.control}
-            name="C2_Kondisi_Struktur"
+            name="structure"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel
@@ -216,7 +216,7 @@ export const BuildingFormSection = ({
           />
           <Controller
             control={form.control}
-            name="C2_Kondisi_Arsitektural"
+            name="architecture"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel
@@ -252,7 +252,7 @@ export const BuildingFormSection = ({
           />
           <Controller
             control={form.control}
-            name="C2_Kondisi_MEP"
+            name="MEP"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel
@@ -288,7 +288,7 @@ export const BuildingFormSection = ({
           />
           <Controller
             control={form.control}
-            name="C3_Utilitas"
+            name="utility"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel
@@ -324,7 +324,7 @@ export const BuildingFormSection = ({
           />
           <Controller
             control={form.control}
-            name="C4_Dampak"
+            name="damage"
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel

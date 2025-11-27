@@ -2,7 +2,6 @@
 
 import { Menu } from "lucide-react";
 
-import { ModeToggle } from "@/components/ModeToggle";
 import { UserNav } from "@/components/UserNav";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -17,10 +16,7 @@ export const AdminHeader = () => {
           </Button>
         </SidebarTrigger>
         <h1 className="text-lg font-bold">Admin Panel</h1>
-        <div className="flex items-center gap-2">
-          <ModeToggle />
-          <UserNav />
-        </div>
+        <UserNav />
       </div>
     </div>
   );

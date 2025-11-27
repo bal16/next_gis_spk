@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useMemo } from "react";
-import { Search,} from "lucide-react";
+import { Search } from "lucide-react";
 import { Building, PriorityFilter } from "@/types/building";
 
 import { useBuildings } from "@/hooks/useBuildings";
@@ -14,7 +14,6 @@ import {
   RankingTable,
   type MapViewRef,
 } from "@/components/home";
-import { ModeToggle } from "@/components/ModeToggle";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -31,7 +30,6 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [, setIsSidebarOpen] = useState(false);
 
-
   const filteredBuildings = useMemo(() => {
     if (!buildings) return [];
     return buildings
@@ -39,12 +37,8 @@ export default function Home() {
         const matchesFilter =
           filter === "Semua" || building.priority === filter;
         const matchesSearch =
-          building.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          building.code
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase());
+          building.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          building.code.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesFilter && matchesSearch;
       })
       .sort((a, b) => b.score - a.score);
@@ -99,8 +93,7 @@ export default function Home() {
 
       {/* Admin & USER Controls - Top Right */}
       <div className="absolute top-4 right-4 z-20 flex items-center gap-3">
-        <ModeToggle />
-        <UserNav adminLink={true}/>
+        <UserNav adminLink />
       </div>
 
       {/* Desktop Floating Sidebar - Hidden on Mobile */}

@@ -1,12 +1,12 @@
 "use client";
-
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { logoutAction } from "@/features/auth/actions/authAction";
 
 import Link from "next/link";
-import { Settings, LogOut, LogIn } from "lucide-react";
+import { Settings, LogOut, LogIn, Map } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +18,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { ModeToggle } from "@/components/ModeToggle";
+
+const LINK = {
+  admin: {
+    href: "/admin",
+    icon: <Settings className="mr-2 h-4 w-4" />,
+    label: "Admin",
+  },
+  home: {
+    href: "/",
+    icon: <Map className="mr-2 h-4 w-4" />,
+    label: "Homepage",
+  },
+};
 
 export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
   const router = useRouter();
@@ -48,34 +62,41 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
 
   if (isAuthenticated) {
     return (
-      <div className="flex items-center gap-3">
-        {adminLink && isAdmin && (
-          <Link href="/admin">
-            <Button
-              variant="outline"
-              className="bg-background shadow-lg hover:bg-accent"
-            >
-              <Settings className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Admin</span>
-            </Button>
-          </Link>
+      <nav className="flex items-center gap-3">
+        {adminLink ? (
+          isAdmin && (
+            <NavLink
+              href={LINK.admin.href}
+              icon={LINK.admin.icon}
+              label={LINK.admin.label}
+            />
+          )
+        ) : (
+          <NavLink
+            href={LINK.home.href}
+            icon={LINK.home.icon}
+            label={LINK.home.label}
+          />
         )}
+
+        <ModeToggle />
 
         {/* Dropdown User */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
-              className="relative h-10 w-10 rounded-full bg-background shadow-lg"
+              variant="default"
+              className="relative h-10 w-10 rounded-full bg-primary shadow-lg"
             >
               <Avatar className="h-10 w-10">
                 <AvatarImage src={user?.avatarUrl} alt={user?.name} />
-                <AvatarFallback>
+                <AvatarFallback className="bg-primary">
                   {user?.name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent align="end" className="z-50 w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
@@ -83,7 +104,25 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
                 <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
+
+            {adminLink ? (
+              isAdmin && (
+                <DropdownMenuLink
+                  href={LINK.admin.href}
+                  icon={LINK.admin.icon}
+                  label={LINK.admin.label}
+                />
+              )
+            ) : (
+              <DropdownMenuLink
+                href={LINK.home.href}
+                icon={LINK.home.icon}
+                label={LINK.home.label}
+              />
+            )}
+
             <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
               {isPending ? (
                 "Logging out..."
@@ -96,15 +135,48 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </nav>
     );
   }
 
   // Jika tidak loading dan tidak login, tampilkan tombol Login
+  return <LoginButton handleLogin={handleLogin} />;
+}
+
+type LinkProps = {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+};
+
+const NavLink = ({ href, icon, label }: LinkProps) => (
+  <Link href={href} className="hidden md:flex">
+    <Button
+      variant="outline"
+      className="bg-background shadow-lg hover:bg-accent"
+    >
+      {icon}
+      <span className="hidden sm:inline">{label}</span>
+    </Button>
+  </Link>
+);
+
+const DropdownMenuLink = ({ href, icon, label }: LinkProps) => {
+  return (
+    <DropdownMenuItem asChild>
+      <Link href={href} className="md:hidden">
+        {icon}
+        <span>{label}</span>
+      </Link>
+    </DropdownMenuItem>
+  );
+};
+
+const LoginButton = ({ handleLogin }: { handleLogin: () => void }) => {
   return (
     <Button variant="default" onClick={handleLogin} className="shadow-lg">
       <LogIn className="mr-2 h-4 w-4" />
       <span className="hidden sm:inline">Login</span>
     </Button>
   );
-}
+};

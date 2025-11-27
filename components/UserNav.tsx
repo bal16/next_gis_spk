@@ -2,10 +2,11 @@
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { logoutAction } from "@/features/auth/actions/authAction";
 
 import Link from "next/link";
 import { Settings, LogOut, LogIn, Map } from "lucide-react";
+
+import { logoutAction } from "@/features/auth/actions/logoutAction";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";

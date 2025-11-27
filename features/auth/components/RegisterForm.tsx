@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoaderCircle, UserPlus } from "lucide-react";
 
-import { registrationAction } from "@/features/auth/actions/authAction";
+import { registrationAction } from "@/features/auth/actions/registrationAction";
 import {
   registerSchema,
   type RegisterFormData,

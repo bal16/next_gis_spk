@@ -1,7 +1,17 @@
 "use client";
 
+import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { loadCurrentUser } from "@/lib/services/auth";
+import type { User } from "@/features/auth/types/user";
+
+export const loadCurrentUser = async (): Promise<User> => {
+  try {
+    const { data } = await axios.get("/api/auth/me");
+    return data;
+  } catch {
+    throw new Error("User not authenticated");
+  }
+};
 
 export const useCurrentUser = () => {
   const { data, isLoading, isError, isSuccess } = useQuery({

@@ -6,8 +6,11 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoaderCircle, UserPlus } from "lucide-react";
-import { registrationAction } from "@/app/actions/auth";
-import { registerSchema, type RegisterFormData } from "@/lib/validators/auth";
+import { registrationAction } from "@/features/auth/actions/authAction";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "@/features/auth/types/authSchema";
 import {
   FieldGroup,
   Field,

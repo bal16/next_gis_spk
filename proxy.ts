@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { getUserSession } from '@/lib/auth/session'; 
+import { getUserSession } from '@/features/auth/services/getUserSession'; 
 
 const authPath = '/auth';
 const adminRoot = '/admin';

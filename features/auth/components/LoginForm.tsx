@@ -7,8 +7,11 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoaderCircle, LogIn } from "lucide-react";
 
-import { loginAction } from "@/app/actions/auth";
-import { loginSchema, type LoginFormData } from "@/lib/validators/auth";
+import { loginAction } from "@/features/auth/actions/authAction";
+import {
+  loginSchema,
+  type LoginFormData,
+} from "@/features/auth/types/authSchema";
 
 import {
   FieldGroup,

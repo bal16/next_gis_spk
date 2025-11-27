@@ -2,19 +2,21 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+
 import axios from "axios";
+
 import {
   loginSchema,
   registerSchema,
   type LoginFormData,
   type RegisterFormData,
-} from "@/lib/validators/auth";
-import { loginUser, registerUser } from "@/lib/services/auth";
-import { revalidatePath } from "next/cache";
+} from "@/features/auth/types/authSchema";
 
-export async function loginAction(
-  formData: LoginFormData
-) {
+import { loginUser } from "../services/loginUser";
+import { registerUser } from "@/features/auth/services/registerUser";
+
+export async function loginAction(formData: LoginFormData) {
   const validatedFields = loginSchema.safeParse(formData);
 
   if (!validatedFields.success) {
@@ -34,10 +36,7 @@ export async function loginAction(
       };
     }
 
-
-
     const { token, refreshToken } = data;
-
 
     (await cookies()).set("session-token", token, {
       httpOnly: true,

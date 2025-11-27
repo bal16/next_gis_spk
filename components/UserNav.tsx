@@ -1,9 +1,9 @@
 "use client";
 
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { logoutAction } from "@/app/actions/auth";
+import { logoutAction } from "@/features/auth/actions/authAction";
 
 import Link from "next/link";
 import { Settings, LogOut, LogIn } from "lucide-react";

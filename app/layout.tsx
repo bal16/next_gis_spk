@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { FONT } from "@/lib/config";
-import { QueryProvider } from "@/hooks/QueryProvider";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import { QueryParamNotifier } from "@/components/QueryParamNotifier";
 import { Suspense } from "react";
 

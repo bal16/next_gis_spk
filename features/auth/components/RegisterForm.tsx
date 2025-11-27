@@ -6,11 +6,13 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoaderCircle, UserPlus } from "lucide-react";
+
 import { registrationAction } from "@/features/auth/actions/authAction";
 import {
   registerSchema,
   type RegisterFormData,
 } from "@/features/auth/types/authSchema";
+
 import {
   FieldGroup,
   Field,
@@ -34,7 +36,6 @@ export function RegisterForm() {
     },
   });
 
-  // Handler 'onSubmit' tetap sama persis
   async function onSubmit(data: RegisterFormData) {
     startTransition(async () => {
       const response = await registrationAction(data);
@@ -47,7 +48,7 @@ export function RegisterForm() {
           description: "Mengarahkan Anda ke halaman login...",
         });
         form.reset();
-        router.push("/login"); // Arahkan ke halaman login
+        router.push("/auth");
       }
     });
   }

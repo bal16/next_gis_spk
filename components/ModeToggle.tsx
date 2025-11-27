@@ -1,5 +1,5 @@
 "use client"
-import { Moon, Sun, SunMoon } from "lucide-react"
+import { Moon, Sun, Monitor } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useEffect, useState } from "react" // 1. Import hook
 
@@ -37,7 +37,7 @@ export function ModeToggle() {
     >
       <Sun className="h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=light]:scale-100 group-data-[theme=light]:rotate-0 text-primary" />
       <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=dark]:scale-100 group-data-[theme=dark]:rotate-0 text-primary" />
-      <SunMoon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=system]:scale-100 group-data-[theme=system]:rotate-0 text-primary" />
+      <Monitor className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=system]:scale-100 group-data-[theme=system]:rotate-0 text-primary" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   )

@@ -45,7 +45,7 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
   const [isPending, startTransition] = useTransition();
 
   const isAdmin = user?.role === "admin";
-  // console.log(isAdmin)
+  console.log({ user });
 
   const handleLogout = () => {
     startTransition(() => {

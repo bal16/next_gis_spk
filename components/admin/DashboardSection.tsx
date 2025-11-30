@@ -1,7 +1,10 @@
 "use client";
 
 import { Pencil, Trash2, Plus } from "lucide-react";
-import { useBuildings, useDeleteBuilding } from "@/hooks/useBuildings";
+import {
+  useBuildings,
+  useDeleteBuilding,
+} from "@/features/buildings/hooks/useBuildings";
 import { Building } from "@/types/building";
 import {
   Table,
@@ -107,15 +110,9 @@ export const DashboardSection = ({
                   <TableCell className="font-medium hidden sm:table-cell">
                     {building.code}
                   </TableCell>
-                  <TableCell className="font-medium">
-                    {building.name}
-                  </TableCell>
+                  <TableCell className="font-medium">{building.name}</TableCell>
                   <TableCell>
-                    <Badge
-                      variant={getPriorityBadgeVariant(
-                        building.priority
-                      )}
-                    >
+                    <Badge variant={getPriorityBadgeVariant(building.priority)}>
                       {building.priority}
                     </Badge>
                   </TableCell>
@@ -151,13 +148,15 @@ export const DashboardSection = ({
                             </AlertDialogTitle>
                             <AlertDialogDescription>
                               Apakah Anda yakin ingin menghapus gedung{" "}
-                              <strong>{building.name}</strong>? Tindakan
-                              ini tidak dapat dibatalkan.
+                              <strong>{building.name}</strong>? Tindakan ini
+                              tidak dapat dibatalkan.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Batal</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(building)}>
+                            <AlertDialogAction
+                              onClick={() => handleDelete(building)}
+                            >
                               Hapus
                             </AlertDialogAction>
                           </AlertDialogFooter>

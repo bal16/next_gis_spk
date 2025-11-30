@@ -1,13 +1,14 @@
-import 'server-only'
+import "server-only";
 
-import { SignJWT } from "jose";
+import type { JWTPayload } from "jose";
 
 import { mockUsers } from "@/lib/mock/auth";
-import { getJwtSecretKey } from "@/lib/utils";
+// import backendClient from '@/lib/api/server';
 import type { LoginFormData } from "../types/authSchema";
+import { signJwt } from "@/lib/jwt";
 
 export const loginUser = async (credentials: LoginFormData) => {
-  // return axios.post(`${API_URL}/login`, credentials);
+  // return backendClient.post<LoginResponse>(`/auth/login`, credentials, {useToken: false});
   // console.log("Mock login with:", credentials);
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -16,11 +17,7 @@ export const loginUser = async (credentials: LoginFormData) => {
       user.email === credentials.email && user.password === credentials.password
   );
 
-  const token = await new SignJWT(user) // 'user' adalah payload Anda
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("30d") // Atur expired
-    .sign(getJwtSecretKey()); // Tanda tangani dengan secret yang sama
+  const token = await signJwt(user as JWTPayload);
 
   if (user) {
     return Promise.resolve({

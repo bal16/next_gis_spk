@@ -1,19 +1,12 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
-import { Building, PriorityFilter } from "@/types/building";
+// import { PriorityFilter } from "@/types/building";
 import { Search } from "lucide-react";
 import { BuildingFilters } from "./BuildingFilters";
 import { RankingTable } from "./RankingTable";
-
-interface SidebarContentProps {
-  searchQuery: string;
-  setSearchQuery: (value: string) => void;
-  filter: PriorityFilter;
-  setFilter: (value: PriorityFilter) => void;
-  filteredBuildings: Building[];
-  handleBuildingClick: (building: Building) => void;
-  isLoading: boolean;
-  error: Error | null;
-}
+import { useHome } from "../providers/HomeContext";
+// import { useHome } from "@/context/HomeContext";
 
 export const SidebarHeader = () => (
   <div className="p-4 border-b bg-card">
@@ -26,59 +19,50 @@ export const SidebarHeader = () => (
   </div>
 );
 
-interface SidebarSearchProps {
-  searchQuery: string;
-  setSearchQuery: (value: string) => void;
-}
-
-export const SidebarSearch = ({
-  searchQuery,
-  setSearchQuery,
-}: SidebarSearchProps) => (
-  <div className="p-4 border-b">
-    <div className="relative">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-      <Input
-        type="text"
-        placeholder="Cari gedung (nama/kode)..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="pl-9"
-      />
-    </div>
-  </div>
-);
-
-interface SidebarFiltersProps {
-  filter: PriorityFilter;
-  setFilter: (value: PriorityFilter) => void;
-}
-
-export const SidebarFilters = ({ filter, setFilter }: SidebarFiltersProps) => (
-  <div className="p-4 border-b">
-    <h2 className="text-sm font-semibold mb-3">Filter Prioritas</h2>
-    <BuildingFilters activeFilter={filter} onFilterChange={setFilter} />
-  </div>
-);
-
-export function SidebarContent(props: SidebarContentProps) {
-  const { searchQuery, setSearchQuery, filter, setFilter, ...rankingProps } =
-    props;
+export const SidebarSearch = () => {
+  const { searchQuery, setSearchQuery } = useHome();
   return (
-    <>
+    <div className="p-4 border-b">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          type="text"
+          placeholder="Cari gedung (nama/kode)..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+    </div>
+  );
+};
+
+export const SidebarFilters = () => {
+  const { filter, setFilter } = useHome();
+  return (
+    <div className="p-4 border-b">
+      <h2 className="text-sm font-semibold mb-3">Filter Prioritas</h2>
+      <BuildingFilters activeFilter={filter} onFilterChange={setFilter} />
+    </div>
+  );
+};
+
+export function SidebarContent() {
+  const { buildings, handleBuildingClick, isLoading, error } = useHome();
+  return (
+    <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
       <SidebarHeader />
-      <SidebarSearch
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-      <SidebarFilters filter={filter} setFilter={setFilter} />
+      <SidebarSearch />
+      <SidebarFilters />
       <div className="p-4">
         <h2 className="text-sm font-semibold mb-3">Daftar Peringkat</h2>
         <RankingTable
-          {...rankingProps}
-          buildings={rankingProps.filteredBuildings}
+          buildings={buildings}
+          onBuildingClick={handleBuildingClick}
+          isLoading={isLoading}
+          error={error}
         />
       </div>
-    </>
+    </div>
   );
 }

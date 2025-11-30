@@ -18,8 +18,11 @@ export const getCurrentUser = async () => {
 
   const { payload } = await verifyJwt(token);
 
+  // console.log({ payload });
+  const data = mockUsers.find((user) => user.id === Number(payload.id));
+  // console.log({ data });
   const response = {
-    data: mockUsers.find((user) => user.id === Number(payload.sub)),
+    data,
   };
   // const response = await backendClient.get<User>("/auth/me");
   // Penting jika backend Anda mengirim cookie juga
@@ -28,7 +31,8 @@ export const getCurrentUser = async () => {
   // console.log(  "Authorization:", `Bearer ${token}`);
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return Promise.resolve({
-    data: { message: "Current User didapatkan!", data: response.data },
+    message: "Current User didapatkan!",
+    data: response.data,
   });
   // return response.data;
 };

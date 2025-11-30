@@ -8,7 +8,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { buildingFormDTO } from "@/lib/dto";
 import { BuildingFormData, buildingSchema } from "@/lib/validators/building";
 import { Building } from "@/types/building";
-import { useAddBuilding, useUpdateBuilding } from "@/hooks/useBuildings";
+import {
+  useAddBuilding,
+  useUpdateBuilding,
+} from "@/features/buildings/hooks/useBuildings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

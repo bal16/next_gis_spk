@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import axios from "axios";
@@ -6,19 +5,10 @@ import axios from "axios";
 import { getCurrentUser } from "@/features/auth/services/getCurrentUser";
 
 export async function GET() {
-  const token = (await cookies()).get("session-token")?.value;
-
-  if (!token) {
-    return NextResponse.json(
-      { message: "Tidak terautentikasi" },
-      { status: 401 }
-    );
-  }
-
   try {
-    const { data } = await getCurrentUser(token);
+    const user = await getCurrentUser();
 
-    return NextResponse.json(data.data);
+    return NextResponse.json(user);
   } catch (error) {
     console.error(error);
     if (axios.isAxiosError(error)) {
@@ -28,7 +18,7 @@ export async function GET() {
       };
     }
 
-    (await cookies()).delete("session-token");
+    cookieStore.delete("session-token");
     return NextResponse.json(
       { message: "Sesi tidak valid atau telah kedaluwarsa" },
       { status: 401 }

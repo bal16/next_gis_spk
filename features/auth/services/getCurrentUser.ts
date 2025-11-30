@@ -1,20 +1,27 @@
-import 'server-only'
+import "server-only";
+
+import { cookies } from "next/headers";
 
 // import axios from "axios";
-import { jwtVerify } from "jose";
-
 import { mockUsers } from "@/lib/mock/auth";
-import { getJwtSecretKey } from "@/lib/utils";
-// import type { User } from "@/types/user";
+import { verifyJwt } from "@/lib/jwt";
+// import backendClient from "@/lib/api/server";
+// import type { User } from "../types/user";
 
-export const getCurrentUser = async (token: string) => {
-  const { payload } = await jwtVerify(token, getJwtSecretKey());
+export const getCurrentUser = async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("session-token")?.value;
 
-  const response = { data: mockUsers.find((user) => user.id === payload.id) };
-  // const response =  await axios.get<User>('https://api.backend-eksternal.com/me', {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
+  if (!token) {
+    throw new Error("No token found");
+  }
+
+  const { payload } = await verifyJwt(token);
+
+  const response = {
+    data: mockUsers.find((user) => user.id === Number(payload.sub)),
+  };
+  // const response = await backendClient.get<User>("/auth/me");
   // Penting jika backend Anda mengirim cookie juga
   // withCredentials: true,
   // console.log("Mock current user with:", response.data);
@@ -23,4 +30,5 @@ export const getCurrentUser = async (token: string) => {
   return Promise.resolve({
     data: { message: "Current User didapatkan!", data: response.data },
   });
+  // return response.data;
 };

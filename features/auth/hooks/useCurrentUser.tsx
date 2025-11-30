@@ -1,12 +1,13 @@
 "use client";
 
-import axios from "axios";
+// import axios from "axios";
+import bffClient from "@/lib/api/client";
 import { useQuery } from "@tanstack/react-query";
 import type { User } from "@/features/auth/types/user";
 
 export const loadCurrentUser = async (): Promise<User> => {
   try {
-    const { data } = await axios.get("/api/auth/me");
+    const { data } = await bffClient.get("/auth/me");
     return data;
   } catch {
     throw new Error("User not authenticated");

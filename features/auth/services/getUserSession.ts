@@ -1,15 +1,15 @@
-import 'server-only'
+import "server-only";
 
-import { type NextRequest } from 'next/server';
-import { jwtVerify } from 'jose';
-import { getJwtSecretKey } from '@/lib/utils';
-import type { JWTPayload } from 'jose';
+import { type NextRequest } from "next/server";
+import { type JWTPayload } from "jose";
+import { verifyJwt } from "@/lib/jwt";
+// import backendClient from '@/lib/api/server';
 
 export interface UserSession {
   isAuthenticated: boolean;
   isAdmin: boolean;
   payload: JWTPayload | null;
-  error?: 'invalid_token'; 
+  error?: "invalid_token";
 }
 
 /**
@@ -19,22 +19,30 @@ export interface UserSession {
  * Middleware akan MEMANGGIL fungsi ini, bukan melakukan logikanya sendiri.
  */
 export async function getUserSession(
-  request: NextRequest,
+  request: NextRequest
 ): Promise<UserSession> {
-  const token = request.cookies.get('session-token')?.value;
+  const token = request.cookies.get("session-token")?.value;
 
   if (!token) {
     return { isAuthenticated: false, isAdmin: false, payload: null };
   }
 
   try {
-    const { payload } = await jwtVerify(token, getJwtSecretKey());
+    const { payload } = await verifyJwt(token);
 
-    const isAdmin = payload.role === "admin"; 
+    const isAdmin = payload.role === "admin";
 
     return { isAuthenticated: true, isAdmin, payload };
   } catch (err) {
-    console.error('JWT Verification Error (in session.ts):', (err as Error).message);
-    return { isAuthenticated: false, isAdmin: false, payload: null, error: 'invalid_token' };
+    console.error(
+      "JWT Verification Error (in session.ts):",
+      (err as Error).message
+    );
+    return {
+      isAuthenticated: false,
+      isAdmin: false,
+      payload: null,
+      error: "invalid_token",
+    };
   }
 }

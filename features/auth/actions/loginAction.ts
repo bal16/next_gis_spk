@@ -32,8 +32,9 @@ export async function loginAction(
     }
 
     const { token, refreshToken } = data;
+    const cookieStore = await cookies();
 
-    (await cookies()).set("session-token", token, {
+    cookieStore.set("session-token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Hanya HTTPS di produksi
       path: "/", // Berlaku di seluruh situs
@@ -42,7 +43,7 @@ export async function loginAction(
     });
 
     if (refreshToken) {
-      (await cookies()).set("refresh-token", refreshToken, {
+      cookieStore.set("refresh-token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         path: "/",

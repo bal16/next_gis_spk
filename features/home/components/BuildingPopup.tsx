@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Building } from "@/types/building";
+import { TBuilding } from "@/types/building";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,16 +10,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "../ui/collapsible";
+} from "@/components/ui/collapsible";
 import { ChevronsUpDown } from "lucide-react";
 
 interface Props {
-  building: Building;
+  building: TBuilding;
   onClose: () => void;
   getPriorityColor?: (priority: string) => string;
 }

@@ -1,62 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef } from "react";
 import { useTheme } from "next-themes";
-import Map, { Marker, Popup, NavigationControl } from "react-map-gl/maplibre";
+import { useShallow } from "zustand/react/shallow";
 
+import Map, {
+  Marker,
+  Popup,
+  NavigationControl,
+  AttributionControl,
+  type MapRef,
+} from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-
-import { Building } from "@/types/building";
 
 import { AlertCircle, AlertTriangle, CheckCircle, Home } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-
+import { TBuilding } from "@/types/building";
 import { INITIAL_VIEW } from "@/lib/config";
+import { cn } from "@/lib/utils";
 
-import BuildingPopup from "./BuildingPopup";
-import { useHome } from "../providers/HomeContext";
-// import { useHome } from "@/context/HomeContext";
+import { useMapStore } from "@/features/map/store/useMap";
 
-export const MapView = () => {
-  const { mapRef, buildings, handleResetMap, handleBuildingClick } = useHome();
-  const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(
-    null
-  );
+import { Button } from "@/components/ui/button";
+import BuildingPopup from "../../home/components/BuildingPopup";
+import { useSelectedBuildingStore } from "@/features/home/store/useSelectedBuilding";
+
+interface MapViewProps {
+  buildings: TBuilding[];
+}
+
+export const MapView = ({ buildings }: MapViewProps) => {
   const { resolvedTheme } = useTheme();
+  const mapRef = useRef<MapRef>(null);
+  const [setMapRef, handleResetMap, handleBuildingClick] = useMapStore(
+    useShallow((state) => [
+      state.setMapRef,
+      state.resetView,
+      state.flyToBuilding,
+    ])
+  );
 
-  const getPriorityIcon = (priority: string) => {
-    switch (priority) {
-      case "Prioritas Tinggi":
-        return (
-          <AlertCircle className="w-8 h-8 text-destructive drop-shadow-lg" />
-        );
-      case "Prioritas Sedang":
-        return (
-          <AlertTriangle className="w-8 h-8 text-yellow-500 drop-shadow-lg" />
-        );
-      case "Prioritas Rendah":
-        return (
-          <CheckCircle className="w-8 h-8 text-green-500 drop-shadow-lg" />
-        );
-      default:
-        return <CheckCircle className="w-8 h-8 drop-shadow-lg" />;
-    }
-  };
+  const [selectedBuilding, setSelectedBuilding] = useSelectedBuildingStore(
+    useShallow((state) => [state.building, state.setSelectedBuilding])
+  );
 
-  // priority color helper passed to BuildingPopup
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "Prioritas Tinggi":
-        return "bg-destructive";
-      case "Prioritas Sedang":
-        return "bg-yellow-500";
-      case "Prioritas Rendah":
-        return "bg-green-500";
-      default:
-        return "bg-muted";
+  const onMapLoad = useCallback(() => {
+    if (mapRef.current) {
+      setMapRef(mapRef.current);
     }
-  };
+  }, [setMapRef]);
 
   const mapStyle =
     resolvedTheme === "dark"
@@ -69,10 +61,13 @@ export const MapView = () => {
         ref={mapRef}
         initialViewState={INITIAL_VIEW}
         mapStyle={mapStyle}
-        attributionControl={{ compact: true }}
+        onLoad={onMapLoad}
+        attributionControl={false}
       >
+        <AttributionControl position="bottom-right" compact />
+
         {/* Horizontal Control Group - Bottom Right */}
-        <div className="absolute bottom-10 right-4 z-10 flex items-stretch gap-0 bg-background rounded-lg shadow-lg overflow-hidden border border-border">
+        <div className="absolute bottom-10 right-4 z-10 flex items-stretch gap-0 bg-background rounded-lg shadow-lg overflow-hidden border border-border ">
           {/* Reset View Button - Left */}
           <Button
             size="icon"
@@ -88,16 +83,11 @@ export const MapView = () => {
           </Button>
 
           {/* Navigation Controls - Right (Vertical) */}
-          {/* <div className="maplibregl-ctrl-group"> */}
           <NavigationControl
             showCompass
             visualizePitch
-            style={{
-              color: "yellow",
-            }}
             position="bottom-right"
           />
-          {/* </div> */}
         </div>
 
         {buildings.map((building) => (
@@ -138,6 +128,34 @@ export const MapView = () => {
         )}
       </Map>
     </div>
+  );
+};
+
+const getPriorityIcon = (priority: string) => {
+  switch (priority) {
+    case "Prioritas Tinggi":
+      return (
+        <AlertCircle className="w-8 h-8 text-destructive drop-shadow-lg" />
+      );
+    case "Prioritas Sedang":
+      return (
+        <AlertTriangle className="w-8 h-8 text-yellow-500 drop-shadow-lg" />
+      );
+    case "Prioritas Rendah":
+      return <CheckCircle className="w-8 h-8 text-green-500 drop-shadow-lg" />;
+    default:
+      return <CheckCircle className="w-8 h-8 drop-shadow-lg" />;
+  }
+};
+
+const getPriorityColor = (priority: string) => {
+  return cn(
+    priority === "Prioritas Tinggi" && "bg-destructive",
+    priority === "Prioritas Sedang" && "bg-yellow-500",
+    priority === "Prioritas Rendah" && "bg-green-500",
+    !["Prioritas Tinggi", "Prioritas Sedang", "Prioritas Rendah"].includes(
+      priority
+    ) && "bg-muted"
   );
 };
 

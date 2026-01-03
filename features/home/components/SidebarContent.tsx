@@ -1,12 +1,13 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-// import { PriorityFilter } from "@/types/building";
 import { Search } from "lucide-react";
+import { useShallow } from "zustand/react/shallow";
+import { Input } from "@/components/ui/input";
 import { BuildingFilters } from "./BuildingFilters";
 import { RankingTable } from "./RankingTable";
-import { useHome } from "../providers/HomeContext";
-// import { useHome } from "@/context/HomeContext";
+import { useSearchStore } from "@/features/home/store/useSearch";
+import { useFilterStore } from "@/features/home/store/useFilter";
+import type { TBuilding } from "@/types/building";
 
 export const SidebarHeader = () => (
   <div className="p-4 border-b bg-card">
@@ -20,7 +21,10 @@ export const SidebarHeader = () => (
 );
 
 export const SidebarSearch = () => {
-  const { searchQuery, setSearchQuery } = useHome();
+  const [searchQuery, setSearchQuery] = useSearchStore(
+    useShallow((state) => [state.query, state.setQuery])
+  );
+
   return (
     <div className="p-4 border-b">
       <div className="relative">
@@ -38,7 +42,9 @@ export const SidebarSearch = () => {
 };
 
 export const SidebarFilters = () => {
-  const { filter, setFilter } = useHome();
+  const [filter, setFilter] = useFilterStore(
+    useShallow((state) => [state.filter, state.setFilter])
+  );
   return (
     <div className="p-4 border-b">
       <h2 className="text-sm font-semibold mb-3">Filter Prioritas</h2>
@@ -47,8 +53,14 @@ export const SidebarFilters = () => {
   );
 };
 
-export function SidebarContent() {
-  const { buildings, handleBuildingClick, isLoading, error } = useHome();
+interface SidebarContentProps {
+  buildings: TBuilding[];
+  onBuildingSelect: (building: TBuilding) => void;
+}
+export function SidebarContent({
+  buildings,
+  onBuildingSelect: handleBuildingClick,
+}: SidebarContentProps) {
   return (
     <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
       <SidebarHeader />
@@ -59,8 +71,6 @@ export function SidebarContent() {
         <RankingTable
           buildings={buildings}
           onBuildingClick={handleBuildingClick}
-          isLoading={isLoading}
-          error={error}
         />
       </div>
     </div>

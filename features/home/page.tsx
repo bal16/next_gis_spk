@@ -9,7 +9,7 @@ import MobileDrawer from "@/features/home/components/MobileDrawer";
 import Sidebar from "@/features/home/components/Sidebar";
 
 import { UserNav } from "@/components/UserNav";
-import { getBuildings } from "@/features/home/services/get-buildings";
+import { getBuildings } from "@/features/home/actions/get-buildings";
 
 export default async function HomePage() {
   const queryClient = new QueryClient();

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getBuildings } from "../services/get-buildings";
+import { getBuildings } from "../actions/get-buildings";
 import { useMapStore } from "@/features/map/store/useMap";
 import { useSelectedBuildingStore } from "@/features/home/store/useSelectedBuilding";
 import { useFilterStore } from "../store/useFilter";

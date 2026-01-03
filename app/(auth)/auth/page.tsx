@@ -5,15 +5,29 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2 } from "lucide-react";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/animate-ui/components/radix/tabs";
+import { Building2, StepBackIcon } from "lucide-react";
 
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Auth() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-linear-to-br from-primary/10 via-background to-secondary/10 p-4">
+    <main className="min-h-screen relative flex items-center justify-center bg-linear-to-br from-primary/10 via-background to-secondary/10 p-4">
+      <div className="absolute top-2 left-2">
+        <Button variant="link" asChild>
+          <Link href="/">
+            <StepBackIcon className="mr-2" /> Kembali ke Beranda
+          </Link>
+        </Button>
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">

@@ -121,11 +121,11 @@ export function LoginForm() {
         </Button>
       </FieldGroup>
 
-      <div className="text-xs text-muted-foreground text-center mt-4 p-3 bg-muted/50 rounded-md">
+      {/* <div className="text-xs text-muted-foreground text-center mt-4 p-3 bg-muted/50 rounded-md">
         <p className="font-semibold mb-1">Demo Credentials:</p>
         <p>Admin: admin@unnes.ac.id / admin123</p>
         <p>User: user@unnes.ac.id / user123</p>
-      </div>
+      </div> */}
     </form>
   );
 }

@@ -19,7 +19,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/components/animate-ui/primitives/radix/collapsible";
 import { ChevronsUpDown } from "lucide-react";
 
 interface Props {

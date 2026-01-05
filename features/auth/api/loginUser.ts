@@ -3,12 +3,11 @@ import "server-only";
 import type { JWTPayload } from "jose";
 
 import { mockUsers } from "@/lib/mock/auth";
-// import backendClient from '@/lib/api/server';
 import type { LoginFormData } from "../types/authSchema";
 import { signJwt } from "@/lib/jwt";
 
 export const loginUser = async (credentials: LoginFormData) => {
-  // return backendClient.post<LoginResponse>(`/auth/login`, credentials, {useToken: false});
+  // return publicClient.post<LoginResponse>(`/auth/login`, credentials);
   // console.log("Mock login with:", credentials);
   await new Promise((resolve) => setTimeout(resolve, 1000));
 

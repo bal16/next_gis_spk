@@ -13,10 +13,12 @@ export const getCurrentUser = async () => {
   const token = cookieStore.get("session-token")?.value;
 
   if (!token) {
-    throw new Error("No token found");
+    // throw new Error("No token found");
+    console.log("No token found");
+    return Promise.reject();
   }
 
-  const { payload } = await verifyJwt(token);
+  const { payload } = await verifyJwt(token as string);
 
   // console.log({ payload });
   const data = mockUsers.find((user) => user.id === Number(payload.id));

@@ -1,16 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { getBuildings } from "../actions/get-buildings";
+import { getLastResults } from "../api/get-last-results";
 import { useMapStore } from "@/features/map/store/useMap";
 import { useSelectedBuildingStore } from "@/features/home/store/useSelectedBuilding";
 import { useFilterStore } from "../store/useFilter";
 import { useSearchStore } from "../store/useSearch";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import type { TBuilding } from "@/types/building";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export const useFilteredBuildings = () => {
   const { data: buildings } = useQuery({
     queryKey: ["buildings"],
-    queryFn: getBuildings,
+    queryFn: getLastResults,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
   const flyToBuilding = useMapStore((state) => state.flyToBuilding);
@@ -18,11 +19,16 @@ export const useFilteredBuildings = () => {
     (state) => state.setSelectedBuilding
   );
   const filter = useFilterStore((state) => state.filter);
-  const searchQuery = useSearchStore((state) => state.query);
+  const rawSearchQuery = useSearchStore((state) => state.query);
 
-  const filteredBuildings = useMemo(() => {
-    if (!buildings) return [];
-    const filteredBuildings = buildings
+  const searchQuery = useDebounce(rawSearchQuery, 500);
+
+  const getFilteredBuildings = (
+    buildings: TBuilding[],
+    filter: string,
+    searchQuery: string
+  ) => {
+    return buildings
       .filter((building) => {
         const matchesFilter =
           filter === "Semua" || building.priority === filter;
@@ -32,11 +38,18 @@ export const useFilteredBuildings = () => {
         return matchesFilter && matchesSearch;
       })
       .sort((a, b) => b.score - a.score);
+  };
 
-    if (filteredBuildings.length === 1) flyToBuilding(filteredBuildings[0]);
+  const filteredBuildings = useMemo(() => {
+    if (!buildings) return [];
+    return getFilteredBuildings(buildings, filter, searchQuery);
+  }, [buildings, filter, searchQuery]);
 
-    return filteredBuildings;
-  }, [buildings, filter, searchQuery, flyToBuilding]);
+  useEffect(() => {
+    if (searchQuery && filteredBuildings.length === 1) {
+      flyToBuilding(filteredBuildings[0]);
+    }
+  }, [filteredBuildings, searchQuery, flyToBuilding]);
 
   const handleBuildingClick = (building: TBuilding) => {
     flyToBuilding(building);

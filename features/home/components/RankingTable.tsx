@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/table";
 import { TBuilding } from "@/types/building";
 import { Badge } from "@/components/ui/badge";
+import { Activity } from "react";
 
 interface RankingTableProps {
   buildings: TBuilding[];
@@ -75,6 +76,16 @@ export const RankingTable = ({
                 </TableCell>
               </TableRow>
             ))}
+            <Activity mode={sortedBuildings.length == 0 ? "visible" : "hidden"}>
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="text-center py-4 text-muted-foreground"
+                >
+                  <span>Not found</span>
+                </TableCell>
+              </TableRow>
+            </Activity>
           </TableBody>
         </Table>
       </div>

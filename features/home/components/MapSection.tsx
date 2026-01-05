@@ -1,7 +1,7 @@
 "use client";
 
 import { useFilteredBuildings } from "../hooks/useFIlteredBuildings";
-import { MapView } from "../../map/components/MapView";
+import { MapView } from "@/features/map/components/MapView";
 
 const MapSection = () => {
   const { filteredBuildings } = useFilteredBuildings();

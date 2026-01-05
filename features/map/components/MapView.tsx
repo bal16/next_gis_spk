@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { useShallow } from "zustand/react/shallow";
 
@@ -22,7 +22,8 @@ import { cn } from "@/lib/utils";
 import { useMapStore } from "@/features/map/store/useMap";
 
 import { Button } from "@/components/ui/button";
-import BuildingPopup from "../../home/components/BuildingPopup";
+import { Skeleton } from "@/components/ui/skeleton";
+import BuildingPopup from "@/features/home/components/BuildingPopup";
 import { useSelectedBuildingStore } from "@/features/home/store/useSelectedBuilding";
 
 interface MapViewProps {
@@ -31,6 +32,7 @@ interface MapViewProps {
 
 export const MapView = ({ buildings }: MapViewProps) => {
   const { resolvedTheme } = useTheme();
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
   const mapRef = useRef<MapRef>(null);
   const [setMapRef, handleResetMap, handleBuildingClick] = useMapStore(
     useShallow((state) => [
@@ -48,6 +50,7 @@ export const MapView = ({ buildings }: MapViewProps) => {
     if (mapRef.current) {
       setMapRef(mapRef.current);
     }
+    setIsMapLoaded(true);
   }, [setMapRef]);
 
   const mapStyle =
@@ -57,6 +60,9 @@ export const MapView = ({ buildings }: MapViewProps) => {
 
   return (
     <div className="w-full h-full relative">
+      {!isMapLoaded && (
+        <Skeleton className="absolute inset-0 z-50 w-full h-full rounded-none" />
+      )}
       <Map
         ref={mapRef}
         initialViewState={INITIAL_VIEW}

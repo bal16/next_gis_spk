@@ -2,12 +2,10 @@
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoaderCircle, UserPlus } from "lucide-react";
 
-import { registrationAction } from "@/features/auth/actions/registrationAction";
 import {
   registerSchema,
   type RegisterFormData,
@@ -21,10 +19,13 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { registerUser } from "../api/registerUser";
+import { useState } from "react";
 
 export function RegisterForm() {
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  const [isPending, setIspending] = useState(false);
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -37,20 +38,20 @@ export function RegisterForm() {
   });
 
   async function onSubmit(data: RegisterFormData) {
-    startTransition(async () => {
-      const response = await registrationAction(data);
-      if (response.status === "error") {
-        toast.error("Registrasi Gagal", {
-          description: response.message,
-        });
-      } else if (response.status === "success") {
-        toast.success("Registrasi Berhasil", {
-          description: "Mengarahkan Anda ke halaman login...",
-        });
-        form.reset();
-        router.push("/auth");
-      }
-    });
+    setIspending(true);
+    const response = await registerUser(data);
+    if (response.statusCode === 201) {
+      toast.success("Registrasi Berhasil", {
+        description: "Mengarahkan Anda ke halaman login...",
+      });
+    } else {
+      toast.error("Registrasi Gagal", {
+        description: response.message,
+      });
+    }
+    form.reset();
+    setIspending(false);
+    router.push("/auth");
   }
 
   return (

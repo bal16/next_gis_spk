@@ -9,14 +9,14 @@ import MobileDrawer from "@/features/home/components/MobileDrawer";
 import Sidebar from "@/features/home/components/Sidebar";
 
 import { UserNav } from "@/components/UserNav";
-import { getBuildings } from "@/features/home/actions/get-buildings";
+import { getLastResults } from "@/features/home/api/get-last-results";
 
 export default async function HomePage() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["buildings"],
-    queryFn: getBuildings,
+    queryFn: getLastResults,
   });
 
   return (

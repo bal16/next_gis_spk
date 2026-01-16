@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 // import { logger } from "@/lib/utils";
 import { buildingFormDTO } from "@/lib/dto";
 import { BuildingFormData, buildingSchema } from "@/lib/validators/building";
-import { Building } from "@/types/building";
+import { TBuilding } from "@/types/building";
 import {
   useAddBuilding,
   useUpdateBuilding,
@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/native-select";
 
 interface BuildingFormSectionProps {
-  selectedBuilding: Building | null;
+  selectedBuilding: TBuilding | null;
   onSave: () => void;
   onCancel: () => void;
 }

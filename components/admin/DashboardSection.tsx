@@ -5,7 +5,7 @@ import {
   useBuildings,
   useDeleteBuilding,
 } from "@/features/buildings/hooks/useBuildings";
-import { Building } from "@/types/building";
+import { TBuilding } from "@/types/building";
 import {
   Table,
   TableBody,
@@ -30,7 +30,7 @@ import {
 
 interface DashboardSectionProps {
   onAddNew: () => void;
-  onEdit: (building: Building) => void;
+  onEdit: (building: TBuilding) => void;
 }
 
 export const DashboardSection = ({
@@ -52,7 +52,7 @@ export const DashboardSection = ({
     }
   };
 
-  const handleDelete = (building: Building) => {
+  const handleDelete = (building: TBuilding) => {
     deleteBuildingMutation.mutate({ id: building.id });
   };
 

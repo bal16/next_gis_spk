@@ -1,15 +1,15 @@
 "use client";
 
-import { Building } from "@/types/building";
+import { TBuilding } from "@/types/building";
 import { DashboardSection } from "./DashboardSection";
 import { BuildingFormSection } from "./BuildingFormSection";
 import { SettingsSection } from "./SettingsSection";
 
 interface AdminMainContentProps {
   activeSection: "dashboard" | "form" | "settings";
-  selectedBuilding: Building | null;
+  selectedBuilding: TBuilding | null;
   onAddNew: () => void;
-  onEdit: (building: Building) => void;
+  onEdit: (building: TBuilding) => void;
   onSave: () => void;
   onCancel: () => void;
 }

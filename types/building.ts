@@ -1,4 +1,5 @@
-export interface Building {
+type TPriority = "Prioritas Tinggi" | "Prioritas Sedang" | "Prioritas Rendah";
+export interface TBuilding {
   id: number;
   code: string;
   name: string;
@@ -7,7 +8,7 @@ export interface Building {
     lat: number;
   };
   score: number;
-  priority: "Prioritas Tinggi" | "Prioritas Sedang" | "Prioritas Rendah";
+  priority: TPriority;
   criterias: {
     age: number;
     structure: "Baik" | "Rusak Ringan" | "Rusak Berat";
@@ -18,4 +19,4 @@ export interface Building {
   };
 }
 
-export type PriorityFilter = "Semua" | "Prioritas Tinggi" | "Prioritas Sedang" | "Prioritas Rendah";
+export type PriorityFilter = "Semua" | TPriority;

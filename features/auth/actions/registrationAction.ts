@@ -5,7 +5,7 @@ import axios from "axios";
 import { registerSchema, type RegisterFormData } from "../types/authSchema";
 import type { ActionResponse } from "../types/action";
 
-import { registerUser } from "../services/registerUser";
+import { registerUser } from "../api/registerUser";
 
 export async function registrationAction(
   formData: RegisterFormData

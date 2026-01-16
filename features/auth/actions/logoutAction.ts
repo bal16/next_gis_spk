@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-import { logoutUser } from "../services/logoutUser";
+import { logoutUser } from "../api/logoutUser";
 
 export async function logoutAction() {
   await logoutUser();

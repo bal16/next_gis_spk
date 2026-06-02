@@ -10,7 +10,7 @@ import type { ActionResponse } from "../types/action";
 import { loginUser } from "../api/loginUser";
 
 export async function loginAction(
-  formData: LoginFormData
+  formData: LoginFormData,
 ): Promise<ActionResponse> {
   const validatedFields = loginSchema.safeParse(formData);
 
@@ -29,10 +29,12 @@ export async function loginAction(
         message: "Login gagal, token tidak diterima.",
       };
 
-    const { token, refreshToken, user } = data;
+    const { accessToken: token, refreshToken, username, isAdmin, id } = data;
     const cookieStore = await cookies();
 
-    cookieStore.set("session", JSON.stringify(user), {
+    const user = { id, username, isAdmin };
+
+    cookieStore.set("spk.session", JSON.stringify(user), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/", // Berlaku di seluruh situs
@@ -40,7 +42,7 @@ export async function loginAction(
       // sameSite: 'lax'
     });
 
-    cookieStore.set("access-token", token, {
+    cookieStore.set("spk.access-token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/", // Berlaku di seluruh situs
@@ -49,7 +51,7 @@ export async function loginAction(
     });
 
     if (refreshToken)
-      cookieStore.set("refresh-token", refreshToken, {
+      cookieStore.set("spk.refresh-token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         path: "/",
@@ -63,11 +65,33 @@ export async function loginAction(
   } catch (error) {
     console.error(error);
     if (axios.isAxiosError(error)) {
-      return {
-        status: "error",
-        message: "Terjadi kesalahan server.",
-      };
+      if (error.response?.status === 401) {
+        const nestMessage = error.response.data.message.message;
+
+        // Localize backend error messages to Indonesian
+        const localizedMessages: Record<string, string> = {
+          "Invalid credentials": "Username atau Password salah",
+          "Unauthorized": "Sesi Anda telah habis atau Anda tidak memiliki akses.",
+        };
+
+        return {
+          status: "error",
+          message:
+            localizedMessages[nestMessage] ||
+            nestMessage ||
+            "Sesi Anda telah habis atau Anda tidak memiliki akses.",
+        };
+      }
+
+      if (error.response?.status && error.response?.status >= 500) {
+        return {
+          status: "error",
+          message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+        };
+      }
     }
+
+    // Fallback untuk error lain (network error, timeout, atau error non-axios)
     return {
       status: "error",
       message: "Terjadi kesalahan tidak diketahui.",

@@ -1,13 +1,13 @@
 "use client";
 
-import { getLastResults } from "@/features/home/api/get-last-results";
+import { getBuildingsDatas } from "@/features/buildings/api/get-all-buildings";
 import { MapView } from "@/features/map/components/MapView";
 import { useQuery } from "@tanstack/react-query";
 
 export const MapWidget = () => {
   const { data: buildings } = useQuery({
     queryKey: ["buildings"],
-    queryFn: getLastResults,
+    queryFn: getBuildingsDatas,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 

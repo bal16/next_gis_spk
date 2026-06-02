@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 
 import axios from "axios";
 
-import { getCurrentUser } from "@/features/auth/services/getCurrentUser";
+import { getCurrentUser } from "@/features/auth/api/getCurrentUser";
+import { cookies } from "next/headers";
 
 export async function GET() {
   try {
@@ -13,17 +14,23 @@ export async function GET() {
     console.error(error);
 
     if (axios.isAxiosError(error)) {
-      return {
-        status: "error",
-        message: "Terjadi kesalahan server.",
-      };
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "Terjadi kesalahan server.",
+        },
+        { status: 500 }
+      );
     }
 
-    cookieStore.delete("session-token");
+    const cookieStore = await cookies();
 
-    return NextResponse.json(
-      { message: "Sesi tidak valid atau telah kedaluwarsa" },
-      { status: 401 }
-    );
+    cookieStore.delete("spk.access-token");
+    cookieStore.delete("spk.refresh-token");
+
+    return NextResponse.json({
+      message: "Sesi tidak valid atau telah kedaluwarsa",
+      status: 401,
+    });
   }
 }

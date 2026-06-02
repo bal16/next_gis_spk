@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { TBuilding } from "@/types/building";
+// import { TBuilding } from "@/types/building";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,6 +21,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/animate-ui/primitives/radix/collapsible";
 import { ChevronsUpDown } from "lucide-react";
+import type { TBuilding } from "@/features/buildings/type";
 
 interface Props {
   building: TBuilding;
@@ -66,13 +67,18 @@ export const BuildingPopup: FC<Props> = ({
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent>
+            {/* beri fallback ketika null (belum di ada history run) */}
             {Object.entries(building.criterias).map(([key, value]) => (
               <div key={key} className="flex justify-between items-center mb-2">
                 <span className="text-sm text-muted-foreground capitalize">
                   {key.replace(/_/g, " ")}
                 </span>
                 <span className="text-sm font-medium text-foreground">
-                  {value}
+                  {value instanceof Date
+                    ? value.toLocaleDateString()
+                    : value === null || value === undefined
+                      ? "N/A"
+                      : String(value)}
                 </span>
               </div>
             ))}
@@ -84,7 +90,7 @@ export const BuildingPopup: FC<Props> = ({
             Skor Akhir
           </span>
           <span className="text-2xl font-bold text-foreground">
-            {building.score}
+            {building.score?.toFixed(2) || "N/A"}
           </span>
         </div>
       </CardContent>

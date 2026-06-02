@@ -1,6 +1,6 @@
 export interface SuccessResponse<T> {
   statusCode: number;
-  success: boolean;
+  // success: boolean;
   message: string;
   data: T;
 }

@@ -1,19 +1,17 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  getBuildings,
-  addBuilding,
-  updateBuilding,
-  deleteBuilding,
-} from "@/lib/services/buildings";
-import { BuildingFormData } from "@/lib/validators/building";
 import { toast } from "sonner";
+import { getBuildingsDatas } from "../api/get-all-buildings";
+import { createBuilding } from "../api/create-building";
+import { updateBuilding } from "../api/update-building";
+import { deleteBuilding } from "../api/delete-building";
+import type { TBuilding, TCreateBuilding, TUpdateBuilding } from "../type";
 
 export const useBuildings = () => {
   return useQuery({
     queryKey: ["buildings"],
-    queryFn: getBuildings,
+    queryFn: getBuildingsDatas,
   });
 };
 
@@ -21,14 +19,53 @@ export const useAddBuilding = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newBuilding: BuildingFormData) => addBuilding(newBuilding),
+    mutationFn: (newBuilding: TCreateBuilding) => createBuilding(newBuilding),
+    onMutate: async (newBuilding) => {
+      // Cancel any outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ["buildings"] });
+
+      // Snapshot the previous value
+      const previousBuildings = queryClient.getQueryData<TBuilding[]>(["buildings"]);
+
+      // Optimistically update to the new value
+      if (previousBuildings) {
+        queryClient.setQueryData<TBuilding[]>(["buildings"], [
+          ...previousBuildings,
+          {
+            ...newBuilding,
+            id: `temp-${Date.now()}`, // Temporary ID
+            score: 0,
+            priority: "Belum Dihitung",
+            criterias: {
+              age: 0,
+              structure: 0,
+              architecture: 0,
+              mep: 0,
+              utility: 0,
+              damage: 0,
+              lastMaintenance: null,
+            },
+          } as TBuilding,
+        ]);
+      }
+
+      // Return a context object with the snapshotted value
+      return { previousBuildings };
+    },
+    onError: (err, newBuilding, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousBuildings) {
+        queryClient.setQueryData(["buildings"], context.previousBuildings);
+      }
+      toast.error(err.message || "Failed to create building");
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["buildings"] });
       toast.success("Gedung baru berhasil ditambahkan.");
       onSuccessCallback?.();
     },
-    onError: (error) => {
-      toast.error(`Gagal menambahkan gedung: ${error.message}`);
+    onSettled: () => {
+      // Always refetch after error or success to ensure we have the correct server state
+      queryClient.invalidateQueries({ queryKey: ["buildings"] });
     },
   });
 };
@@ -37,35 +74,67 @@ export const useUpdateBuilding = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: BuildingFormData }) =>
-      updateBuilding(id, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["buildings"] });
-      queryClient.invalidateQueries({ queryKey: ["building", variables.id] });
+    mutationFn: ({ id, data }: { id: string; data: TUpdateBuilding }) =>
+      updateBuilding(data, id),
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: ["buildings"] });
+      const previousBuildings = queryClient.getQueryData<TBuilding[]>(["buildings"]);
+
+      if (previousBuildings) {
+        queryClient.setQueryData<TBuilding[]>(
+          ["buildings"],
+          previousBuildings.map((building) =>
+            building.id === id ? { ...building, ...data } : building
+          )
+        );
+      }
+      return { previousBuildings };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousBuildings) {
+        queryClient.setQueryData(["buildings"], context.previousBuildings);
+      }
+      toast.error(err.message || "Failed to update building");
+    },
+    onSuccess: () => {
       toast.success("Data gedung berhasil diperbarui.");
       onSuccessCallback?.();
     },
-    onError: (error) => {
-      toast.error(`Gagal memperbarui data: ${error.message}`);
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["buildings"] });
     },
   });
 };
 
-// Hook untuk delete bisa ditambahkan di sini jika diperlukan
-export const useDeleteBuilding = (onSuccessCallback?: () => void) => { 
-    const queryClient = useQueryClient();
+export const useDeleteBuilding = (onSuccessCallback?: () => void) => {
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ( {id }: { id: number}) =>
-      deleteBuilding(id),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["buildings"] });
-      queryClient.invalidateQueries({ queryKey: ["building", variables.id] });
+    mutationFn: (id: string) => deleteBuilding(id),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["buildings"] });
+      const previousBuildings = queryClient.getQueryData<TBuilding[]>(["buildings"]);
+
+      if (previousBuildings) {
+        queryClient.setQueryData<TBuilding[]>(
+          ["buildings"],
+          previousBuildings.filter((building) => building.id !== id)
+        );
+      }
+      return { previousBuildings };
+    },
+    onError: (err, id, context) => {
+      if (context?.previousBuildings) {
+        queryClient.setQueryData(["buildings"], context.previousBuildings);
+      }
+      toast.error(err.message || "Failed to delete building");
+    },
+    onSuccess: () => {
       toast.success("Data gedung berhasil dihapus.");
       onSuccessCallback?.();
     },
-    onError: (error) => {
-      toast.error(`Gagal menghapus data: ${error.message}`);
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["buildings"] });
     },
   });
- };
+};

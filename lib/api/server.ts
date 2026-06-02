@@ -1,5 +1,4 @@
-// libs/api/server.ts
-import "server-only"; // <--- WAJIB: Agar tidak bocor ke client
+import "server-only";
 
 import axios from "axios";
 import { cookies } from "next/headers";
@@ -27,7 +26,7 @@ backendClient.interceptors.request.use(async (config) => {
 
   if (useToken) {
     const cookieStore = await cookies();
-    const tokenValue = cookieStore.get("session-token")?.value;
+    const tokenValue = cookieStore.get("spk.access-token")?.value;
 
     if (tokenValue) {
       config.headers.Authorization = `Bearer ${tokenValue}`;
@@ -49,26 +48,27 @@ backendClient.interceptors.response.use(
 
       try {
         const cookieStore = await cookies();
-        const refreshToken = cookieStore.get("refresh-token")?.value;
+        const refreshToken = cookieStore.get("spk.refresh-token")?.value;
 
         if (!refreshToken) {
           throw new Error("No refresh token available");
         }
 
-        const refreshResponse = await backendClient.post<RefreshResponse>(
-          "/auth/refresh",
+        // Use raw axios to prevent request interceptor from overriding the Auth header
+        const refreshResponse = await axios.post<RefreshResponse>(
+          `${process.env.NEST_API_URL}/auth/refresh`,
           {},
           {
             headers: {
               Authorization: `Bearer ${refreshToken}`,
             },
-          }
+          },
         );
 
         const { accessToken, refreshToken: newRefreshToken } =
           refreshResponse.data.data;
 
-        cookieStore.set("session-token", accessToken, {
+        cookieStore.set("access-token", accessToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           path: "/",
@@ -95,18 +95,15 @@ backendClient.interceptors.response.use(
         const cookieStore = await cookies();
 
         // Hapus dengan nama yang konsisten
-        cookieStore.delete("session-token");
-        cookieStore.delete("refresh-token");
-
-        // Opsional: Hapus session-token jika kamu pernah pakai nama itu sebelumnya
-        // cookieStore.delete("session-token");
+        cookieStore.delete("spk.access-token");
+        cookieStore.delete("spk.refresh-token");
 
         return Promise.reject(refreshError);
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default backendClient;

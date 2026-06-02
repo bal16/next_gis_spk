@@ -5,7 +5,7 @@ export const buildingsData = [
     name: "Gedung E1",
     location: {
       lng: 110.40129390382897,
-      lat: -7.051282471950054
+      lat: -7.051282471950054,
     },
     score: 88.5,
     priority: "Prioritas Tinggi" as const,
@@ -13,10 +13,10 @@ export const buildingsData = [
       age: 20,
       structure: "Rusak Ringan" as const,
       architecture: "Rusak Berat" as const,
-      MEP: "Rusak Ringan" as const,
+      mep: "Rusak Ringan" as const,
       utility: "Tinggi" as const,
-      damage: "Tinggi" as const
-    }
+      damage: "Tinggi" as const,
+    },
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ export const buildingsData = [
     name: "Gedung Penghubung",
     location: {
       lng: 110.40111687803346,
-      lat: -7.051221247727476
+      lat: -7.051221247727476,
     },
     score: 55.0,
     priority: "Prioritas Rendah" as const,
@@ -32,10 +32,10 @@ export const buildingsData = [
       age: 12,
       structure: "Baik" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Baik" as const,
+      mep: "Baik" as const,
       utility: "Sedang" as const,
-      damage: "Rendah" as const
-    }
+      damage: "Rendah" as const,
+    },
   },
   {
     id: 3,
@@ -43,7 +43,7 @@ export const buildingsData = [
     name: "Gedung E2",
     location: {
       lng: 110.40131402039664,
-      lat: -7.05081131141996
+      lat: -7.05081131141996,
     },
     score: 72.8,
     priority: "Prioritas Sedang" as const,
@@ -51,10 +51,10 @@ export const buildingsData = [
       age: 18,
       structure: "Baik" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Rusak Ringan" as const,
+      mep: "Rusak Ringan" as const,
       utility: "Tinggi" as const,
-      damage: "Sedang" as const
-    }
+      damage: "Sedang" as const,
+    },
   },
   {
     id: 4,
@@ -62,7 +62,7 @@ export const buildingsData = [
     name: "Gedung E11",
     location: {
       lng: 110.40143474288514,
-      lat: -7.050563134355567
+      lat: -7.050563134355567,
     },
     score: 91.0,
     priority: "Prioritas Tinggi" as const,
@@ -70,10 +70,10 @@ export const buildingsData = [
       age: 25,
       structure: "Rusak Berat" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Rusak Berat" as const,
+      mep: "Rusak Berat" as const,
       utility: "Tinggi" as const,
-      damage: "Tinggi" as const
-    }
+      damage: "Tinggi" as const,
+    },
   },
   {
     id: 5,
@@ -81,7 +81,7 @@ export const buildingsData = [
     name: "Gedung Dekanat FT UNNES",
     location: {
       lng: 110.4018771804195,
-      lat: -7.051752672742136
+      lat: -7.051752672742136,
     },
     score: 35.5,
     priority: "Prioritas Rendah" as const,
@@ -89,10 +89,10 @@ export const buildingsData = [
       age: 7,
       structure: "Baik" as const,
       architecture: "Baik" as const,
-      MEP: "Baik" as const,
+      mep: "Baik" as const,
       utility: "Tinggi" as const,
-      damage: "Rendah" as const
-    }
+      damage: "Rendah" as const,
+    },
   },
   {
     id: 6,
@@ -100,7 +100,7 @@ export const buildingsData = [
     name: "Gedung E12",
     location: {
       lng: 110.40212655430308,
-      lat: -7.051392418571761
+      lat: -7.051392418571761,
     },
     score: 68.0,
     priority: "Prioritas Sedang" as const,
@@ -108,10 +108,10 @@ export const buildingsData = [
       age: 10,
       structure: "Baik" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Baik" as const,
+      mep: "Baik" as const,
       utility: "Sedang" as const,
-      damage: "Sedang" as const
-    }
+      damage: "Sedang" as const,
+    },
   },
   {
     id: 7,
@@ -119,7 +119,7 @@ export const buildingsData = [
     name: "Gedung E5",
     location: {
       lng: 110.40218588115334,
-      lat: -7.052077001050474
+      lat: -7.052077001050474,
     },
     score: 77.2,
     priority: "Prioritas Sedang" as const,
@@ -127,10 +127,10 @@ export const buildingsData = [
       age: 16,
       structure: "Rusak Ringan" as const,
       architecture: "Baik" as const,
-      MEP: "Rusak Ringan" as const,
+      mep: "Rusak Ringan" as const,
       utility: "Sedang" as const,
-      damage: "Tinggi" as const
-    }
+      damage: "Tinggi" as const,
+    },
   },
   {
     id: 8,
@@ -138,7 +138,7 @@ export const buildingsData = [
     name: "Gedung E3",
     location: {
       lng: 110.40226833542107,
-      lat: -7.051696788455939
+      lat: -7.051696788455939,
     },
     score: 49.0,
     priority: "Prioritas Rendah" as const,
@@ -146,10 +146,10 @@ export const buildingsData = [
       age: 11,
       structure: "Baik" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Baik" as const,
+      mep: "Baik" as const,
       utility: "Sedang" as const,
-      damage: "Rendah" as const
-    }
+      damage: "Rendah" as const,
+    },
   },
   {
     id: 9,
@@ -157,7 +157,7 @@ export const buildingsData = [
     name: "Gedung E4",
     location: {
       lng: 110.40239503344249,
-      lat: -7.051507181011816
+      lat: -7.051507181011816,
     },
     score: 82.0,
     priority: "Prioritas Tinggi" as const,
@@ -165,10 +165,10 @@ export const buildingsData = [
       age: 19,
       structure: "Rusak Ringan" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Rusak Ringan" as const,
+      mep: "Rusak Ringan" as const,
       utility: "Tinggi" as const,
-      damage: "Tinggi" as const
-    }
+      damage: "Tinggi" as const,
+    },
   },
   {
     id: 10,
@@ -176,7 +176,7 @@ export const buildingsData = [
     name: "Gedung E6",
     location: {
       lng: 110.40270272863769,
-      lat: -7.051406389654468
+      lat: -7.051406389654468,
     },
     score: 63.5,
     priority: "Prioritas Sedang" as const,
@@ -184,10 +184,10 @@ export const buildingsData = [
       age: 13,
       structure: "Baik" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Baik" as const,
+      mep: "Baik" as const,
       utility: "Sedang" as const,
-      damage: "Sedang" as const
-    }
+      damage: "Sedang" as const,
+    },
   },
   {
     id: 11,
@@ -195,7 +195,7 @@ export const buildingsData = [
     name: "Gedung E9",
     location: {
       lng: 110.40244028273523,
-      lat: -7.052309519360358
+      lat: -7.052309519360358,
     },
     score: 51.5,
     priority: "Prioritas Rendah" as const,
@@ -203,10 +203,10 @@ export const buildingsData = [
       age: 9,
       structure: "Baik" as const,
       architecture: "Baik" as const,
-      MEP: "Rusak Ringan" as const,
+      mep: "Rusak Ringan" as const,
       utility: "Rendah" as const,
-      damage: "Rendah" as const
-    }
+      damage: "Rendah" as const,
+    },
   },
   {
     id: 12,
@@ -214,7 +214,7 @@ export const buildingsData = [
     name: "Gedung E8",
     location: {
       lng: 110.4029973518131,
-      lat: -7.05162194342453
+      lat: -7.05162194342453,
     },
     score: 79.0,
     priority: "Prioritas Sedang" as const,
@@ -222,10 +222,10 @@ export const buildingsData = [
       age: 15,
       structure: "Rusak Ringan" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Baik" as const,
+      mep: "Baik" as const,
       utility: "Tinggi" as const,
-      damage: "Sedang" as const
-    }
+      damage: "Sedang" as const,
+    },
   },
   {
     id: 13,
@@ -233,7 +233,7 @@ export const buildingsData = [
     name: "Gedung E7",
     location: {
       lng: 110.40296517453747,
-      lat: -7.0524063187944686
+      lat: -7.0524063187944686,
     },
     score: 95.0,
     priority: "Prioritas Tinggi" as const,
@@ -241,10 +241,10 @@ export const buildingsData = [
       age: 28,
       structure: "Rusak Berat" as const,
       architecture: "Rusak Berat" as const,
-      MEP: "Rusak Berat" as const,
+      mep: "Rusak Berat" as const,
       utility: "Tinggi" as const,
-      damage: "Tinggi" as const
-    }
+      damage: "Tinggi" as const,
+    },
   },
   {
     id: 14,
@@ -252,7 +252,7 @@ export const buildingsData = [
     name: "Gedung PKM",
     location: {
       lng: 110.4030788005404,
-      lat: -7.0519802015514825
+      lat: -7.0519802015514825,
     },
     score: 84.3,
     priority: "Prioritas Tinggi" as const,
@@ -260,10 +260,10 @@ export const buildingsData = [
       age: 17,
       structure: "Rusak Ringan" as const,
       architecture: "Rusak Ringan" as const,
-      MEP: "Rusak Berat" as const,
+      mep: "Rusak Berat" as const,
       utility: "Tinggi" as const,
-      damage: "Tinggi" as const
-    }
+      damage: "Tinggi" as const,
+    },
   },
   {
     id: 15,
@@ -271,7 +271,7 @@ export const buildingsData = [
     name: "Gedung E10",
     location: {
       lng: 110.40355844304946,
-      lat: -7.052649814185674
+      lat: -7.052649814185674,
     },
     score: 42.0,
     priority: "Prioritas Rendah" as const,
@@ -279,9 +279,9 @@ export const buildingsData = [
       age: 6,
       structure: "Baik" as const,
       architecture: "Baik" as const,
-      MEP: "Baik" as const,
+      mep: "Baik" as const,
       utility: "Sedang" as const,
-      damage: "Rendah" as const
-    }
-  }
-]
+      damage: "Rendah" as const,
+    },
+  },
+];

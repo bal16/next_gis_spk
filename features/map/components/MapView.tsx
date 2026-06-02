@@ -13,9 +13,9 @@ import Map, {
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { AlertCircle, AlertTriangle, CheckCircle, Home } from "lucide-react";
+import { AlertCircle, AlertTriangle, CheckCircle, Home, HelpCircle } from "lucide-react";
 
-import { TBuilding } from "@/types/building";
+// import { TBuilding } from "@/types/building";
 import { INITIAL_VIEW } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import BuildingPopup from "@/features/home/components/BuildingPopup";
 import { useSelectedBuildingStore } from "@/features/home/store/useSelectedBuilding";
+import type { TBuilding } from "@/features/buildings/type";
 
 interface MapViewProps {
   buildings: TBuilding[];
@@ -39,11 +40,11 @@ export const MapView = ({ buildings }: MapViewProps) => {
       state.setMapRef,
       state.resetView,
       state.flyToBuilding,
-    ])
+    ]),
   );
 
   const [selectedBuilding, setSelectedBuilding] = useSelectedBuildingStore(
-    useShallow((state) => [state.building, state.setSelectedBuilding])
+    useShallow((state) => [state.building, state.setSelectedBuilding]),
   );
 
   const onMapLoad = useCallback(() => {
@@ -99,8 +100,8 @@ export const MapView = ({ buildings }: MapViewProps) => {
         {buildings.map((building) => (
           <Marker
             key={building.id}
-            longitude={building.location.lng}
-            latitude={building.location.lat}
+            longitude={building.longitude}
+            latitude={building.latitude}
             anchor="bottom"
             onClick={(e) => {
               e.originalEvent.stopPropagation();
@@ -116,8 +117,8 @@ export const MapView = ({ buildings }: MapViewProps) => {
 
         {selectedBuilding && (
           <Popup
-            longitude={selectedBuilding.location.lng}
-            latitude={selectedBuilding.location.lat}
+            longitude={selectedBuilding.longitude}
+            latitude={selectedBuilding.latitude}
             anchor="top"
             onClose={() => setSelectedBuilding(null)}
             closeButton={false}
@@ -149,8 +150,9 @@ const getPriorityIcon = (priority: string) => {
       );
     case "Prioritas Rendah":
       return <CheckCircle className="w-8 h-8 text-green-500 drop-shadow-lg" />;
+    case "Belum Dihitung":
     default:
-      return <CheckCircle className="w-8 h-8 drop-shadow-lg" />;
+      return <HelpCircle className="w-8 h-8 text-muted-foreground drop-shadow-lg" />;
   }
 };
 
@@ -160,8 +162,8 @@ const getPriorityColor = (priority: string) => {
     priority === "Prioritas Sedang" && "bg-yellow-500",
     priority === "Prioritas Rendah" && "bg-green-500",
     !["Prioritas Tinggi", "Prioritas Sedang", "Prioritas Rendah"].includes(
-      priority
-    ) && "bg-muted"
+      priority,
+    ) && "bg-muted",
   );
 };
 

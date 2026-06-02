@@ -5,7 +5,15 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { UserNav } from "@/components/UserNav";
 
-export function SiteHeader({ name }: { name: string }) {
+type TPath = {
+  pageName: string;
+  url: string;
+};
+
+export function SiteHeader({ page, path }: { page: string; path?: TPath[] }) {
+  const rootPath = { pageName: "Dashboard", url: "/admin" };
+  path = path ? [rootPath, ...path] : [rootPath];
+
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex justify-between w-full px-4 lg:px-6">
@@ -16,14 +24,20 @@ export function SiteHeader({ name }: { name: string }) {
             className="mx-2 data-[orientation=vertical]:h-4"
           />
           <nav className="flex items-center text-sm text-muted-foreground">
-            <Link
-              href="/admin"
-              className="hover:text-foreground transition-colors"
-            >
-              Dashboard
-            </Link>
-            <span className="mx-2">&gt;</span>
-            <span className="font-medium text-foreground">{name}</span>
+            {path.map((p, i) => (
+              <span key={i} className="flex items-center">
+                <Link
+                  href={p.url}
+                  className="hover:text-foreground transition-colors"
+                >
+                  {p.pageName}
+                </Link>
+                {i < path.length && (
+                  <span className="mx-2">&gt;</span>
+                )}
+              </span>
+            ))}
+            <span className="font-medium text-foreground">{page}</span>
           </nav>
         </div>
         <UserNav />

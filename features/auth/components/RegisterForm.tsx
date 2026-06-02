@@ -19,10 +19,15 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { registerUser } from "../api/registerUser";
+// import { registerUser } from "../api/registerUser";
 import { useState } from "react";
+import { registrationAction } from "../actions/registrationAction";
 
-export function RegisterForm() {
+interface RegisterFormProps {
+  onSuccess?: () => void;
+}
+
+export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const router = useRouter();
 
   const [isPending, setIspending] = useState(false);
@@ -30,7 +35,7 @@ export function RegisterForm() {
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "", // This is a known property in RegisterFormData
@@ -39,10 +44,10 @@ export function RegisterForm() {
 
   async function onSubmit(data: RegisterFormData) {
     setIspending(true);
-    const response = await registerUser(data);
-    if (response.statusCode === 201) {
+    const response = await registrationAction(data);
+    if (response.status === "success") {
       toast.success("Registrasi Berhasil", {
-        description: "Mengarahkan Anda ke halaman login...",
+        description: "Silakan ke halaman login...",
       });
     } else {
       toast.error("Registrasi Gagal", {
@@ -51,7 +56,10 @@ export function RegisterForm() {
     }
     form.reset();
     setIspending(false);
-    router.push("/auth");
+    
+    if (response.status === "success") {
+      onSuccess?.();
+    }
   }
 
   return (
@@ -60,7 +68,7 @@ export function RegisterForm() {
         {/* Field: Nama Lengkap */}
         <Controller
           control={form.control}
-          name="name"
+          name="username"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel

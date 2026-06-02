@@ -1,21 +1,24 @@
 type TPriority = "Prioritas Tinggi" | "Prioritas Sedang" | "Prioritas Rendah";
 export interface TBuilding {
-  id: number;
+  id: string;
   code: string;
   name: string;
-  location: {
-    lng: number;
-    lat: number;
-  };
+  longitude: number;
+  latitude: number;
   score: number;
   priority: TPriority;
   criterias: {
     age: number;
-    structure: "Baik" | "Rusak Ringan" | "Rusak Berat";
-    architecture: "Baik" | "Rusak Ringan" | "Rusak Berat";
-    MEP: "Baik" | "Rusak Ringan" | "Rusak Berat";
-    utility: "Rendah" | "Sedang" | "Tinggi";
-    damage: "Rendah" | "Sedang" | "Tinggi";
+    structure: number;
+    architecture: number;
+    mep: number;
+    utility: number;
+    damage: number;
+    // structure: "Baik" | "Rusak Ringan" | "Rusak Berat";
+    // architecture: "Baik" | "Rusak Ringan" | "Rusak Berat";
+    // mep: "Baik" | "Rusak Ringan" | "Rusak Berat";
+    // utility: "Rendah" | "Sedang" | "Tinggi";
+    // damage: "Rendah" | "Sedang" | "Tinggi";
   };
 }
 

@@ -1,5 +1,6 @@
+import type { TBuilding } from "@/features/buildings/type";
 import { create } from "zustand";
-import { TBuilding } from "@/types/building";
+// import { TBuilding } from "@/types/building";
 
 interface SelectedBuildingStore {
   building: TBuilding | null;

@@ -8,7 +8,7 @@ import type { ActionResponse } from "../types/action";
 import { registerUser } from "../api/registerUser";
 
 export async function registrationAction(
-  formData: RegisterFormData
+  formData: RegisterFormData,
 ): Promise<ActionResponse> {
   const validatedFields = registerSchema.safeParse(formData);
   if (!validatedFields.success) {
@@ -19,23 +19,40 @@ export async function registrationAction(
   }
 
   try {
-    const { name, email, password } = validatedFields.data;
+    const { username, email, password } = validatedFields.data;
 
-    await registerUser({ name, email, password });
+    await registerUser({ username, email, password });
     // console.log("Mendaftarkan pengguna (server):", { name, email });
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
 
     return {
       status: "success",
       message: "Registrasi berhasil! Mengarahkan ke login...",
     };
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     if (axios.isAxiosError(error)) {
-      return {
-        status: "error",
-        message: "Terjadi kesalahan server.",
-      };
+      const errorData = error.response?.data;
+      const errorMessage = typeof errorData?.message === 'string' 
+        ? errorData.message 
+        : errorData?.message?.message || "Terjadi kesalahan pada server.";
+
+      if (error.response && error.response?.status >= 400 && error.response?.status < 500) {
+        const localizedMessages: Record<string, string> = {
+          "Email already in use": "Email ini sudah terdaftar.",
+        };
+
+        return {
+          status: "error",
+          message: localizedMessages[errorMessage] || errorMessage,
+        };
+      }
+      if (error.response && error.response?.status >= 500) {
+        return {
+          status: "error",
+          message: "Terjadi kesalahan pada server. Silakan coba lagi nanti.",
+        };
+      }
     }
     return {
       status: "error",

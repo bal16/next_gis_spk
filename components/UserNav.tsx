@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/ModeToggle";
+import { useQueryClient } from "@tanstack/react-query";
 
 const LINK = {
   admin: {
@@ -43,13 +44,20 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
   } = useCurrentUser();
 
   const [isPending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
 
-  const isAdmin = user?.role === "admin";
-  console.log({ user });
+  // const isAdmin = user?.role === "admin";
+  // console.log({ user });
 
   const handleLogout = () => {
-    startTransition(() => {
-      logoutAction();
+    startTransition(async () => {
+      try {
+        await logoutAction();
+      } finally {
+        // Blok finally memastikan cache selalu dihapus SETELAH cookie di server lenyap,
+        // dan tetap dieksekusi meskipun logoutAction() menghentikan proses dengan redirect().
+        queryClient.removeQueries({ queryKey: ["currentUser"] });
+      }
     });
   };
 
@@ -65,7 +73,7 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
     return (
       <nav className="flex items-center gap-3">
         {adminLink ? (
-          isAdmin && (
+          user!.isAdmin && (
             <NavLink
               href={LINK.admin.href}
               icon={LINK.admin.icon}
@@ -109,7 +117,7 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
             <DropdownMenuSeparator />
 
             {adminLink ? (
-              isAdmin && (
+              user!.isAdmin && (
                 <DropdownMenuLink
                   href={LINK.admin.href}
                   icon={LINK.admin.icon}
@@ -140,8 +148,12 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
     );
   }
 
-  // Jika tidak loading dan tidak login, tampilkan tombol Login
-  return <LoginButton handleLogin={handleLogin} />;
+  return (
+    <div className="flex items-center gap-3">
+      <ModeToggle />
+      <LoginButton handleLogin={handleLogin} />
+    </div>
+  );
 }
 
 type LinkProps = {

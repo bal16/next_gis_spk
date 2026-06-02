@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-import type { TBuilding } from "@/types/building";
+import { TBuilding } from "@/features/buildings/type";
 
 import { useFilteredBuildings } from "../hooks/useFIlteredBuildings";
 import { SidebarFilters, SidebarHeader, SidebarSearch } from "./SidebarContent";

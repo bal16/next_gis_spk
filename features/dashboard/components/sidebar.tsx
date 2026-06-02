@@ -37,12 +37,12 @@ const data = {
     },
     {
       title: "Criteria and Weights",
-      url: "/admin/criterias",
+      url: "/admin/weights",
       icon: WeightIcon,
     },
     {
       title: "Saw Calculation",
-      url: "/admin/saw",
+      url: "/admin/dss",
       icon: SquareFunctionIcon,
     },
   ],

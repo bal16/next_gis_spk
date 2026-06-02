@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TBuilding } from "@/types/building";
+import { TBuilding } from "@/features/buildings/type";
 import { Badge } from "@/components/ui/badge";
 import { Activity } from "react";
 
@@ -72,7 +72,7 @@ export const RankingTable = ({
                   </div>
                 </TableCell>
                 <TableCell className="text-right font-semibold">
-                  {building.score}
+                  {building.score?.toFixed(2) || "N/A"}
                 </TableCell>
               </TableRow>
             ))}

@@ -3,13 +3,15 @@ import type { SuccessResponse } from "@/types/apiResponse";
 export interface LoginData {
   accessToken: string;
   refreshToken: string;
-  user: User;
+  username: string;
+  isAdmin: boolean;
+  id: string;
 }
 
 export interface User {
   id: string;
-  name: string;
-  role: string;
+  username: string;
+  isAdmin: boolean;
 }
 
 export interface RegistrationData {

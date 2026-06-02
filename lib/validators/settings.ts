@@ -10,6 +10,18 @@ export const weightsSchema = z
       .number<number>({ error: "Bobot harus berupa angka" })
       .min(0, "Bobot tidak boleh negatif")
       .max(100, "Bobot tidak boleh lebih dari 100"),
+    c21: z.coerce
+      .number<number>({ error: "Bobot harus berupa angka" })
+      .min(0, "Bobot tidak boleh negatif")
+      .max(100, "Bobot tidak boleh lebih dari 100"),
+    c22: z.coerce
+      .number<number>({ error: "Bobot harus berupa angka" })
+      .min(0, "Bobot tidak boleh negatif")
+      .max(100, "Bobot tidak boleh lebih dari 100"),
+    c23: z.coerce
+      .number<number>({ error: "Bobot harus berupa angka" })
+      .min(0, "Bobot tidak boleh negatif")
+      .max(100, "Bobot tidak boleh lebih dari 100"),
     c3: z.coerce
       .number<number>({ error: "Bobot harus berupa angka" })
       .min(0, "Bobot tidak boleh negatif")

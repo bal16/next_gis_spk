@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { MapRef } from "react-map-gl/maplibre";
-import { TBuilding } from "@/types/building";
+// import { TBuilding } from "@/types/building";
 import { INITIAL_VIEW } from "@/lib/config";
+import type { TBuilding } from "@/features/buildings/type";
 
 interface MapStore {
   mapRef: MapRef | null;
@@ -20,7 +21,7 @@ export const useMapStore = create<MapStore>((set, get) => ({
     if (!map) return;
 
     map.flyTo({
-      center: [building.location.lng, building.location.lat],
+      center: [building.longitude, building.latitude],
       zoom: 18,
       duration: 1000,
       essential: true,

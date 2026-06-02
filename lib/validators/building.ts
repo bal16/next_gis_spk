@@ -14,8 +14,8 @@ export const buildingSchema = z.object({
   architecture: z.enum(["Baik", "Rusak Ringan", "Rusak Berat"], {
     error: "Pilih salah satu kondisi arsitektural",
   }),
-  MEP: z.enum(["Baik", "Rusak Ringan", "Rusak Berat"], {
-    error: "Pilih salah satu kondisi MEP",
+  mep: z.enum(["Baik", "Rusak Ringan", "Rusak Berat"], {
+    error: "Pilih salah satu kondisi mep",
   }),
   utility: z.enum(["Rendah", "Sedang", "Tinggi"], {
     error: "Pilih salah satu tingkat utilitas",

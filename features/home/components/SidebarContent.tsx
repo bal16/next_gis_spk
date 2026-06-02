@@ -7,7 +7,7 @@ import { BuildingFilters } from "./BuildingFilters";
 import { RankingTable } from "./RankingTable";
 import { useSearchStore } from "@/features/home/store/useSearch";
 import { useFilterStore } from "@/features/home/store/useFilter";
-import type { TBuilding } from "@/types/building";
+import type { TBuilding } from "@/features/buildings/type";
 
 export const SidebarHeader = () => (
   <div className="p-4 border-b bg-card">

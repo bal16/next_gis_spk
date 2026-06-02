@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function LoginForm() {
   const [isPending, startTransition] = useTransition();
@@ -33,6 +34,8 @@ export function LoginForm() {
       password: "",
     },
   });
+
+  const queryClient = useQueryClient();
 
   async function onSubmit(data: LoginFormData) {
     startTransition(async () => {
@@ -51,6 +54,9 @@ export function LoginForm() {
         toast.success("Login Berhasil", {
           description: "Mengarahkan Anda ke dashboard...",
         });
+
+        // revalidate user data dari cache react-query dengan key 'currentUser'
+        queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
         setTimeout(() => {
           router.push("/admin");

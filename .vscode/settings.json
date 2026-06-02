@@ -1,8 +1,8 @@
 // .vscode/settings.json
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  // "tailwindCSS.experimental.configFile": "app/globals.css",
-  "files.associations": {
-    "globals.css": "tailwindcss"
+  "workbench.colorCustomizations": {
+    "minimap.background": "#00000000",
+    "scrollbar.shadow": "#00000000"
   }
 }

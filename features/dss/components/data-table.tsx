@@ -4,14 +4,14 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
+  // getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
-  type ColumnFiltersState,
+  // type ColumnFiltersState,
   type SortingState,
 } from "@tanstack/react-table";
 
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,

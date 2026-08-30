@@ -49,11 +49,7 @@ export function WeightsUpdateSection() {
     defaultValues: {},
   });
 
-  const {
-    control,
-    reset,
-    handleSubmit,
-  } = form;
+  const { control, reset, handleSubmit } = form;
 
   const formValues = useWatch({ control });
 
@@ -96,6 +92,7 @@ export function WeightsUpdateSection() {
       await updateWeightsMutation(payload);
     } catch (error) {
       // Error handled by hook
+      console.error(error);
     }
   };
 

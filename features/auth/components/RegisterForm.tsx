@@ -2,7 +2,7 @@
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LoaderCircle, UserPlus } from "lucide-react";
 
@@ -28,7 +28,7 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
-  const router = useRouter();
+  // const router = useRouter();
 
   const [isPending, setIspending] = useState(false);
 
@@ -56,7 +56,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     }
     form.reset();
     setIspending(false);
-    
+
     if (response.status === "success") {
       onSuccess?.();
     }

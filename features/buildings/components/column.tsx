@@ -60,7 +60,10 @@ const ActionCell = ({ building }: { building: TBuilding }) => {
                 await deleteBuilding(building.id);
               }}
               trigger={
-                <Button variant="ghost" className="w-full text-left justify-start px-2 font-normal">
+                <Button
+                  variant="ghost"
+                  className="w-full text-left justify-start px-2 font-normal"
+                >
                   Delete
                 </Button>
               }
@@ -71,7 +74,7 @@ const ActionCell = ({ building }: { building: TBuilding }) => {
 
       <BuildingDialog
         variant="edit"
-        initialData={building as any}
+        initialData={building}
         buildingId={building.id}
         open={isEditOpen}
         onOpenChange={setIsEditOpen}

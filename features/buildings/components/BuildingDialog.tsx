@@ -46,10 +46,12 @@ export function BuildingDialog({
   const isEdit = variant === "edit";
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
-  const setOpen = setControlledOpen !== undefined ? setControlledOpen : setInternalOpen;
+  const setOpen =
+    setControlledOpen !== undefined ? setControlledOpen : setInternalOpen;
 
   const { mutateAsync: addBuilding, isPending: isAdding } = useAddBuilding();
-  const { mutateAsync: updateBuilding, isPending: isUpdating } = useUpdateBuilding();
+  const { mutateAsync: updateBuilding, isPending: isUpdating } =
+    useUpdateBuilding();
 
   const isPending = isAdding || isUpdating;
 
@@ -86,6 +88,7 @@ export function BuildingDialog({
       form.reset();
     } catch (error) {
       // Error is handled by the hook's onError, but we catch it here to prevent unhandled promise rejections
+      console.error(error);
     }
   }
 
@@ -107,7 +110,9 @@ export function BuildingDialog({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>
-              {isEdit ? `Edit Building - ${initialData?.code || ""}` : "Add Building"}
+              {isEdit
+                ? `Edit Building - ${initialData?.code || ""}`
+                : "Add Building"}
             </DialogTitle>
             <DialogDescription>
               {isEdit
@@ -129,13 +134,13 @@ export function BuildingDialog({
                 />
                 {(form.formState.errors as { code?: { message?: string } })
                   .code && (
-                    <span className="text-sm text-red-500">
-                      {
-                        (form.formState.errors as { code?: { message?: string } })
-                          .code?.message
-                      }
-                    </span>
-                  )}
+                  <span className="text-sm text-red-500">
+                    {
+                      (form.formState.errors as { code?: { message?: string } })
+                        .code?.message
+                    }
+                  </span>
+                )}
               </Field>
             )}
             <Field>

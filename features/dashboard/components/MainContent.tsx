@@ -13,6 +13,7 @@ import { AdminDataTable } from "@/components/admin/AdminDataTable";
 import { columns } from "@/features/dss/components/run/column";
 import { MapView } from "@/features/map/components/MapView";
 import { getLastRunDatas } from "@/features/dss/api/get-last-run";
+import { queryKeys } from "@/lib/queryKeys";
 import { Badge } from "@/components/ui/badge";
 import { WeightsPieChart } from "./WeightsPieChart";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,7 @@ import { AlertCircle } from "lucide-react";
 
 export const MainContent = () => {
   const { data, isLoading } = useQuery({
-    queryKey: ["lastest-run"],
+    queryKey: queryKeys.dss.latest(),
     queryFn: getLastRunDatas,
     staleTime: Infinity,
   });

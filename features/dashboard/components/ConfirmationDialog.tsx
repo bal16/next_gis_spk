@@ -1,63 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-interface ConfirmationProps {
-  trigger?: React.ReactNode;
-  title?: string;
-  description?: string;
-  callback?: () => Promise<void> | void;
-}
+type ConfirmationDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  description: string;
+  entityLabel?: string;
+  variant?: "destructive" | "default";
+  confirmLabel?: string;
+  cancelLabel?: string;
+  onConfirm: () => Promise<void> | void;
+  isPending?: boolean;
+};
 
-export const ConfirmationDialog = (props: ConfirmationProps) => {
-  const [open, setOpen] = useState(false);
-  const [isPending, setIsPending] = useState(false);
-
+export function ConfirmationDialog({
+  open,
+  onOpenChange,
+  title,
+  description,
+  variant = "destructive",
+  confirmLabel = "Hapus",
+  cancelLabel = "Batal",
+  onConfirm,
+  isPending = false,
+}: ConfirmationDialogProps) {
   const handleConfirm = async () => {
-    if (props.callback) {
-      try {
-        setIsPending(true);
-        await props.callback();
-        setOpen(false); // Dialog hanya diclose setelah callback ini beres
-      } finally {
-        setIsPending(false);
-      }
-    } else {
-      setOpen(false);
+    try {
+      await onConfirm();
+      onOpenChange(false);
+    } catch {
+      // keep dialog open on error — hook already toasts
     }
   };
 
   return (
-    // use Dialog component from ui library
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{props.trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{props.title}</DialogTitle>
-          <DialogDescription>{props.description}</DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline" disabled={isPending}>
-              Cancel
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending}>{cancelLabel}</AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <Button
+              variant={variant === "destructive" ? "destructive" : "default"}
+              onClick={handleConfirm}
+              disabled={isPending}
+              aria-busy={isPending}
+            >
+              {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
+              {confirmLabel}
             </Button>
-          </DialogClose>
-          <Button onClick={handleConfirm} disabled={isPending}>
-            {isPending ? "Loading..." : "Confirm"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
-};
+}

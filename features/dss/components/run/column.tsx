@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontalIcon } from "lucide-react";
 import {
@@ -21,35 +22,43 @@ import { createSortableHeader } from "@/components/admin/AdminDataTable";
 type RunDetail = TGetResultsResponse["sawRunDetails"][0];
 
 const ActionCell = ({ runDetail }: { runDetail: RunDetail }) => {
-  const { mutateAsync: deleteRunDetail } = useDeleteRunDetail(runDetail.sawRunId);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const { mutateAsync: deleteRunDetail, isPending } = useDeleteRunDetail(runDetail.sawRunId);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="size-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontalIcon data-icon="inline-end" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <ConfirmationDialog
-            title="Delete Run History"
-            description="Are you sure you want to delete this run history?"
-            callback={async () => {
-              await deleteRunDetail(runDetail.id);
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="size-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontalIcon data-icon="inline-end" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              setConfirmOpen(true);
             }}
-            trigger={
-              <Button variant="ghost" className="w-full text-left justify-start px-2 font-normal">
-                Delete
-              </Button>
-            }
-          />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          >
+            Hapus
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Hapus Detail Riwayat?"
+        description={`Hapus detail riwayat untuk ${runDetail.building?.name ?? runDetail.buildingId}? Tindakan tidak dapat dibatalkan.`}
+        onConfirm={async () => {
+          await deleteRunDetail(runDetail.id);
+        }}
+        isPending={isPending}
+      />
+    </>
   );
 };
 

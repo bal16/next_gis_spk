@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { ReactNode, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +14,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   createBuildingSchema,
   updateBuildingSchema,
@@ -25,6 +24,7 @@ import {
   type TUpdateBuilding,
 } from "../type";
 import { useAddBuilding, useUpdateBuilding } from "../hooks/useBuildings";
+import { LoaderCircle } from "lucide-react";
 
 interface BuildingDialogProps {
   variant?: "add" | "edit";
@@ -122,82 +122,105 @@ export function BuildingDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <FieldGroup className="py-4 space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+          <FieldGroup className="flex flex-col gap-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
             {!isEdit && (
-              <Field>
-                <Label htmlFor="code">Code</Label>
-                <Input
-                  id="code"
-                  placeholder="e.g., E01"
-                  {...form.register("code")}
-                  disabled={isPending}
-                />
-                {(form.formState.errors as { code?: { message?: string } })
-                  .code && (
-                  <span className="text-sm text-red-500">
-                    {
-                      (form.formState.errors as { code?: { message?: string } })
-                        .code?.message
-                    }
-                  </span>
+              <Controller
+                control={form.control}
+                name="code"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                    <FieldLabel htmlFor={field.name}>Kode</FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      value={field.value ?? ""}
+                      placeholder="e.g., E01"
+                      disabled={isPending}
+                      aria-invalid={fieldState.invalid}
+                      autoComplete="off"
+                    />
+                    <FieldDescription>Kode unik, tidak dapat diubah setelah dibuat.</FieldDescription>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
                 )}
-              </Field>
+              />
             )}
-            <Field>
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                placeholder="Building Name"
-                maxLength={20}
-                {...form.register("name")}
-                disabled={isPending}
-              />
-              {form.formState.errors.name && (
-                <span className="text-sm text-red-500">
-                  {form.formState.errors.name.message}
-                </span>
+            <Controller
+              control={form.control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                  <FieldLabel htmlFor={field.name}>Nama</FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    value={field.value ?? ""}
+                    placeholder="Nama gedung"
+                    maxLength={20}
+                    disabled={isPending}
+                    aria-invalid={fieldState.invalid}
+                    autoComplete="off"
+                  />
+                  <FieldDescription>Maks 20 karakter.</FieldDescription>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
-            </Field>
-            <Field>
-              <Label htmlFor="latitude">Latitude</Label>
-              <Input
-                id="latitude"
-                type="text"
-                placeholder="-6.200000"
-                {...form.register("latitude")}
-                disabled={isPending}
-              />
-              {form.formState.errors.latitude && (
-                <span className="text-sm text-red-500">
-                  {form.formState.errors.latitude.message}
-                </span>
+            />
+            <Controller
+              control={form.control}
+              name="latitude"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                  <FieldLabel htmlFor={field.name}>Latitude</FieldLabel>
+                  <Input
+                    id={field.name}
+                    value={field.value ?? ""}
+                    type="number"
+                    inputMode="decimal"
+                    step="any"
+                    placeholder="-7.2900"
+                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)}
+                    disabled={isPending}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  <FieldDescription>Desimal -90 s.d. 90. Contoh -7.29 (cek Google Maps).</FieldDescription>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
-            </Field>
-            <Field>
-              <Label htmlFor="longitude">Longitude</Label>
-              <Input
-                id="longitude"
-                type="text"
-                placeholder="106.816666"
-                {...form.register("longitude")}
-                disabled={isPending}
-              />
-              {form.formState.errors.longitude && (
-                <span className="text-sm text-red-500">
-                  {form.formState.errors.longitude.message}
-                </span>
+            />
+            <Controller
+              control={form.control}
+              name="longitude"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                  <FieldLabel htmlFor={field.name}>Longitude</FieldLabel>
+                  <Input
+                    id={field.name}
+                    value={field.value ?? ""}
+                    type="number"
+                    inputMode="decimal"
+                    step="any"
+                    placeholder="110.4100"
+                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)}
+                    disabled={isPending}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  <FieldDescription>Desimal -180 s.d. 180. Contoh 110.41.</FieldDescription>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
-            </Field>
+            />
           </FieldGroup>
 
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline" disabled={isPending}>
-                Cancel
+                Batal
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : "Save changes"}
+              {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
+              {isPending ? "Menyimpan..." : "Simpan"}
             </Button>
           </DialogFooter>
         </form>

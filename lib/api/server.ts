@@ -16,6 +16,7 @@ declare module "axios" {
 const backendClient = axios.create({
   baseURL: process.env.NEST_API_URL,
   headers: { "Content-Type": "application/json" },
+  timeout: 5000,
 });
 
 // =================================================================
@@ -68,20 +69,22 @@ backendClient.interceptors.response.use(
         const { accessToken, refreshToken: newRefreshToken } =
           refreshResponse.data.data;
 
-        cookieStore.set("access-token", accessToken, {
+        cookieStore.set("spk.access-token", accessToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           path: "/",
           sameSite: "lax",
+          maxAge: 60 * 60 * 24 * 7,
         });
 
         // Update refresh token jika ada rotasi
         if (newRefreshToken) {
-          cookieStore.set("refresh-token", newRefreshToken, {
+          cookieStore.set("spk.refresh-token", newRefreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             path: "/",
             sameSite: "lax",
+            maxAge: 60 * 60 * 24 * 30,
           });
         }
 

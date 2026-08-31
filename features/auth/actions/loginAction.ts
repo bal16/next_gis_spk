@@ -37,17 +37,17 @@ export async function loginAction(
     cookieStore.set("spk.session", JSON.stringify(user), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      path: "/", // Berlaku di seluruh situs
-      maxAge: 60 * 60 * 24 * 7, // Contoh: 7 hari
-      // sameSite: 'lax'
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: "lax",
     });
 
     cookieStore.set("spk.access-token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      path: "/", // Berlaku di seluruh situs
-      maxAge: 60 * 60 * 24 * 7, // Contoh: 7 hari
-      // sameSite: 'lax'
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: "lax",
     });
 
     if (refreshToken)
@@ -55,7 +55,8 @@ export async function loginAction(
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         path: "/",
-        maxAge: 60 * 60 * 24 * 30, // Expire lebih lama
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: "lax",
       });
 
     return {

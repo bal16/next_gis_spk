@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontalIcon } from "lucide-react";
 import {
@@ -18,35 +19,43 @@ import { ConfirmationDialog } from "@/features/dashboard/components/Confirmation
 import { useDeleteAssessment } from "../hooks/useAssessments";
 
 const ActionCell = ({ assessment }: { assessment: TAssessment }) => {
-  const { mutateAsync: deleteAssessment } = useDeleteAssessment();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const { mutateAsync: deleteAssessment, isPending } = useDeleteAssessment();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="size-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontalIcon data-icon="inline-end" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <ConfirmationDialog
-            title="Delete Assessment"
-            description="Are you sure you want to delete this assessment?"
-            callback={async () => {
-              await deleteAssessment(assessment.id);
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="size-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontalIcon data-icon="inline-end" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              setConfirmOpen(true);
             }}
-            trigger={
-              <Button variant="ghost" className="w-full text-left justify-start px-2 font-normal">
-                Delete
-              </Button>
-            }
-          />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          >
+            Hapus
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Hapus Assessment?"
+        description="Hapus assessment ini? Tindakan tidak dapat dibatalkan."
+        onConfirm={async () => {
+          await deleteAssessment(assessment.id);
+        }}
+        isPending={isPending}
+      />
+    </>
   );
 };
 

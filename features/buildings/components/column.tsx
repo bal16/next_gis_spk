@@ -26,7 +26,8 @@ import { createSortableHeader } from "@/components/admin/AdminDataTable";
 
 const ActionCell = ({ building }: { building: TBuilding }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const { mutateAsync: deleteBuilding } = useDeleteBuilding();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const { mutateAsync: deleteBuilding, isPending } = useDeleteBuilding();
 
   return (
     <>
@@ -41,7 +42,7 @@ const ActionCell = ({ building }: { building: TBuilding }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link href={`/admin/buildings/${building.code}/assessments`}>
-              See Assessments
+              Lihat Assessment
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -53,25 +54,27 @@ const ActionCell = ({ building }: { building: TBuilding }) => {
           >
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <ConfirmationDialog
-              title="Delete Building"
-              description="Are you sure you want to delete this building?"
-              callback={async () => {
-                await deleteBuilding(building.id);
-              }}
-              trigger={
-                <Button
-                  variant="ghost"
-                  className="w-full text-left justify-start px-2 font-normal"
-                >
-                  Delete
-                </Button>
-              }
-            />
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              setConfirmOpen(true);
+            }}
+          >
+            Hapus
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Hapus Gedung?"
+        description={`Hapus Gedung ${building.code} — ${building.name}? Semua assessment dan riwayat SAW terkait gedung ini akan ikut terhapus. Tindakan tidak dapat dibatalkan.`}
+        onConfirm={async () => {
+          await deleteBuilding(building.id);
+        }}
+        isPending={isPending}
+      />
 
       <BuildingDialog
         variant="edit"

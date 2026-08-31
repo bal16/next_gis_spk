@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontalIcon } from "lucide-react";
 import {
@@ -26,39 +27,47 @@ export type Results = {
 };
 
 const ActionCell = ({ run }: { run: Results }) => {
-  const { mutateAsync: deleteRun } = useDeleteRun();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const { mutateAsync: deleteRun, isPending } = useDeleteRun();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="size-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontalIcon data-icon="inline-end" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem asChild>
-          <Link href={`/admin/dss/${run.id}`}>See Details</Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        
-        <DropdownMenuItem asChild>
-          <ConfirmationDialog
-            title="Delete Run"
-            description="Are you sure you want to delete this Run?"
-            callback={async () => {
-              await deleteRun(run.id);
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="size-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontalIcon data-icon="inline-end" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem asChild>
+            <Link href={`/admin/dss/${run.id}`}>Lihat Detail</Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              setConfirmOpen(true);
             }}
-            trigger={
-              <Button variant="ghost" className="w-full text-left justify-start px-2 font-normal">
-                Delete
-              </Button>
-            }
-          />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          >
+            Hapus
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Hapus Riwayat Kalkulasi?"
+        description={`Hapus riwayat kalkulasi ${new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(new Date(run.date))}? Semua detail skor gedung dalam run ini akan hilang. Tindakan tidak dapat dibatalkan.`}
+        onConfirm={async () => {
+          await deleteRun(run.id);
+        }}
+        isPending={isPending}
+      />
+    </>
   );
 };
 

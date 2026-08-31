@@ -2,6 +2,7 @@
 
 import { type ComponentProps } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   BuildingIcon,
   LayoutDashboardIcon,
@@ -49,6 +50,8 @@ const data = {
 };
 
 export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -73,19 +76,24 @@ export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.menu.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                  {/* {item.badge && (
-                    <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
-                  )} */}
-                </SidebarMenuItem>
-              ))}
+              {data.menu.map((item) => {
+                const isActive =
+                  pathname === item.url || pathname.startsWith(item.url + "/");
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={isActive}
+                    >
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

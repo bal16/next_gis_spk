@@ -2,7 +2,7 @@
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { toast } from "sonner";
 import { LoaderCircle, UserPlus } from "lucide-react";
 
@@ -19,8 +19,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-// import { registerUser } from "../api/registerUser";
-import { useState } from "react";
 import { registrationAction } from "../actions/registrationAction";
 
 interface RegisterFormProps {
@@ -28,9 +26,7 @@ interface RegisterFormProps {
 }
 
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
-  // const router = useRouter();
-
-  const [isPending, setIspending] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -38,28 +34,29 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       username: "",
       email: "",
       password: "",
-      confirmPassword: "", // This is a known property in RegisterFormData
+      confirmPassword: "",
     },
   });
 
   async function onSubmit(data: RegisterFormData) {
-    setIspending(true);
-    const response = await registrationAction(data);
-    if (response.status === "success") {
-      toast.success("Registrasi Berhasil", {
-        description: "Silakan ke halaman login...",
-      });
-    } else {
-      toast.error("Registrasi Gagal", {
-        description: response.message,
-      });
-    }
-    form.reset();
-    setIspending(false);
-
-    if (response.status === "success") {
-      onSuccess?.();
-    }
+    startTransition(async () => {
+      const response = await registrationAction(data);
+      if (response.status === "success") {
+        toast.success("Registration Successful", {
+          description: "Please go to login...",
+        });
+        form.reset();
+        onSuccess?.();
+      } else {
+        const msg = response.message || "";
+        if (msg.includes("Email ini sudah terdaftar") || msg.toLowerCase().includes("email")) {
+          form.setError("email", { message: msg });
+        }
+        toast.error("Registration Failed", {
+          description: msg,
+        });
+      }
+    });
   }
 
   return (
@@ -167,12 +164,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isPending}>
+        <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
           {isPending ? (
-            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+            <LoaderCircle data-icon="inline-start" className="animate-spin" />
           ) : (
             <>
-              <UserPlus className="mr-2 h-4 w-4" /> Register
+              <UserPlus data-icon="inline-start" /> Register
             </>
           )}
         </Button>

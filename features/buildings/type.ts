@@ -24,16 +24,28 @@ export interface TBuilding {
 export type PriorityFilter = "Semua" | TPriority;
 
 export const createBuildingSchema = z.object({
-  code: z.string().min(1, "Code is required"),
-  name: z.string().min(1, "Name is required").max(20, "Name must be at most 20 characters"),
-  latitude: z.coerce.number<number>("Must be a valid number"),
-  longitude: z.coerce.number<number>("Must be a valid number"),
+  code: z.string().trim().min(1, "Kode wajib diisi"),
+  name: z.string().trim().min(1, "Nama wajib diisi").max(20, "Nama maksimal 20 karakter"),
+  latitude: z.coerce
+    .number<number>("Harus berupa angka")
+    .min(-90, "Latitude harus di antara -90 dan 90")
+    .max(90, "Latitude harus di antara -90 dan 90"),
+  longitude: z.coerce
+    .number<number>("Harus berupa angka")
+    .min(-180, "Longitude harus di antara -180 dan 180")
+    .max(180, "Longitude harus di antara -180 dan 180"),
 });
 
 export const updateBuildingSchema = z.object({
-  name: z.string().min(1, "Name is required").max(20, "Name must be at most 20 characters"),
-  latitude: z.coerce.number<number>("Must be a valid number"),
-  longitude: z.coerce.number<number>("Must be a valid number"),
+  name: z.string().trim().min(1, "Nama wajib diisi").max(20, "Nama maksimal 20 karakter"),
+  latitude: z.coerce
+    .number<number>("Harus berupa angka")
+    .min(-90, "Latitude harus di antara -90 dan 90")
+    .max(90, "Latitude harus di antara -90 dan 90"),
+  longitude: z.coerce
+    .number<number>("Harus berupa angka")
+    .min(-180, "Longitude harus di antara -180 dan 180")
+    .max(180, "Longitude harus di antara -180 dan 180"),
 });
 
 export type TCreateBuilding = z.infer<typeof createBuildingSchema>;

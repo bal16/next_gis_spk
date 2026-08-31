@@ -10,14 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DataTable } from "./data-table";
+import { AdminDataTable } from "@/components/admin/AdminDataTable";
 import { columns } from "./column";
 // import { Progress } from "@/components/ui/progress";
 import { MapView } from "@/features/map/components/MapView";
 import { WeightsPieChart } from "@/features/dashboard/components/WeightsPieChart";
 
 export const MainContent = ({ runId }: { runId: string }) => {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["dss-details", runId],
     queryFn: () => getRunDetailsDatas(runId),
     staleTime: Infinity,
@@ -88,7 +88,16 @@ export const MainContent = ({ runId }: { runId: string }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={data?.sawRunDetails ?? []} />
+          <AdminDataTable
+            columns={columns}
+            data={data?.sawRunDetails ?? []}
+            isLoading={isLoading}
+            initialSorting={[{ id: "score", desc: true }]}
+            empty={{
+              title: "Belum ada detail",
+              description: "Run ini belum memiliki detail perangkingan gedung.",
+            }}
+          />
         </CardContent>
       </Card>
     </div>

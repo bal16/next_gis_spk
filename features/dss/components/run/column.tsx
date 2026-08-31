@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDownIcon, MoreHorizontalIcon } from "lucide-react";
+import { MoreHorizontalIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +16,7 @@ import { ConfirmationDialog } from "@/features/dashboard/components/Confirmation
 import type { TGetResultsResponse } from "../../api/get-results";
 import { useDeleteRunDetail } from "../../hooks/useDSS";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { createSortableHeader } from "@/components/admin/AdminDataTable";
 
 type RunDetail = TGetResultsResponse["sawRunDetails"][0];
 
@@ -25,9 +26,9 @@ const ActionCell = ({ runDetail }: { runDetail: RunDetail }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" className="size-8 p-0">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontalIcon className="h-4 w-4" />
+          <MoreHorizontalIcon data-icon="inline-end" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -55,17 +56,7 @@ const ActionCell = ({ runDetail }: { runDetail: RunDetail }) => {
 export const columns: ColumnDef<RunDetail>[] = [
   {
     accessorKey: "id",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          id
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("id"),
   },
   {
     //transform data nya tofixed(2)
@@ -75,14 +66,8 @@ export const columns: ColumnDef<RunDetail>[] = [
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            >
+            <Button variant="ghost" size="sm" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} aria-label="Sort by Skor Terakhir">
               Skor Terakhir
-              <ArrowUpDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -97,31 +82,11 @@ export const columns: ColumnDef<RunDetail>[] = [
   },
   {
     accessorKey: "priority",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Priority
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Priority"),
   },
   {
     accessorKey: "building.name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Building
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Building"),
   },
   {
     id: "actions",

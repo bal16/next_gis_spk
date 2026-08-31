@@ -6,6 +6,7 @@ import {
 import { SiteHeader } from "./components/header";
 import { MainContent } from "./components/MainContent";
 import { getLastRunDatas } from "../dss/api/get-last-run";
+import { queryKeys } from "@/lib/queryKeys";
 // import { MapWidget } from "./components/MapWidget";
 // import { Button } from "@/components/ui/button";
 // import { MainContent } from "./components/MainContent";
@@ -14,7 +15,7 @@ export default async function OverviewPage() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["lastest-run"],
+    queryKey: queryKeys.dss.latest(),
     queryFn: getLastRunDatas,
   });
 

@@ -109,7 +109,19 @@ export const MapView = ({ buildings }: MapViewProps) => {
               setSelectedBuilding(building);
             }}
           >
-            <div className="cursor-pointer transform hover:scale-110 transition-transform">
+            <div
+              className="cursor-pointer transform hover:scale-110 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full"
+              role="button"
+              tabIndex={0}
+              aria-label={`${building.name} — ${building.priority}`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleBuildingClick(building);
+                  setSelectedBuilding(building);
+                }
+              }}
+            >
               {getPriorityIcon(building.priority)}
             </div>
           </Marker>

@@ -4,6 +4,14 @@ import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { UserNav } from "@/components/UserNav";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 type TPath = {
   pageName: string;
@@ -23,22 +31,22 @@ export function SiteHeader({ page, path }: { page: string; path?: TPath[] }) {
             orientation="vertical"
             className="mx-2 data-[orientation=vertical]:h-4"
           />
-          <nav className="flex items-center text-sm text-muted-foreground">
-            {path.map((p, i) => (
-              <span key={i} className="flex items-center">
-                <Link
-                  href={p.url}
-                  className="hover:text-foreground transition-colors"
-                >
-                  {p.pageName}
-                </Link>
-                {i < path.length && (
-                  <span className="mx-2">&gt;</span>
-                )}
-              </span>
-            ))}
-            <span className="font-medium text-foreground">{page}</span>
-          </nav>
+          <Breadcrumb>
+            <BreadcrumbList>
+              {path.map((p, i) => (
+                <BreadcrumbItem key={i}>
+                  <BreadcrumbLink asChild>
+                    <Link href={p.url}>{p.pageName}</Link>
+                  </BreadcrumbLink>
+                  {i < path.length - 1 && <BreadcrumbSeparator />}
+                </BreadcrumbItem>
+              ))}
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{page}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
         <UserNav />
       </div>

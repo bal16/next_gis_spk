@@ -61,7 +61,7 @@ export function AdminDataTable<TData, TValue>({
 }: AdminDataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>(initialSorting ?? []);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 8 });
 
   const table = useReactTable({
     data,
@@ -194,6 +194,7 @@ export function AdminDataTable<TData, TValue>({
                 onChange={(e) => table.setPageSize(Number(e.target.value))}
                 className="h-8 w-[70px]"
               >
+                <NativeSelectOption value="8">8</NativeSelectOption>
                 <NativeSelectOption value="10">10</NativeSelectOption>
                 <NativeSelectOption value="25">25</NativeSelectOption>
                 <NativeSelectOption value="50">50</NativeSelectOption>

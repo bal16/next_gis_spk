@@ -26,6 +26,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUpdateWeights } from "../hooks/useWeights";
 import type { TWeight } from "../api/get-weights";
@@ -120,35 +133,23 @@ export function WeightsUpdateSection() {
   };
 
   if (isLoading)
-    return <div className="p-10 text-center">Memuat konfigurasi...</div>;
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-20 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-48 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
 
   return (
     <form
       id="weights-form"
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-8 pb-20"
+      className="space-y-8 pb-[160px]"
     >
-      {/* Visual Status (Sticky) */}
-      <div className="sticky top-4 z-20 flex items-center justify-between rounded-xl border bg-background/95 p-4 shadow-sm backdrop-blur-md">
-        <div className="flex flex-col gap-1 w-3/4">
-          <h2 className="font-bold">Total Bobot Utama</h2>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
-            <div
-              className={cn(
-                "h-full transition-all",
-                isMainTotalValid ? "bg-green-500" : "bg-yellow-500",
-              )}
-              style={{ width: `${Math.min(mainTotal * 100, 100)}%` }}
-            />
-          </div>
-        </div>
-        <Badge
-          variant={isMainTotalValid ? "default" : "destructive"}
-          className={cn(isMainTotalValid && "bg-green-600")}
-        >
-          {(mainTotal * 100).toFixed(0)}% / 100%
-        </Badge>
-      </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:grid-flow-dense">
         {data?.map((main) => (
@@ -177,21 +178,38 @@ export function WeightsUpdateSection() {
             </p>
           </div>
           <div className="flex gap-3 w-full md:w-auto">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => reset()}
-              disabled={isPending}
-            >
-              Reset
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  disabled={isPending}
+                >
+                  Reset
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset weights?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Reset all weights to last saved values? Unsaved changes will be lost.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => reset()}>Reset</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <Button
               type="submit"
               form="weights-form"
               disabled={!isMainTotalValid || !allSubsValid || isPending}
               className="flex-1 md:min-w-[150px]"
+              aria-busy={isPending}
             >
+              {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
               {isPending ? "Menyimpan..." : "Simpan Bobot"}
             </Button>
           </div>

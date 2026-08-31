@@ -42,20 +42,26 @@ export function LoginForm() {
       const response = await loginAction(data);
 
       if (!response) {
-        // console.log("Response is undefined");
         return;
       }
 
       if (response.status === "error") {
-        toast.error("Login Gagal", {
-          description: response.message,
+        const msg = response.message || "";
+        // Map known server messages to field errors for a11y
+        if (msg.includes("Username atau Password salah") || msg.includes("Invalid credentials")) {
+          form.setError("email", { message: msg });
+          form.setError("password", { message: msg });
+        } else if (msg.toLowerCase().includes("email")) {
+          form.setError("email", { message: msg });
+        }
+        toast.error("Login Failed", {
+          description: msg,
         });
       } else if (response.status === "success") {
-        toast.success("Login Berhasil", {
-          description: "Mengarahkan Anda ke dashboard...",
+        toast.success("Login Successful", {
+          description: "Redirecting to dashboard...",
         });
 
-        // revalidate user data dari cache react-query dengan key 'currentUser'
         queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
         setTimeout(() => {
@@ -116,12 +122,12 @@ export function LoginForm() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isPending}>
+        <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
           {isPending ? (
-            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+            <LoaderCircle data-icon="inline-start" className="animate-spin" />
           ) : (
             <>
-              <LogIn className="mr-2 h-4 w-4" /> Login
+              <LogIn data-icon="inline-start" /> Login
             </>
           )}
         </Button>

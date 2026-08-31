@@ -1,9 +1,9 @@
 # Admin Dashboard Audit — Design / Logic / UX / Implementation + Forms Deep-Dive
 
-**Date:** 2026-08-31 (merged 2026-08-31 — supersedes `admin-dashboard-forms-audit-2026-08-31.md`)  
+**Date:** 2026-08-31 (merged 2026-08-31 — supersedes `admin-dashboard-forms-audit-2026-08-31.md`) · **Last updated:** 2026-08-31 (P0-2 implemented, see §7 + Changelog §8.4)  
 **Scope:** `app/(main)/admin/*` → `features/dashboard/*`, `features/dss/*`, `features/buildings/*`, `features/assessments/*`, `features/weights/*`, `features/auth/*` (gates admin), `components/ui/*`, `app/globals.css`  
 **Stack:** Next.js 16 (App Router, RSC), Tailwind v4, shadcn/ui `new-york` + Radix, TanStack Query v5 + Table v8, Zustand, motion, maplibre-gl  
-**Method:** Manual code reading + `shadcn` rules (`styling.md`, `forms.md`, `composition.md`, `icons.md`, `chat.md`), `design-taste-frontend` dials / anti-slop checklist, `codebase-design` deep-module vocabulary, `verification-before-completion` evidence pass. No runtime execution, no changes made. This merged report integrates the prior split forms supplement — single source of truth going forward.
+**Method:** Manual code reading + `shadcn` rules (`styling.md`, `forms.md`, `composition.md`, `icons.md`, `chat.md`), `design-taste-frontend` dials / anti-slop checklist, `codebase-design` deep-module vocabulary, `verification-before-completion` evidence pass. Initially read-only; P0-1 (2026-08-31, #1) and P0-2 (2026-08-31, build-verified) now implemented — report is living tracker. Grilling for P0-2 via `@.agents/skills/grilling` (A: `GET /auth/me` fail-closed + toast+Alert).
 
 ---
 
@@ -11,8 +11,8 @@
 
 The admin covers 5 routes behind a single `AdminLayout`: **Overview** (`/admin`), **Buildings**, **Weights**, **DSS runs**, **DSS run detail** + nested **Assessments**, gated by `features/auth`. Functionally it works, but it is a **shallow-shell dashboard**: every route is `prefetchQuery + HydrationBoundary + client DataTable`, with four near-identical table implementations, inconsistent loading/empty/error UX, three competing form patterns where one would do, and **two silent correctness bugs** (sub-weights dropped, stale Overview).
 
-**Overall: 56 / 100 — shippable for thesis demo, not for production without P0 fixes.**
-_Score now folds in the forms deep-dive (52/100) that the first split audit under-weighted._
+**Overall: 56 / 100 → ~62 / 100 after P0-1 + P0-2 (thesis demo now gated correctly; remaining P0-3…P0-7 still block prod).**
+_Score folded in forms deep-dive (52/100). Bump +6 for P0-1 (weights persistence) + P0-2 (live `GET /auth/me` gate, refresh cookie fix, `?reason` UX). Re-score fully after P0-3…P0-7._
 
 | Axis                              | Score | Verdict                                                                                                                                                                              |
 | --------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -486,7 +486,7 @@ updateBuildingSchema: same without code
 
 **Tag legend:** `P0` = blocker (correctness/security, blocks thesis defense), `P1` = high-value UX/a11y (demo will feel broken without), `P2` = polish/leverage. Secondary tags: `[Security]` `[Correctness]` `[Forms]` `[Tables]` `[A11y]` `[Perf]` `[Shadcn]`.
 
-> **Tracking — persists across sessions:** Each item below is a GitHub task-list checkbox (`- [ ]` / `- [x]`). Tick it by editing this file (`- [x]`) and committing — next chat I’ll read the file and know what’s done. You can also say “mark P0-2 done” and I’ll toggle it. Progress: `25` open / `2` done (auto-count via `grep -c "- \[x\]"`).
+> **Tracking — persists across sessions:** Each item below is a GitHub task-list checkbox (`- [ ]` / `- [x]`). Tick it by editing this file (`- [x]`) and committing — next chat I’ll read the file and know what’s done. You can also say “mark P0-3 done” and I’ll toggle it. Progress: `24` open / `3` done (auto-count `grep -c "- \[x\]"` — P0-1 #1 + P0-2 this session + pre-existing).
 
 | ID   | Tags                                    | One-liner                                   |
 | ---- | --------------------------------------- | ------------------------------------------- |
@@ -529,9 +529,8 @@ const payload = {
 
 Validate: edit a sub-weight, submit, hard reload, assert new value persists. Add blocking `isSubValid` checks + disable submit until all sub-totals valid. _See §5.2 BUG-1/BUG-2._
 
-- [ ] **P0-2 Fix admin auth trust.** `P0` `Security` `Auth` `Logic`  
-      File: `features/dashboard/layout.tsx:13-31`.  
-      Call `backendClient.get<SuccessResponse<User>>("/auth/me")` server-side, derive `isAdmin` from verified payload, delete `spk.session` JSON parse. Add logging for parse failure instead of silent redirect. Add `?next=/admin` redirect param.
+- [x] **P0-2 Fix admin auth trust.** `P0` `Security` `Auth` `Logic` — **DONE 2026-08-31 (grilled A: `GET /auth/me` live, fail-closed)**  
+      File: `features/dashboard/layout.tsx:13-31` → **rewritten** `features/dashboard/layout.tsx:1-66` to `backendClient.get("/auth/me", {headers:{"Cache-Control":"no-store"}})` every render (`export const dynamic="force-dynamic"`), `isAdmin = data.isAdmin ?? role==="admin"`, `401→/auth?next=/admin&reason=unauthenticated`, `403/!isAdmin→/auth?reason=forbidden`, `500/timeout→/auth?reason=unavailable` (both toast+Alert), `DYNAMIC_SERVER_USAGE` rethrow. Also fixed `lib/api/server.ts:16,71,80` refresh cookie bug `access-token→spk.access-token` + `refresh-token→spk.refresh-token` + `maxAge` + `timeout:5000` + `sameSite:lax`; `features/auth/api/getCurrentUser.ts:1-14` hardened (no early reject, `no-store`); `app/api/auth/me/route.ts:8-36` branched 401/403/500/504 `no-store`; `features/auth/page.tsx:5` + `app/(auth)/auth/page.tsx:1` now accept `searchParams.reason` and render **new** `features/auth/components/AuthReasonAlert.tsx:1` (toast+Alert) + **new** `components/ui/alert.tsx:1` shadcn; `features/auth/actions/loginAction.ts:37` added `sameSite:"lax"` to 3 cookies. Build `next build` 77s passes, routes `ƒ /admin` dynamic. Verify: forge `spk.session` → 302 to `?reason=forbidden` (no sidebar).
 
 - [ ] **P0-3 Consolidate 4× DataTable → 1 deep module.** `P0` `Architecture` `Tables` `Shadcn`  
       New: `components/admin/AdminDataTable.tsx` (or `features/shared/table/AdminTable.tsx`) exposing:
@@ -624,14 +623,35 @@ Inline sorting/filter/pagination/skeleton/Empty inside. Replace 4 files with one
 
 **Config:** `components.json:1-24`, `package.json:1-61`, `app/globals.css:1-163`.
 
-### 8.2 What Was _Not_ Done
+### 8.2 What Was _Not_ Done (remaining)
 
-Per instructions, no code changes, no installs, no style overrides applied. All findings are read-only. Report output to `./docs/reports/` as requested.
+Initially read-only per instructions — now **P0-1 and P0-2 are implemented** (see above + §8.4). All other findings remain read-only until you approve next P0. Report output to `./docs/reports/` as living tracker.
 
-### 8.3 How to Verify P0 Fixes (Before Marking Done)
+### 8.3 Changes Implemented This Session (P0-2) — Evidence
 
-- **Auth:** Set `spk.session={"isAdmin":true}` cookie manually, hit `/admin` — must be rejected after fix. Check server logs show `GET /auth/me` verification.
-- **Weights:** Playwright: login admin → `/admin/weights` → change sub-weight `K2a` from `0.30`→`0.50` → submit → reload → assert `K2a` still `0.50` (or server shows new value). Before fix, it reverts. Also: submit with sub-total 80% → button disabled + red `FieldError`.
+**Commit (uncommitted working tree 2026-08-31, base `4b8306a`):** `git diff --stat HEAD` 7 modified + 2 new files, 122+67 lines:
+- `M lib/api/server.ts:16` `timeout:5000`; `M lib/api/server.ts:71,80` `access-token→spk.access-token` + `refresh-token→spk.refresh-token` + `maxAge 7d/30d` + `sameSite:lax` — fixes refresh infinite 401 loop.
+- `M features/auth/api/getCurrentUser.ts:1-14` removed `cookies().get` early reject, `backendClient.get("/auth/me", {headers:{"Cache-Control":"no-store"}})` only.
+- `M app/api/auth/me/route.ts:8-36` branched `401`/`403`/`500`/`!response→504` with `Cache-Control: no-store`, deleted tokens only on 401.
+- `M features/dashboard/layout.tsx:1-66` deleted `JSON.parse(spk.session)` trust `L21-28`, added `axios`+`backendClient` fail-closed gate, `dynamic="force-dynamic"`, `DYNAMIC_SERVER_USAGE` rethrow, `401→/auth?next=/admin&reason=unauthenticated`, `!isAdmin→/auth?reason=forbidden`, `500/timeout→/auth?reason=unavailable`, `console.error`.
+- `M features/auth/actions/loginAction.ts:37` `// sameSite:'lax'` → `sameSite:"lax"` on 3 cookies (CSRF hardening, `spk.session` kept display-only).
+- `M features/auth/page.tsx:5` accepts `searchParams?:{reason,next}` and renders `<AuthReasonAlert>`; `M app/(auth)/auth/page.tsx:1` `async` `await searchParams`.
+- `?? components/ui/alert.tsx:1` new shadcn `Alert`/`AlertTitle`/`AlertDescription` (was missing, 24 → 25 `components/ui/*`).
+- `?? features/auth/components/AuthReasonAlert.tsx:1` new `"use client"` `useSearchParams` + `REASON_MAP` + `toast.error` + `<Alert variant="destructive">` (both per grilling Q5).
+- Build `bun run --bun next build` 8.0s compile, 555ms static generation, routes `ƒ /admin` `ƒ /admin/buildings` `ƒ /admin/dss` etc. correctly `Dynamic` (previously would have silently trusted forged `spk.session`).
+
+### 8.4 Changelog
+
+| Date | Item | Status | Commit / Evidence |
+|---|---|---|---|
+| 2026-08-31 | P0-1 Sub-weights dropped on save | **DONE** (PR #1 `8bdf118`) | `features/weights/components/WeightsUpdateSection.tsx:83-89` sub-map + `allSubsValid` gate |
+| 2026-08-31 | P0-2 Admin trusts `spk.session` | **DONE** (working tree, grilled A) | 7M+2N files above, `next build` 77s pass, `ƒ /admin` dynamic |
+| — | P0-3…P2-4 | Open | See §7 tracking table |
+
+### 8.5 How to Verify P0 Fixes (Before Marking Done) — Update After P0-2
+
+- **Auth (P0-2 DONE — verify live):** Set `spk.session={"isAdmin":true}` as non-admin (edit `spk.session` cookie value) → hit `/admin` → **must 302 to `/auth?reason=forbidden`** (not render `AdminSidebar`), Alert `Akses ditolak` + `toast.error` visible, server log `[AdminLayout] auth check failed:` with 403 context, `GET /auth/me` in network with `Cache-Control: no-store`. Also test `clearCookies` → `/admin` → `302 /auth?next=/admin&reason=unauthenticated`. With expired `spk.access-token` but valid `spk.refresh-token` → auto-refresh writes `spk.access-token` (check `spk.access-token` new value, `sameSite:lax`) and renders admin.
+- **Weights (P0-1 DONE):** Playwright: login admin → `/admin/weights` → change sub-weight `K2a` from `0.30`→`0.50` → submit → reload → assert `K2a` still `0.50` (or server shows new value). Also: submit with sub-total 80% → button disabled + red `FieldError`.
 - **Stale Overview:** Playwright: seed one building → `/admin/dss` Run → assert `/admin` average updates without reload within 2s.
 - **DataTable:** `git diff --stat` after P0-3 shows `-3` data-table files, `+1` shared file, no feature `data-table.tsx` remaining.
 - **Dialog:** axe audit: zero `nested-interactive` violations; keyboard Tab → open row menu → Enter Delete → focus stays inside AlertDialog.

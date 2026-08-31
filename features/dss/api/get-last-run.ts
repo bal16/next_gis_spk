@@ -11,7 +11,7 @@ export const getLastRunDatas = async () => {
   // await new Promise((resolve) => setTimeout(resolve, 500));
   const response =
     await backendClient.get<SuccessResponse<TGetResultsResponse>>(
-      `/dss/runs/lastest`,
+      `/dss/runs/latest`,
     );
   const data = response.data;
   const { data: results } = data;

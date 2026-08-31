@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { runCalculation } from "../api/run-calculation";
 import { deleteRun } from "../api/delete-run";
 import { deleteRunDetail } from "../api/delete-run-details";
+import { queryKeys } from "@/lib/queryKeys";
 import type { TGetResultsResponse } from "../type";
 
 export const useRunCalculation = (onSuccessCallback?: () => void) => {
@@ -25,6 +26,7 @@ export const useRunCalculation = (onSuccessCallback?: () => void) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["dss"] });
       queryClient.invalidateQueries({ queryKey: ["buildings"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dss.latest() });
     },
   });
 };
@@ -59,6 +61,7 @@ export const useDeleteRun = (onSuccessCallback?: () => void) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["dss"] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dss.latest() });
     },
   });
 };
@@ -93,6 +96,7 @@ export const useDeleteRunDetail = (runId: string, onSuccessCallback?: () => void
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["dss-details", runId] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dss.latest() });
     },
   });
 };

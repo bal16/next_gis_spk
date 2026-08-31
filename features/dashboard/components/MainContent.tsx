@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DataTable } from "@/features/dss/components/run/data-table";
+import { AdminDataTable } from "@/components/admin/AdminDataTable";
 import { columns } from "@/features/dss/components/run/column";
 import { MapView } from "@/features/map/components/MapView";
 import { getLastRunDatas } from "@/features/dss/api/get-last-run";
@@ -111,7 +111,16 @@ export const MainContent = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <DataTable columns={columns} data={data?.sawRunDetails ?? []} />
+          <AdminDataTable
+            columns={columns}
+            data={data?.sawRunDetails ?? []}
+            isLoading={isLoading}
+            initialSorting={[{ id: "score", desc: true }]}
+            empty={{
+              title: "Belum ada perangkingan",
+              description: "Belum ada gedung yang diranking pada run terbaru.",
+            }}
+          />
         </CardContent>
       </Card>
     </div>

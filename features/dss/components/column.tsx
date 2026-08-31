@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDownIcon, MoreHorizontalIcon } from "lucide-react";
+import { MoreHorizontalIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/features/dashboard/components/ConfirmationDialog";
 import { useDeleteRun } from "../hooks/useDSS";
+import { createSortableHeader } from "@/components/admin/AdminDataTable";
 // import { BuildingDialog } from "./BuildingDialog";
 
 export type Results = {
@@ -30,9 +31,9 @@ const ActionCell = ({ run }: { run: Results }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
+        <Button variant="ghost" className="size-8 p-0">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontalIcon className="h-4 w-4" />
+          <MoreHorizontalIcon data-icon="inline-end" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -65,31 +66,11 @@ export const columns: ColumnDef<Results>[] = [
   {
     accessorKey: "number",
     cell: (info) => info.row.index + 1,
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          #
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("#"),
   },
   {
     accessorKey: "id",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Id
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Id"),
   },
   {
     accessorKey: "date",
@@ -98,46 +79,16 @@ export const columns: ColumnDef<Results>[] = [
         dateStyle: "long",
         timeStyle: "short",
       }).format(new Date(row.date)),
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Executed At
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Executed At"),
   },
   {
     accessorKey: "averageScore",
     accessorFn: (row) => row.averageScore.toFixed(2),
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Average Score
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Average Score"),
   },
   {
     accessorKey: "totalBuildings",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Total Bangunan
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Total Bangunan"),
   },
   {
     id: "actions",

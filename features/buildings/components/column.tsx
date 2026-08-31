@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDownIcon, MoreHorizontalIcon } from "lucide-react";
+import { MoreHorizontalIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +22,7 @@ import { BuildingDialog } from "./BuildingDialog";
 import { ConfirmationDialog } from "@/features/dashboard/components/ConfirmationDialog";
 import type { TBuilding } from "../type";
 import { useDeleteBuilding } from "../hooks/useBuildings";
+import { createSortableHeader } from "@/components/admin/AdminDataTable";
 
 const ActionCell = ({ building }: { building: TBuilding }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -31,9 +32,9 @@ const ActionCell = ({ building }: { building: TBuilding }) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button variant="ghost" className="size-8 p-0">
             <span className="sr-only">Open menu</span>
-            <MoreHorizontalIcon className="h-4 w-4" />
+            <MoreHorizontalIcon data-icon="inline-end" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -87,45 +88,15 @@ export const columns: ColumnDef<TBuilding>[] = [
   {
     accessorKey: "number",
     cell: (info) => info.row.index + 1,
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          #
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("#"),
   },
   {
     accessorKey: "code",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Kode Bangunan
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Kode Bangunan"),
   },
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nama Bangunan
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Nama Bangunan"),
   },
   {
     accessorKey: "score",
@@ -137,12 +108,11 @@ export const columns: ColumnDef<TBuilding>[] = [
           <TooltipTrigger asChild>
             <Button
               variant="ghost"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
+              size="sm"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              aria-label="Sort by Skor Terakhir"
             >
               Skor Terakhir
-              <ArrowUpDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
@@ -157,17 +127,7 @@ export const columns: ColumnDef<TBuilding>[] = [
   },
   {
     accessorKey: "priority",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Prioritas
-          <ArrowUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: createSortableHeader("Prioritas"),
   },
   {
     id: "actions",

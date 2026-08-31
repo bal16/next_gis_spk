@@ -138,6 +138,7 @@ export function BuildingDialog({
                       disabled={isPending}
                       aria-invalid={fieldState.invalid}
                       autoComplete="off"
+                      autoFocus
                     />
                     <FieldDescription>Kode unik, tidak dapat diubah setelah dibuat.</FieldDescription>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

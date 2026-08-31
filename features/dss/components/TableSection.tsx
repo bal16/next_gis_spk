@@ -19,13 +19,26 @@ import { getResultDatas } from "../api/get-results";
 import { useRunCalculation } from "../hooks/useDSS";
 
 export const TableSection = () => {
-  const { data: dssResults, isLoading } = useQuery({
+  const { data: dssResults, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["dss"],
     queryFn: getResultDatas,
     staleTime: Infinity,
   });
   const { mutateAsync: runCalculation, isPending } = useRunCalculation();
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  if (isError) {
+    return (
+      <div className="container mx-auto space-y-4">
+        <div className="rounded-md border p-4">
+          <p className="text-sm text-destructive">{(error as Error)?.message || "Failed to load SAW runs."}</p>
+          <Button variant="outline" size="sm" onClick={() => (refetch as unknown as () => void)?.()} className="mt-3">
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const handleConfirm = async () => {
     try {
@@ -43,8 +56,8 @@ export const TableSection = () => {
         data={(dssResults as unknown as Results[]) ?? []}
         isLoading={isLoading}
         empty={{
-          title: "Belum ada riwayat kalkulasi",
-          description: "Jalankan perhitungan SAW untuk melihat riwayat di sini.",
+          title: "No calculation history",
+          description: "Run SAW calculation to see history here.",
         }}
         renderAction={
           <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>

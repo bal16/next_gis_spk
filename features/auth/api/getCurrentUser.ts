@@ -1,33 +1,14 @@
 import "server-only";
 
-import { cookies } from "next/headers";
-
-// import axios from "axios";
-// import { mockUsers } from "@/lib/mock/auth";
 import backendClient from "@/lib/api/server";
-// import backendClient from "@/lib/api/server";
-// import type { User } from "../types/user";
 
 export const getCurrentUser = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("spk.access-token")?.value;
-
-  if (!token) {
-    // throw new Error("No token found");
-    console.log("No token found");
-    return Promise.reject();
+  const response = await backendClient.get("/auth/me", {
+    headers: { "Cache-Control": "no-store" },
+  } as never);
+  if (process.env.NODE_ENV !== "production") {
+    console.log("Get current user response:", response.data);
   }
-
-  // const { payload } = await verifyJwt(token as string);
-
-  // console.log({ payload });
-  // const data = mockUsers.find((user) => user.id === Number(payload.id));
-  // console.log({ data });
-  // const response = {
-  //   data,
-  // };
-  const response = await backendClient.get("/auth/me");
-  console.log("Get current user response:", response.data);
   // Penting jika backend Anda mengirim cookie juga
   // withCredentials: true,
   // console.log("Mock current user with:", response.data);

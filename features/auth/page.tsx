@@ -11,8 +11,13 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { AuthTabs } from "@/features/auth/components/AuthTabs";
+import { AuthReasonAlert } from "@/features/auth/components/AuthReasonAlert";
 
-export default function AuthPage() {
+export default function AuthPage({
+  searchParams,
+}: {
+  searchParams?: { reason?: string; next?: string };
+}) {
   return (
     <main className="min-h-screen relative flex flex-col items-center justify-center bg-linear-to-br from-primary/10 via-background to-secondary/10 p-4">
       
@@ -43,6 +48,7 @@ export default function AuthPage() {
         </CardHeader>
 
         <CardContent className="pt-4">
+          <AuthReasonAlert reason={searchParams?.reason} next={searchParams?.next} />
           <AuthTabs />
         </CardContent>
       </Card>

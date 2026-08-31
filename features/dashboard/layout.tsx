@@ -1,33 +1,61 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./components/sidebar";
 import type { CSSProperties, ReactNode } from "react";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import axios from "axios";
 
+import backendClient from "@/lib/api/server";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function AdminLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("spk.access-token")?.value;
-  if (!token) {
-    return redirect("/auth");
-  }
-
-  // Check user role from session cookie
   try {
-    const sessionCookie = cookieStore.get("spk.session")?.value;
-    if (!sessionCookie) {
-      return redirect("/auth");
+    const response = await backendClient.get("/auth/me", {
+      headers: { "Cache-Control": "no-store" },
+    } as never);
+
+    const payload = response.data as { data?: { isAdmin?: boolean; role?: string }; isAdmin?: boolean; role?: string };
+    const user = (payload?.data ?? payload) as { isAdmin?: boolean; role?: string } | undefined;
+    const isAdmin = Boolean(user?.isAdmin ?? (user?.role === "admin"));
+
+    if (!isAdmin) {
+      redirect("/auth?reason=forbidden");
     }
-    const session = JSON.parse(sessionCookie);
-    if (!session.isAdmin) {
-      return redirect("/"); // Redirect non-admins to the public landing page
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "digest" in error &&
+      (error as { digest?: string }).digest === "DYNAMIC_SERVER_USAGE"
+    ) {
+      throw error;
     }
-  } catch {
-    return redirect("/auth");
+    console.error("[AdminLayout] auth check failed:", error);
+
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+
+      if (status === 401) {
+        redirect("/auth?next=/admin&reason=unauthenticated");
+      }
+      if (status === 403) {
+        redirect("/auth?reason=forbidden");
+      }
+      if (status && status >= 500) {
+        redirect("/auth?reason=unavailable");
+      }
+      if (!error.response) {
+        redirect("/auth?reason=unavailable");
+      }
+      redirect("/auth?reason=unavailable");
+    }
+
+    redirect("/auth?next=/admin&reason=unauthenticated");
   }
 
   return (

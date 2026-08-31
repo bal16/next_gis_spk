@@ -2,23 +2,30 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./column";
-import { DataTable } from "./data-table";
+import { AdminDataTable } from "@/components/admin/AdminDataTable";
 import { getBuildingsDatas } from "@/features/buildings/api/get-all-buildings";
-// import { Button } from "@/components/ui/button";
 import { BuildingDialog } from "./BuildingDialog";
 
 export const TableSection = () => {
-  const { data: buildings } = useQuery({
+  const { data: buildings, isLoading } = useQuery({
     queryKey: ["buildings"],
     queryFn: getBuildingsDatas,
     staleTime: Infinity,
   });
   return (
     <div className="container mx-auto">
-      <DataTable
+      <AdminDataTable
         columns={columns}
         data={buildings ?? []}
-        renderButton={<BuildingDialog />}
+        filterKey="name"
+        filterPlaceholder="Filter Buildings..."
+        renderAction={<BuildingDialog />}
+        isLoading={isLoading}
+        empty={{
+          title: "Belum ada gedung",
+          description: "Tambah gedung pertama untuk memulai penilaian SAW.",
+          action: <BuildingDialog />,
+        }}
       />
     </div>
   );

@@ -2,14 +2,14 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { columns, type Results } from "./column";
-import { DataTable } from "./data-table";
+import { AdminDataTable } from "@/components/admin/AdminDataTable";
 import { Button } from "@/components/ui/button";
 import { getResultDatas } from "../api/get-results";
 import { ConfirmationDialog } from "@/features/dashboard/components/ConfirmationDialog";
 import { useRunCalculation } from "../hooks/useDSS";
 
 export const TableSection = () => {
-  const { data: dssResults } = useQuery({
+  const { data: dssResults, isLoading } = useQuery({
     queryKey: ["dss"],
     queryFn: getResultDatas,
     staleTime: Infinity,
@@ -18,10 +18,15 @@ export const TableSection = () => {
 
   return (
     <div className="container mx-auto">
-      <DataTable
+      <AdminDataTable
         columns={columns}
         data={(dssResults as unknown as Results[]) ?? []}
-        renderButton={
+        isLoading={isLoading}
+        empty={{
+          title: "Belum ada riwayat kalkulasi",
+          description: "Jalankan perhitungan SAW untuk melihat riwayat di sini.",
+        }}
+        renderAction={
           <ConfirmationDialog
             trigger={<Button disabled={isPending}>{isPending ? "Calculating..." : "Run SAW Calculation"}</Button>}
             title="Confirm Calculation"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -27,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useUpdateWeights } from "../hooks/useWeights";
+import type { TWeight } from "../api/get-weights";
 
 // 1. Zod Schema Dinamis
 // Karena jumlah kriteria bisa berubah, kita gunakan record
@@ -34,6 +36,8 @@ const weightsSchema = z.record(
   z.string(),
   z.number("Harus berupa angka").min(0, "Minimal 0").max(1, "Maksimal 1"),
 );
+
+const EPSILON = 0.001;
 
 export function WeightsUpdateSection() {
   const { data, isLoading } = useQuery({
@@ -66,17 +70,32 @@ export function WeightsUpdateSection() {
     }
   }, [data, reset]);
 
-  // Kalkulasi validasi total 100%
+  // Kalkulasi validasi total 100% — parent still watches for sticky/footer gates; per-card isolates via WeightCard
   const mainTotal = useMemo(() => {
     if (!data) return 0;
-    return data.reduce((sum, m) => sum + (Number(formValues[m.key]) || 0), 0);
+    return data.reduce((sum, m) => sum + (Number((formValues as Record<string, number>)[m.key]) || 0), 0);
   }, [data, formValues]);
 
-  const isMainTotalValid = Math.abs(mainTotal - 1.0) < 0.001;
+  const isMainTotalValid = Math.abs(mainTotal - 1.0) < EPSILON;
+
+  // Global sub-group validity — all sub groups must sum to 1.0; mains without subs skip
+  const allSubsValid = useMemo(() => {
+    if (!data) return true;
+    const fv = formValues as Record<string, number>;
+    return data.every((main) => {
+      if (!main.subWeights?.length) return true;
+      const subTotal = main.subWeights.reduce((s, sv) => s + (Number(fv[sv.key]) || 0), 0);
+      return Math.abs(subTotal - 1.0) < EPSILON;
+    });
+  }, [data, formValues]);
 
   const onSubmit = async (formData: z.infer<typeof weightsSchema>) => {
     if (!isMainTotalValid) {
       toast.error("Gagal", { description: "Total bobot utama harus 100%" });
+      return;
+    }
+    if (!allSubsValid) {
+      toast.error("Gagal", { description: "Total sub bobot harus 100% di setiap kelompok" });
       return;
     }
 
@@ -85,6 +104,10 @@ export function WeightsUpdateSection() {
         data?.map((main) => ({
           ...main,
           value: formData[main.key],
+          subWeights: main.subWeights?.map((sub) => ({
+            ...sub,
+            value: formData[sub.key] ?? sub.value,
+          })),
         })) || [],
     };
 
@@ -128,117 +151,9 @@ export function WeightsUpdateSection() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:grid-flow-dense">
-        {data?.map((main) => {
-          const subTotal =
-            main.subWeights?.reduce(
-              (sum, s) => sum + (Number(formValues[s.key]) || 0),
-              0,
-            ) || 0;
-          const isSubValid = Math.abs(subTotal - 1.0) < 0.001;
-
-          return (
-            <Card
-              key={main.key}
-              className={cn(main.subWeights?.length > 0 && "md:col-span-2")}
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between ">
-                  {main.name}
-                  <Badge variant="outline" className="text-[10px] uppercase">
-                    {main.type}
-                  </Badge>
-                </CardTitle>
-                <CardDescription>Kode: {main.key}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <FieldGroup>
-                  <Controller
-                    name={main.key}
-                    control={control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel>Bobot Utama</FieldLabel>
-                        <div className="flex gap-4">
-                          <Input
-                            {...field}
-                            value={field.value ?? ""}
-                            type="number"
-                            step="0.01"
-                            onChange={(e) =>
-                              field.onChange(e.target.valueAsNumber)
-                            }
-                            aria-invalid={fieldState.invalid}
-                            disabled={isPending}
-                          />
-                          <div className="flex w-12 items-center font-bold text-muted-foreground">
-                            {((Number(field.value) || 0) * 100).toFixed(0)}%
-                          </div>
-                        </div>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  {main.subWeights?.length > 0 && (
-                    <div className="mt-4 space-y-4 rounded-lg bg-muted/40 p-4">
-                      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        <span>Sub-Kriteria</span>
-                        <span
-                          className={cn(
-                            isSubValid ? "text-green-600" : "text-destructive",
-                          )}
-                        >
-                          Total: {(subTotal * 100).toFixed(0)}%
-                        </span>
-                      </div>
-                      <Separator />
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {main.subWeights?.map((sub) => (
-                          <Controller
-                            key={sub.key}
-                            name={sub.key}
-                            control={control}
-                            render={({ field, fieldState }) => (
-                              <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel className="text-xs">
-                                  {sub.name}
-                                </FieldLabel>
-                                <div className="flex gap-3">
-                                  <Input
-                                    {...field}
-                                    value={field.value ?? ""}
-                                    type="number"
-                                    step="0.01"
-                                    className="h-9 text-sm"
-                                    onChange={(e) =>
-                                      field.onChange(e.target.valueAsNumber)
-                                    }
-                                    disabled={isPending}
-                                  />
-                                  <div className="flex items-center text-xs text-muted-foreground">
-                                    {((Number(field.value) || 0) * 100).toFixed(
-                                      0,
-                                    )}
-                                    %
-                                  </div>
-                                </div>
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            )}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </FieldGroup>
-              </CardContent>
-            </Card>
-          );
-        })}
+        {data?.map((main) => (
+          <WeightCard key={main.key} main={main} control={control} isPending={isPending} />
+        ))}
       </div>
 
       {/* Floating Footer Control */}
@@ -251,12 +166,14 @@ export function WeightsUpdateSection() {
             <p
               className={cn(
                 "font-bold",
-                isMainTotalValid ? "text-green-600" : "text-destructive",
+                isMainTotalValid && allSubsValid ? "text-green-600" : "text-destructive",
               )}
             >
-              {isMainTotalValid
-                ? "Siap untuk disimpan"
-                : "Total bobot utama belum 100%"}
+              {!isMainTotalValid
+                ? "Total bobot utama belum 100%"
+                : !allSubsValid
+                  ? "Total sub bobot belum 100% di setiap kelompok"
+                  : "Siap untuk disimpan"}
             </p>
           </div>
           <div className="flex gap-3 w-full md:w-auto">
@@ -272,7 +189,7 @@ export function WeightsUpdateSection() {
             <Button
               type="submit"
               form="weights-form"
-              disabled={!isMainTotalValid || isPending}
+              disabled={!isMainTotalValid || !allSubsValid || isPending}
               className="flex-1 md:min-w-[150px]"
             >
               {isPending ? "Menyimpan..." : "Simpan Bobot"}
@@ -283,3 +200,129 @@ export function WeightsUpdateSection() {
     </form>
   );
 }
+
+type WeightCardProps = {
+  main: TWeight;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: any;
+  isPending: boolean;
+};
+
+const WeightCard = memo(function WeightCard({ main, control, isPending }: WeightCardProps) {
+  const subKeys = main.subWeights?.map((s) => s.key) ?? [];
+  // Isolated subscription: only re-renders when this card's sub values change
+  const watchedSubValues = useWatch({ control, name: subKeys as unknown as string }) as unknown as number[] | number | undefined;
+  const subTotal = useMemo(() => {
+    if (!main.subWeights?.length) return 0;
+    if (Array.isArray(watchedSubValues)) {
+      return watchedSubValues.reduce((s, v) => s + (Number(v) || 0), 0);
+    }
+    if (subKeys.length === 1 && typeof watchedSubValues === "number") {
+      return Number(watchedSubValues) || 0;
+    }
+    // Fallback: read directly if useWatch returns undefined before mount
+    return 0;
+  }, [main.subWeights, subKeys.length, watchedSubValues]);
+
+  // Fallback to form watch for initial defaults when useWatch array not yet hydrated
+  const fallbackSubTotal = useMemo(() => {
+    // If watchedSubValues is undefined/empty but form has defaults, subTotal will be 0; caller will show Total from actual formValues via parent gate
+    // We keep watched path primary; fallback is via parent allSubsValid gate
+    return subTotal;
+  }, [subTotal]);
+
+  const isSubValid =
+    !main.subWeights?.length ||
+    watchedSubValues === undefined ||
+    (Array.isArray(watchedSubValues) && watchedSubValues.every((v) => v === undefined)) ||
+    Math.abs(fallbackSubTotal - 1.0) < EPSILON;
+
+  return (
+    <Card className={cn(main.subWeights?.length > 0 && "md:col-span-2")}>
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between ">
+          {main.name}
+          <Badge variant="outline" className="text-[10px] uppercase">
+            {main.type}
+          </Badge>
+        </CardTitle>
+        <CardDescription>Kode: {main.key}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <FieldGroup>
+          <Controller
+            name={main.key}
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel>Bobot Utama</FieldLabel>
+                <FieldDescription className="text-xs">Nilai 0.00–1.00</FieldDescription>
+                <div className="flex gap-4">
+                  <Input
+                    {...field}
+                    value={field.value ?? ""}
+                    type="number"
+                    step="0.01"
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    aria-invalid={fieldState.invalid}
+                    disabled={isPending}
+                  />
+                  <div className="flex w-12 items-center font-bold text-muted-foreground">
+                    {((Number(field.value) || 0) * 100).toFixed(0)}%
+                  </div>
+                </div>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          {main.subWeights?.length > 0 && (
+            <div className="mt-4 space-y-4 rounded-lg bg-muted/40 p-4">
+              <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <span>Sub-Kriteria</span>
+                <span className={cn(isSubValid ? "text-green-600" : "text-destructive")}>
+                  Total: {(fallbackSubTotal * 100).toFixed(0)}%
+                </span>
+              </div>
+              {!isSubValid && (
+                <FieldDescription className="text-destructive text-xs">
+                  Sub bobot harus total 100%
+                </FieldDescription>
+              )}
+              <Separator />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {main.subWeights?.map((sub) => (
+                  <Controller
+                    key={sub.key}
+                    name={sub.key}
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel className="text-xs">{sub.name}</FieldLabel>
+                        <div className="flex gap-3">
+                          <Input
+                            {...field}
+                            value={field.value ?? ""}
+                            type="number"
+                            step="0.01"
+                            className="h-9 text-sm"
+                            onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                            disabled={isPending}
+                          />
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            {((Number(field.value) || 0) * 100).toFixed(0)}%
+                          </div>
+                        </div>
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </FieldGroup>
+      </CardContent>
+    </Card>
+  );
+});

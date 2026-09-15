@@ -38,7 +38,9 @@ export const useDeleteRun = (onSuccessCallback?: () => void) => {
     mutationFn: (id: string) => deleteRun(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ["dss"] });
-      const previousData = queryClient.getQueryData<TGetResultsResponse[]>(["dss"]);
+      const previousData = queryClient.getQueryData<TGetResultsResponse[]>([
+        "dss",
+      ]);
 
       if (previousData) {
         queryClient.setQueryData<TGetResultsResponse[]>(
@@ -66,19 +68,27 @@ export const useDeleteRun = (onSuccessCallback?: () => void) => {
   });
 };
 
-export const useDeleteRunDetail = (runId: string, onSuccessCallback?: () => void) => {
+export const useDeleteRunDetail = (
+  runId: string,
+  onSuccessCallback?: () => void
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (detailId: string) => deleteRunDetail(detailId),
     onMutate: async (detailId) => {
       await queryClient.cancelQueries({ queryKey: ["dss-details", runId] });
-      const previousData = queryClient.getQueryData<TGetResultsResponse>(["dss-details", runId]);
+      const previousData = queryClient.getQueryData<TGetResultsResponse>([
+        "dss-details",
+        runId,
+      ]);
 
       if (previousData) {
         queryClient.setQueryData<TGetResultsResponse>(["dss-details", runId], {
           ...previousData,
-          sawRunDetails: previousData.sawRunDetails.filter((detail) => detail.id !== detailId),
+          sawRunDetails: previousData.sawRunDetails.filter(
+            (detail) => detail.id !== detailId
+          ),
         });
       }
 

@@ -32,8 +32,7 @@ export const publicTourSteps: DriveStep[] = [
     element: "[data-tour='search-input']",
     popover: {
       title: "Pencarian",
-      description:
-        "Cari gedung berdasarkan nama atau kode secara real-time.",
+      description: "Cari gedung berdasarkan nama atau kode secara real-time.",
       side: "bottom",
     },
   },
@@ -89,8 +88,7 @@ export const adminTourSteps: DriveStep[] = [
     element: "[data-tour='user-menu']",
     popover: {
       title: "Menu Pengguna",
-      description:
-        "Akses profil, ganti tema (terang/gelap), dan logout.",
+      description: "Akses profil, ganti tema (terang/gelap), dan logout.",
       side: "bottom",
     },
   },

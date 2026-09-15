@@ -9,7 +9,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
 export const TableSection = () => {
-  const { data: buildings, isLoading, isError, error, refetch } = useQuery({
+  const {
+    data: buildings,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["buildings"],
     queryFn: getBuildingsDatas,
     staleTime: Infinity,
@@ -21,8 +27,15 @@ export const TableSection = () => {
         <Alert variant="destructive">
           <AlertTitle>Failed to load buildings</AlertTitle>
           <AlertDescription className="flex flex-col gap-3">
-            <span>{(error as Error)?.message || "Unable to load buildings."}</span>
-            <Button variant="outline" size="sm" onClick={() => (refetch as unknown as () => void)?.()} className="w-fit">
+            <span>
+              {(error as Error)?.message || "Unable to load buildings."}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => (refetch as unknown as () => void)?.()}
+              className="w-fit"
+            >
               Retry
             </Button>
           </AlertDescription>

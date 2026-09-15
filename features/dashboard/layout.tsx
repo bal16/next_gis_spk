@@ -19,9 +19,14 @@ export default async function AdminLayout({
       headers: { "Cache-Control": "no-store" },
     } as never);
 
-    const payload = response.data as { data?: { isAdmin?: boolean; role?: string }; isAdmin?: boolean; role?: string };
-    const user = (payload?.data ?? payload) as { isAdmin?: boolean; role?: string } | undefined;
-    const isAdmin = Boolean(user?.isAdmin ?? (user?.role === "admin"));
+    const payload = response.data as {
+      data?: { isAdmin?: boolean; role?: string };
+      isAdmin?: boolean;
+      role?: string;
+    };
+    const user = (payload?.data ?? payload) as
+      { isAdmin?: boolean; role?: string } | undefined;
+    const isAdmin = Boolean(user?.isAdmin ?? user?.role === "admin");
 
     if (!isAdmin) {
       redirect("/auth?reason=forbidden");

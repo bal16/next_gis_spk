@@ -7,11 +7,14 @@ import type { TCreateAssessment } from "../type";
 // import { buildingsData } from "@/lib/mock/buildings";
 // import type { TBuilding } from "@/types/building";
 
-export const createAssessment = async (code: string, data: TCreateAssessment) => {
+export const createAssessment = async (
+  code: string,
+  data: TCreateAssessment
+) => {
   // await new Promise((resolve) => setTimeout(resolve, 500));
   const response = await backendClient.post<SuccessResponse<boolean>>(
     `/buildings/${code}/assessments`,
-    data,
+    data
   );
   const responseData = response.data;
   const { statusCode, data: assessmentData } = responseData;

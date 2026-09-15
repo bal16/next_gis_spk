@@ -95,7 +95,7 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
           <DropdownMenuTrigger asChild>
             <Button
               variant="default"
-              className="relative h-10 w-10 rounded-full bg-primary shadow-lg"
+              className="bg-primary relative h-10 w-10 rounded-full shadow-lg"
             >
               <Avatar className="h-10 w-10">
                 <AvatarImage src={user?.avatarUrl} alt={user?.name} />
@@ -110,7 +110,7 @@ export function UserNav({ adminLink = false }: { adminLink?: boolean }) {
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium">{user?.name}</p>
-                <p className="text-xs text-muted-foreground">{user?.email}</p>
+                <p className="text-muted-foreground text-xs">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
 
@@ -166,7 +166,7 @@ const NavLink = ({ href, icon, label }: LinkProps) => (
   <Link href={href} className="hidden md:flex">
     <Button
       variant="outline"
-      className="bg-background shadow-lg hover:bg-accent"
+      className="bg-background hover:bg-accent shadow-lg"
     >
       {icon}
       <span className="hidden sm:inline">{label}</span>

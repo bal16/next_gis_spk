@@ -47,7 +47,7 @@ import type { TWeight } from "../api/get-weights";
 // Karena jumlah kriteria bisa berubah, kita gunakan record
 const weightsSchema = z.record(
   z.string(),
-  z.number("Harus berupa angka").min(0, "Minimal 0").max(1, "Maksimal 1"),
+  z.number("Harus berupa angka").min(0, "Minimal 0").max(1, "Maksimal 1")
 );
 
 const EPSILON = 0.001;
@@ -86,7 +86,11 @@ export function WeightsUpdateSection() {
   // Kalkulasi validasi total 100% — parent still watches for sticky/footer gates; per-card isolates via WeightCard
   const mainTotal = useMemo(() => {
     if (!data) return 0;
-    return data.reduce((sum, m) => sum + (Number((formValues as Record<string, number>)[m.key]) || 0), 0);
+    return data.reduce(
+      (sum, m) =>
+        sum + (Number((formValues as Record<string, number>)[m.key]) || 0),
+      0
+    );
   }, [data, formValues]);
 
   const isMainTotalValid = Math.abs(mainTotal - 1.0) < EPSILON;
@@ -97,7 +101,10 @@ export function WeightsUpdateSection() {
     const fv = formValues as Record<string, number>;
     return data.every((main) => {
       if (!main.subWeights?.length) return true;
-      const subTotal = main.subWeights.reduce((s, sv) => s + (Number(fv[sv.key]) || 0), 0);
+      const subTotal = main.subWeights.reduce(
+        (s, sv) => s + (Number(fv[sv.key]) || 0),
+        0
+      );
       return Math.abs(subTotal - 1.0) < EPSILON;
     });
   }, [data, formValues]);
@@ -108,7 +115,9 @@ export function WeightsUpdateSection() {
       return;
     }
     if (!allSubsValid) {
-      toast.error("Gagal", { description: "Total sub bobot harus 100% di setiap kelompok" });
+      toast.error("Gagal", {
+        description: "Total sub bobot harus 100% di setiap kelompok",
+      });
       return;
     }
 
@@ -150,24 +159,30 @@ export function WeightsUpdateSection() {
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-8 pb-[160px]"
     >
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:grid-flow-dense">
+      <div className="grid grid-cols-1 gap-6 md:grid-flow-dense md:grid-cols-2">
         {data?.map((main) => (
-          <WeightCard key={main.key} main={main} control={control} isPending={isPending} />
+          <WeightCard
+            key={main.key}
+            main={main}
+            control={control}
+            isPending={isPending}
+          />
         ))}
       </div>
 
       {/* Floating Footer Control */}
-      <div className="fixed bottom-6 left-1/2 z-40 w-[90%] -translate-x-1/2 max-w-4xl rounded-2xl border bg-background/80 p-4 shadow-2xl backdrop-blur-md md:bottom-10">
+      <div className="bg-background/80 fixed bottom-6 left-1/2 z-40 w-[90%] max-w-4xl -translate-x-1/2 rounded-2xl border p-4 shadow-2xl backdrop-blur-md md:bottom-10">
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <div className="text-sm">
-            <p className="font-medium text-muted-foreground">
+            <p className="text-muted-foreground font-medium">
               Status Konfigurasi
             </p>
             <p
               className={cn(
                 "font-bold",
-                isMainTotalValid && allSubsValid ? "text-green-600" : "text-destructive",
+                isMainTotalValid && allSubsValid
+                  ? "text-green-600"
+                  : "text-destructive"
               )}
             >
               {!isMainTotalValid
@@ -177,7 +192,7 @@ export function WeightsUpdateSection() {
                   : "Siap untuk disimpan"}
             </p>
           </div>
-          <div className="flex gap-3 w-full md:w-auto">
+          <div className="flex w-full gap-3 md:w-auto">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
@@ -193,12 +208,15 @@ export function WeightsUpdateSection() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Reset weights?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Reset all weights to last saved values? Unsaved changes will be lost.
+                    Reset all weights to last saved values? Unsaved changes will
+                    be lost.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => reset()}>Reset</AlertDialogAction>
+                  <AlertDialogAction onClick={() => reset()}>
+                    Reset
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -209,7 +227,12 @@ export function WeightsUpdateSection() {
               className="flex-1 md:min-w-[150px]"
               aria-busy={isPending}
             >
-              {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
+              {isPending && (
+                <LoaderCircle
+                  data-icon="inline-start"
+                  className="animate-spin"
+                />
+              )}
               {isPending ? "Menyimpan..." : "Simpan Bobot"}
             </Button>
           </div>
@@ -226,10 +249,17 @@ type WeightCardProps = {
   isPending: boolean;
 };
 
-const WeightCard = memo(function WeightCard({ main, control, isPending }: WeightCardProps) {
+const WeightCard = memo(function WeightCard({
+  main,
+  control,
+  isPending,
+}: WeightCardProps) {
   const subKeys = main.subWeights?.map((s) => s.key) ?? [];
   // Isolated subscription: only re-renders when this card's sub values change
-  const watchedSubValues = useWatch({ control, name: subKeys as unknown as string }) as unknown as number[] | number | undefined;
+  const watchedSubValues = useWatch({
+    control,
+    name: subKeys as unknown as string,
+  }) as unknown as number[] | number | undefined;
   const subTotal = useMemo(() => {
     if (!main.subWeights?.length) return 0;
     if (Array.isArray(watchedSubValues)) {
@@ -252,13 +282,14 @@ const WeightCard = memo(function WeightCard({ main, control, isPending }: Weight
   const isSubValid =
     !main.subWeights?.length ||
     watchedSubValues === undefined ||
-    (Array.isArray(watchedSubValues) && watchedSubValues.every((v) => v === undefined)) ||
+    (Array.isArray(watchedSubValues) &&
+      watchedSubValues.every((v) => v === undefined)) ||
     Math.abs(fallbackSubTotal - 1.0) < EPSILON;
 
   return (
     <Card className={cn(main.subWeights?.length > 0 && "md:col-span-2")}>
       <CardHeader>
-        <CardTitle className="flex items-center justify-between ">
+        <CardTitle className="flex items-center justify-between">
           {main.name}
           <Badge variant="outline" className="text-[10px] uppercase">
             {main.type}
@@ -274,7 +305,9 @@ const WeightCard = memo(function WeightCard({ main, control, isPending }: Weight
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Bobot Utama</FieldLabel>
-                <FieldDescription className="text-xs">Nilai 0.00–1.00</FieldDescription>
+                <FieldDescription className="text-xs">
+                  Nilai 0.00–1.00
+                </FieldDescription>
                 <div className="flex gap-4">
                   <Input
                     {...field}
@@ -285,20 +318,26 @@ const WeightCard = memo(function WeightCard({ main, control, isPending }: Weight
                     aria-invalid={fieldState.invalid}
                     disabled={isPending}
                   />
-                  <div className="flex w-12 items-center font-bold text-muted-foreground">
+                  <div className="text-muted-foreground flex w-12 items-center font-bold">
                     {((Number(field.value) || 0) * 100).toFixed(0)}%
                   </div>
                 </div>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
               </Field>
             )}
           />
 
           {main.subWeights?.length > 0 && (
-            <div className="mt-4 space-y-4 rounded-lg bg-muted/40 p-4">
-              <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="bg-muted/40 mt-4 space-y-4 rounded-lg p-4">
+              <div className="text-muted-foreground flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
                 <span>Sub-Kriteria</span>
-                <span className={cn(isSubValid ? "text-green-600" : "text-destructive")}>
+                <span
+                  className={cn(
+                    isSubValid ? "text-green-600" : "text-destructive"
+                  )}
+                >
                   Total: {(fallbackSubTotal * 100).toFixed(0)}%
                 </span>
               </div>
@@ -324,14 +363,18 @@ const WeightCard = memo(function WeightCard({ main, control, isPending }: Weight
                             type="number"
                             step="0.01"
                             className="h-9 text-sm"
-                            onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                            onChange={(e) =>
+                              field.onChange(e.target.valueAsNumber)
+                            }
                             disabled={isPending}
                           />
-                          <div className="flex items-center text-xs text-muted-foreground">
+                          <div className="text-muted-foreground flex items-center text-xs">
                             {((Number(field.value) || 0) * 100).toFixed(0)}%
                           </div>
                         </div>
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />

@@ -112,7 +112,9 @@ export const columns: ColumnDef<TBuilding>[] = [
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
               aria-label="Sort by Skor Terakhir"
             >
               Skor Terakhir

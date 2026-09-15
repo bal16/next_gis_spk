@@ -1,4 +1,4 @@
-'use server'
+"use server";
 // import { publicClient } from "@/lib/api/public";
 import type { SuccessResponse } from "@/types/apiResponse";
 import type { TBuilding } from "../type";
@@ -9,7 +9,7 @@ import backendClient from "@/lib/api/server";
 export const deleteBuilding = async (id: TBuilding["id"]) => {
   // await new Promise((resolve) => setTimeout(resolve, 500));
   const response = await backendClient.delete<SuccessResponse<boolean>>(
-    `/buildings/${id}`,
+    `/buildings/${id}`
   );
   const buildingData = response.data;
   const { statusCode, data: isDeleted } = buildingData;

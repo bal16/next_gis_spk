@@ -8,7 +8,7 @@ export const getBuildingsDatas = async (): Promise<TBuilding[]> => {
   // await new Promise((resolve) => setTimeout(resolve, 500));
   const response =
     await publicClient.get<SuccessResponse<TGetBuildingsResponse[]>>(
-      "/buildings",
+      "/buildings"
     );
   const data = response.data;
   const { data: buildings } = data;

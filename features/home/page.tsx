@@ -21,7 +21,7 @@ export default async function HomePage() {
   });
 
   return (
-    <main className="relative w-full h-screen overflow-hidden">
+    <main className="relative h-screen w-full overflow-hidden">
       <HydrationBoundary state={dehydrate(queryClient)}>
         <section className="absolute inset-0 z-0" data-tour="map">
           <MapSection />
@@ -36,7 +36,7 @@ export default async function HomePage() {
           <UserNav adminLink />
         </section>
 
-        <section className="absolute top-4 left-4 z-10 w-[380px] max-h-[calc(100vh-2rem)] bg-background rounded-lg shadow-xl overflow-hidden flex-col hidden md:flex">
+        <section className="bg-background absolute top-4 left-4 z-10 hidden max-h-[calc(100vh-2rem)] w-[380px] flex-col overflow-hidden rounded-lg shadow-xl md:flex">
           <Sidebar />
         </section>
       </HydrationBoundary>

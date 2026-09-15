@@ -14,7 +14,7 @@ type TUpdateBuildingResponse = TCreateBuildingResponse;
 
 export const updateBuilding = async (
   data: TUpdateBuilding,
-  id: TBuilding["id"],
+  id: TBuilding["id"]
 ) => {
   // await new Promise((resolve) => setTimeout(resolve, 500));
   const response = await backendClient.put<

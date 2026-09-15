@@ -10,7 +10,7 @@ import type { TGetResultsResponse } from "../type";
 export const deleteRun = async (id: TGetResultsResponse["id"]) => {
   // await new Promise((resolve) => setTimeout(resolve, 500));
   const response = await backendClient.delete<SuccessResponse<boolean>>(
-    `/dss/runs/${id}`,
+    `/dss/runs/${id}`
   );
   const runData = response.data;
   const { statusCode, data: isDeleted } = runData;

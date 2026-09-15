@@ -23,24 +23,42 @@ type TUpdateWeights = {
 const EPSILON = 0.001;
 
 function validateWeightsPayload(payload: TUpdateWeights) {
-  if (!payload?.weights || !Array.isArray(payload.weights) || payload.weights.length === 0) {
+  if (
+    !payload?.weights ||
+    !Array.isArray(payload.weights) ||
+    payload.weights.length === 0
+  ) {
     throw new Error("Payload weights tidak boleh kosong");
   }
-  const mainTotal = payload.weights.reduce((sum, w) => sum + (Number(w.value) || 0), 0);
+  const mainTotal = payload.weights.reduce(
+    (sum, w) => sum + (Number(w.value) || 0),
+    0
+  );
   if (Math.abs(mainTotal - 1.0) >= EPSILON) {
     throw new Error("Total bobot utama harus 100%");
   }
   for (const main of payload.weights) {
-    if (Number.isNaN(Number(main.value)) || Number(main.value) < 0 || Number(main.value) > 1) {
+    if (
+      Number.isNaN(Number(main.value)) ||
+      Number(main.value) < 0 ||
+      Number(main.value) > 1
+    ) {
       throw new Error(`Nilai bobot ${main.key} harus 0.00–1.00`);
     }
     if (main.subWeights?.length) {
-      const subTotal = main.subWeights.reduce((s, sw) => s + (Number(sw.value) || 0), 0);
+      const subTotal = main.subWeights.reduce(
+        (s, sw) => s + (Number(sw.value) || 0),
+        0
+      );
       if (Math.abs(subTotal - 1.0) >= EPSILON) {
         throw new Error(`Total sub bobot ${main.key} harus 100%`);
       }
       for (const sub of main.subWeights) {
-        if (Number.isNaN(Number(sub.value)) || Number(sub.value) < 0 || Number(sub.value) > 1) {
+        if (
+          Number.isNaN(Number(sub.value)) ||
+          Number(sub.value) < 0 ||
+          Number(sub.value) > 1
+        ) {
           throw new Error(`Nilai sub bobot ${sub.key} harus 0.00–1.00`);
         }
       }

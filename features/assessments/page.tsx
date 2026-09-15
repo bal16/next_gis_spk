@@ -29,7 +29,7 @@ export default async function AssessmentsPage({
         page={`Assessments ${buildingCode}`}
         path={[{ pageName: "Buildings", url: "/admin/buildings" }]}
       />
-      <main className="container max-w-7xl mx-auto p-4">
+      <main className="container mx-auto max-w-7xl p-4">
         <HydrationBoundary state={dehydrate(queryClient)}>
           {/* Action Section */}
           {/* <section className="flex justify-end">

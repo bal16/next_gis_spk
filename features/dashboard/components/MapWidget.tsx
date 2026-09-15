@@ -12,7 +12,7 @@ export const MapWidget = () => {
   });
 
   return (
-    <section className="border border-muted rounded-2xl w-full h-96 overflow-hidden mt-4">
+    <section className="border-muted mt-4 h-96 w-full overflow-hidden rounded-2xl border">
       <MapView buildings={buildings ?? []} />
     </section>
   );

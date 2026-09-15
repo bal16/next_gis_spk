@@ -9,7 +9,7 @@ import type { SuccessResponse } from "@/types/apiResponse";
 export const deleteAssessment = async (id: string) => {
   // await new Promise((resolve) => setTimeout(resolve, 500));
   const response = await backendClient.delete<SuccessResponse<boolean>>(
-    `/buildings/assessments/${id}`,
+    `/buildings/assessments/${id}`
   );
   const data = response.data;
   const { statusCode, data: isDeleted } = data;

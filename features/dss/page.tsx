@@ -19,7 +19,7 @@ export default async function DSSPage() {
   return (
     <div>
       <SiteHeader page="DSS" />
-      <main className="container max-w-7xl mx-auto p-4">
+      <main className="container mx-auto max-w-7xl p-4">
         <HydrationBoundary state={dehydrate(queryClient)}>
           <TableSection />
         </HydrationBoundary>

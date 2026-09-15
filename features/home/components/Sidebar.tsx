@@ -7,7 +7,7 @@ const Sidebar = () => {
   const { filteredBuildings, handleBuildingClick } = useFilteredBuildings();
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="flex min-h-0 flex-1 flex-col">
       <SidebarContent
         buildings={filteredBuildings}
         onBuildingSelect={handleBuildingClick}

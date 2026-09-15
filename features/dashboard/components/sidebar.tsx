@@ -66,11 +66,11 @@ export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             {/* <Logo /> */}
             <Link href="/">
-              <div className="border-b  pb-5">
-                <h1 className="text-lg md:text-xl font-bold">
+              <div className="border-b pb-5">
+                <h1 className="text-lg font-bold md:text-xl">
                   SPK Prioritas Perawatan Gedung
                 </h1>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-xs md:text-sm">
                   Fakultas Teknik UNNES
                 </p>
               </div>

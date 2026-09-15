@@ -10,7 +10,7 @@ import type { LoginResponse } from "../types/apiResponses";
 export const loginUser = async (credentials: LoginFormData) => {
   const { data } = await publicClient.post<LoginResponse>(
     `/auth/login`,
-    credentials,
+    credentials
   );
 
   console.log("Login response:", data);

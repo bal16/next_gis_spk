@@ -10,7 +10,7 @@ import type { ActionResponse } from "../types/action";
 import { loginUser } from "../api/loginUser";
 
 export async function loginAction(
-  formData: LoginFormData,
+  formData: LoginFormData
 ): Promise<ActionResponse> {
   const validatedFields = loginSchema.safeParse(formData);
 
@@ -72,7 +72,7 @@ export async function loginAction(
         // Localize backend error messages to Indonesian
         const localizedMessages: Record<string, string> = {
           "Invalid credentials": "Username atau Password salah",
-          "Unauthorized": "Sesi Anda telah habis atau Anda tidak memiliki akses.",
+          Unauthorized: "Sesi Anda telah habis atau Anda tidak memiliki akses.",
         };
 
         return {

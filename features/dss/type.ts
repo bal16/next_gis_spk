@@ -13,5 +13,3 @@ export type TGetResultsResponse = {
     buildingId: string;
   }[];
 };
-
-

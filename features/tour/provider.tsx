@@ -59,7 +59,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       setDriverObj(tour);
       tour.drive();
     },
-    [destroyDriver],
+    [destroyDriver]
   );
 
   const startPublicTour = useCallback(() => {

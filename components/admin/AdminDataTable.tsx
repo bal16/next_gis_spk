@@ -26,7 +26,10 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowUpDownIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 
 // ---------------------------------------------------------------------------
 // Deep module: AdminDataTable
@@ -78,9 +81,7 @@ export function AdminDataTable<TData, TValue>({
       columnFilters,
       pagination,
     },
-    initialState: initialSorting
-      ? { sorting: initialSorting }
-      : undefined,
+    initialState: initialSorting ? { sorting: initialSorting } : undefined,
   });
 
   const hasFilter = Boolean(filterKey && table.getColumn(filterKey!));
@@ -93,9 +94,14 @@ export function AdminDataTable<TData, TValue>({
             {hasFilter ? (
               <Input
                 placeholder={filterPlaceholder ?? `Filter ${filterKey}...`}
-                value={(table.getColumn(filterKey!)?.getFilterValue() as string) ?? ""}
+                value={
+                  (table.getColumn(filterKey!)?.getFilterValue() as string) ??
+                  ""
+                }
                 onChange={(event) =>
-                  table.getColumn(filterKey!)?.setFilterValue(event.target.value)
+                  table
+                    .getColumn(filterKey!)
+                    ?.setFilterValue(event.target.value)
                 }
                 className="max-w-sm"
               />
@@ -127,7 +133,10 @@ export function AdminDataTable<TData, TValue>({
                   >
                     {header.isPlaceholder
                       ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -146,26 +155,37 @@ export function AdminDataTable<TData, TValue>({
               ))
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-32 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-32 text-center"
+                >
                   {empty ? (
                     <div className="flex flex-col items-center justify-center gap-2 py-6">
                       <p className="text-sm font-medium">{empty.title}</p>
                       {empty.description && (
-                        <p className="text-sm text-muted-foreground max-w-sm">
+                        <p className="text-muted-foreground max-w-sm text-sm">
                           {empty.description}
                         </p>
                       )}
-                      {empty.action && <div className="pt-2">{empty.action}</div>}
+                      {empty.action && (
+                        <div className="pt-2">{empty.action}</div>
+                      )}
                     </div>
                   ) : (
                     "No results."
@@ -177,50 +197,55 @@ export function AdminDataTable<TData, TValue>({
         </Table>
       </section>
 
-      {!isLoading && table.getRowModel().rows.length > 0 && table.getPageCount() > 1 && (
-        <section className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>
-              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-            </span>
-            <span>·</span>
-            <span>{table.getFilteredRowModel().rows.length} row(s)</span>
-          </div>
-          <div className="flex items-center gap-2">
+      {!isLoading &&
+        table.getRowModel().rows.length > 0 &&
+        table.getPageCount() > 1 && (
+          <section className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-muted-foreground flex items-center gap-2 text-sm">
+              <span>
+                Page {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </span>
+              <span>·</span>
+              <span>{table.getFilteredRowModel().rows.length} row(s)</span>
+            </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground hidden sm:inline">Rows per page</span>
-              <NativeSelect
-                value={String(table.getState().pagination.pageSize)}
-                onChange={(e) => table.setPageSize(Number(e.target.value))}
-                className="h-8 w-[70px]"
-              >
-                <NativeSelectOption value="8">8</NativeSelectOption>
-                <NativeSelectOption value="10">10</NativeSelectOption>
-                <NativeSelectOption value="25">25</NativeSelectOption>
-                <NativeSelectOption value="50">50</NativeSelectOption>
-              </NativeSelect>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground hidden text-sm sm:inline">
+                  Rows per page
+                </span>
+                <NativeSelect
+                  value={String(table.getState().pagination.pageSize)}
+                  onChange={(e) => table.setPageSize(Number(e.target.value))}
+                  className="h-8 w-[70px]"
+                >
+                  <NativeSelectOption value="8">8</NativeSelectOption>
+                  <NativeSelectOption value="10">10</NativeSelectOption>
+                  <NativeSelectOption value="25">25</NativeSelectOption>
+                  <NativeSelectOption value="50">50</NativeSelectOption>
+                </NativeSelect>
+              </div>
+              <div className="flex gap-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-1">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
-        </section>
-      )}
+          </section>
+        )}
     </div>
   );
 }
@@ -233,14 +258,16 @@ export function createSortableHeader<TData, TValue>(
   label: string,
   opts?: { tooltip?: string }
 ): (ctx: HeaderContext<TData, TValue>) => ReactNode {
-  return ({ column }) => {
+  const SortableHeader = ({ column }: HeaderContext<TData, TValue>) => {
     const sorted = column.getIsSorted();
     return (
       <Button
         variant="ghost"
         size="sm"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        aria-label={opts?.tooltip ? `${label} — ${opts.tooltip}` : `Sort by ${label}`}
+        aria-label={
+          opts?.tooltip ? `${label} — ${opts.tooltip}` : `Sort by ${label}`
+        }
       >
         <span>{label}</span>
         {sorted === "asc" ? (
@@ -253,4 +280,8 @@ export function createSortableHeader<TData, TValue>(
       </Button>
     );
   };
+
+  SortableHeader.displayName = `SortableHeader(${label})`;
+
+  return SortableHeader;
 }

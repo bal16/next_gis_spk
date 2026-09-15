@@ -10,6 +10,7 @@ import Sidebar from "@/features/home/components/Sidebar";
 
 import { UserNav } from "@/components/UserNav";
 import { getBuildingsDatas } from "@/features/buildings/api/get-all-buildings";
+import { TourTriggers } from "@/features/tour/triggers";
 
 export default async function HomePage() {
   const queryClient = new QueryClient();
@@ -22,7 +23,7 @@ export default async function HomePage() {
   return (
     <main className="relative w-full h-screen overflow-hidden">
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <section className="absolute inset-0 z-0">
+        <section className="absolute inset-0 z-0" data-tour="map">
           <MapSection />
         </section>
 
@@ -31,6 +32,7 @@ export default async function HomePage() {
         </section>
 
         <section className="absolute top-4 right-4 z-20 flex items-center gap-3">
+          <TourTriggers page="public" />
           <UserNav adminLink />
         </section>
 

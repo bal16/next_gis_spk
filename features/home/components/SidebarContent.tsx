@@ -26,7 +26,7 @@ export const SidebarSearch = () => {
   );
 
   return (
-    <div className="p-4 border-b">
+    <div className="p-4 border-b" data-tour="search-input">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -46,7 +46,7 @@ export const SidebarFilters = () => {
     useShallow((state) => [state.filter, state.setFilter])
   );
   return (
-    <div className="p-4 border-b">
+    <div className="p-4 border-b" data-tour="priority-filters">
       <h2 className="text-sm font-semibold mb-3">Filter Prioritas</h2>
       <BuildingFilters activeFilter={filter} onFilterChange={setFilter} />
     </div>
@@ -66,7 +66,7 @@ export function SidebarContent({
       <SidebarHeader />
       <SidebarSearch />
       <SidebarFilters />
-      <div className="p-4">
+      <div className="p-4" data-tour="ranking-table">
         <h2 className="text-sm font-semibold mb-3">Daftar Peringkat</h2>
         <RankingTable
           buildings={buildings}

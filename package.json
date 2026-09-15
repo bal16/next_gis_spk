@@ -27,6 +27,7 @@
     "caniuse-lite": "^1.0.30001809",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "driver.js": "^1.8.0",
     "lucide-react": "^1.14.0",
     "maplibre-gl": "^5.9.0",
     "motion": "^12.23.26",

@@ -49,11 +49,18 @@ const data = {
   ],
 };
 
+const tourMap: Record<string, string> = {
+  "/admin": "nav-overview",
+  "/admin/buildings": "nav-buildings",
+  "/admin/weights": "nav-weights",
+  "/admin/dss": "nav-dss",
+};
+
 export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="offcanvas" data-tour="admin-sidebar" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -85,6 +92,7 @@ export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                       asChild
                       tooltip={item.title}
                       isActive={isActive}
+                      data-tour={tourMap[item.url]}
                     >
                       <Link href={item.url}>
                         <item.icon />

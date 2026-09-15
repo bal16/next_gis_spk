@@ -1,0 +1,102 @@
+@import "driver.js/dist/driver.css";
+
+.driver-popover.spk-tour {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+  padding: 1rem 1.25rem;
+  max-width: 380px;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.driver-popover.spk-tour .driver-popover-title {
+  color: var(--popover-foreground);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.375rem;
+}
+
+.driver-popover.spk-tour .driver-popover-description {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.driver-popover.spk-tour .driver-popover-footer {
+  margin-top: 0.875rem;
+}
+
+.driver-popover.spk-tour .driver-popover-navigation-btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.driver-popover.spk-tour button {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s ease;
+}
+
+.driver-popover.spk-tour button:hover {
+  opacity: 0.9;
+}
+
+.driver-popover.spk-tour .driver-popover-btn-group button:first-child {
+  background-color: transparent;
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+}
+
+.driver-popover.spk-tour .driver-popover-btn-group button:first-child:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.driver-popover.spk-tour .driver-popover-progress-text {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.driver-popover.spk-tour .driver-popover-close-btn {
+  color: var(--muted-foreground);
+  transition: color 0.15s ease;
+}
+
+.driver-popover.spk-tour .driver-popover-close-btn:hover {
+  color: var(--foreground);
+}
+
+/* Arrow colors matching popover background */
+.driver-popover.spk-tour .driver-popover-arrow-side-top.driver-popover-arrow {
+  border-top-color: var(--popover);
+}
+
+.driver-popover.spk-tour
+  .driver-popover-arrow-side-bottom.driver-popover-arrow {
+  border-bottom-color: var(--popover);
+}
+
+.driver-popover.spk-tour .driver-popover-arrow-side-left.driver-popover-arrow {
+  border-left-color: var(--popover);
+}
+
+.driver-popover.spk-tour .driver-popover-arrow-side-right.driver-popover-arrow {
+  border-right-color: var(--popover);
+}
+
+/* Overlay styling */
+.driver-overlay {
+  opacity: 0.5;
+}

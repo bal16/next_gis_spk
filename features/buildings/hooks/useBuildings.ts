@@ -25,28 +25,33 @@ export const useAddBuilding = (onSuccessCallback?: () => void) => {
       await queryClient.cancelQueries({ queryKey: ["buildings"] });
 
       // Snapshot the previous value
-      const previousBuildings = queryClient.getQueryData<TBuilding[]>(["buildings"]);
+      const previousBuildings = queryClient.getQueryData<TBuilding[]>([
+        "buildings",
+      ]);
 
       // Optimistically update to the new value
       if (previousBuildings) {
-        queryClient.setQueryData<TBuilding[]>(["buildings"], [
-          ...previousBuildings,
-          {
-            ...newBuilding,
-            id: `temp-${Date.now()}`, // Temporary ID
-            score: 0,
-            priority: "Belum Dihitung",
-            criterias: {
-              age: 0,
-              structure: 0,
-              architecture: 0,
-              mep: 0,
-              utility: 0,
-              damage: 0,
-              lastMaintenance: null,
-            },
-          } as TBuilding,
-        ]);
+        queryClient.setQueryData<TBuilding[]>(
+          ["buildings"],
+          [
+            ...previousBuildings,
+            {
+              ...newBuilding,
+              id: `temp-${Date.now()}`, // Temporary ID
+              score: 0,
+              priority: "Belum Dihitung",
+              criterias: {
+                age: 0,
+                structure: 0,
+                architecture: 0,
+                mep: 0,
+                utility: 0,
+                damage: 0,
+                lastMaintenance: null,
+              },
+            } as TBuilding,
+          ]
+        );
       }
 
       // Return a context object with the snapshotted value
@@ -78,7 +83,9 @@ export const useUpdateBuilding = (onSuccessCallback?: () => void) => {
       updateBuilding(data, id),
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: ["buildings"] });
-      const previousBuildings = queryClient.getQueryData<TBuilding[]>(["buildings"]);
+      const previousBuildings = queryClient.getQueryData<TBuilding[]>([
+        "buildings",
+      ]);
 
       if (previousBuildings) {
         queryClient.setQueryData<TBuilding[]>(
@@ -113,7 +120,9 @@ export const useDeleteBuilding = (onSuccessCallback?: () => void) => {
     mutationFn: (id: string) => deleteBuilding(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ["buildings"] });
-      const previousBuildings = queryClient.getQueryData<TBuilding[]>(["buildings"]);
+      const previousBuildings = queryClient.getQueryData<TBuilding[]>([
+        "buildings",
+      ]);
 
       if (previousBuildings) {
         queryClient.setQueryData<TBuilding[]>(

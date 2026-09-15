@@ -30,13 +30,13 @@ export const MainContent = ({ runId }: { runId: string }) => {
           <h1 className="text-2xl font-bold">Detail Run DSS</h1>
           <p className="text-muted-foreground text-sm">ID Run: {data?.id}</p>
         </div>
-        <Badge variant="outline" className="text-lg px-4 py-2">
+        <Badge variant="outline" className="px-4 py-2 text-lg">
           Avg Score: {data?.averageScore.toFixed(2)}
         </Badge>
       </div>
 
       {/* 2. Statistik Visual */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Snapshot Weights Visualization */}
         <WeightsPieChart weights={data?.snapshotWeights ?? []} />
 
@@ -45,7 +45,7 @@ export const MainContent = ({ runId }: { runId: string }) => {
           <CardHeader>
             <CardTitle className="text-sm">Sebaran Prioritas Gedung</CardTitle>
           </CardHeader>
-          <CardContent className="h-full bg-muted flex items-center justify-center rounded-md">
+          <CardContent className="bg-muted flex h-full items-center justify-center rounded-md">
             <MapView
               buildings={
                 data?.sawRunDetails.map((detail) => ({

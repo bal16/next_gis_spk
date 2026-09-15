@@ -35,12 +35,12 @@ export const BuildingPopup: FC<Props> = ({
   getPriorityColor,
 }) => {
   return (
-    <Card className="relative min-w-[300px] bg-background/95 backdrop-blur-md">
+    <Card className="bg-background/95 relative min-w-[300px] backdrop-blur-md">
       <CardHeader>
         <CardAction>
           <Button
             onClick={onClose}
-            className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+            className="hover:bg-muted absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full transition-colors"
             aria-label="Close"
             variant={"ghost"}
           >
@@ -49,15 +49,15 @@ export const BuildingPopup: FC<Props> = ({
         </CardAction>
 
         <CardTitle>
-          <h3 className="font-bold text-xl">{building.name}</h3>
+          <h3 className="text-xl font-bold">{building.name}</h3>
         </CardTitle>
       </CardHeader>
 
       <CardContent>
         <Collapsible>
           <CollapsibleTrigger asChild>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-muted-foreground capitalize">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-muted-foreground text-sm capitalize">
                 Building Info
               </span>
               <Button variant="ghost" size="icon" className="size-8">
@@ -69,11 +69,11 @@ export const BuildingPopup: FC<Props> = ({
           <CollapsibleContent>
             {/* beri fallback ketika null (belum di ada history run) */}
             {Object.entries(building.criterias).map(([key, value]) => (
-              <div key={key} className="flex justify-between items-center mb-2">
-                <span className="text-sm text-muted-foreground capitalize">
+              <div key={key} className="mb-2 flex items-center justify-between">
+                <span className="text-muted-foreground text-sm capitalize">
                   {key.replace(/_/g, " ")}
                 </span>
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-foreground text-sm font-medium">
                   {value instanceof Date
                     ? value.toLocaleDateString()
                     : value === null || value === undefined
@@ -85,11 +85,11 @@ export const BuildingPopup: FC<Props> = ({
           </CollapsibleContent>
         </Collapsible>
 
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-medium text-muted-foreground">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground text-sm font-medium">
             Skor Akhir
           </span>
-          <span className="text-2xl font-bold text-foreground">
+          <span className="text-foreground text-2xl font-bold">
             {building.score?.toFixed(2) || "N/A"}
           </span>
         </div>
@@ -98,13 +98,13 @@ export const BuildingPopup: FC<Props> = ({
       <Separator />
 
       <CardFooter className="justify-between">
-        <span className="text-sm font-medium text-muted-foreground">
+        <span className="text-muted-foreground text-sm font-medium">
           Status Prioritas
         </span>
         <Tooltip>
           <TooltipTrigger>
             <span
-              className={`px-3 py-1.5 rounded-full text-xs font-bold text-white ${
+              className={`rounded-full px-3 py-1.5 text-xs font-bold text-white ${
                 getPriorityColor?.(building.priority) ?? "bg-muted"
               }`}
             >

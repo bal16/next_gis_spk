@@ -24,7 +24,11 @@ export async function GET() {
         cookieStore.delete("spk.access-token");
         cookieStore.delete("spk.refresh-token");
         return NextResponse.json(
-          { message: "Sesi tidak valid atau telah kedaluwarsa", status: 401, error: backendData },
+          {
+            message: "Sesi tidak valid atau telah kedaluwarsa",
+            status: 401,
+            error: backendData,
+          },
           { status: 401, headers: { "Cache-Control": "no-store" } }
         );
       }

@@ -31,7 +31,7 @@ export const BuildingFilters = ({
               <ToggleGroupItem
                 value={filter}
                 onClick={() => onFilterChange(filter)}
-                className="w-full justify-start rounded-lg py-2 text-start px-2 border-accent border"
+                className="border-accent w-full justify-start rounded-lg border px-2 py-2 text-start"
               >
                 {filter}
               </ToggleGroupItem>

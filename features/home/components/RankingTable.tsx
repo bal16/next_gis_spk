@@ -35,14 +35,14 @@ export const RankingTable = ({
   const sortedBuildings = [...buildings].sort((a, b) => b.score - a.score);
 
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="overflow-hidden rounded-lg border">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-12">No</TableHead>
               <TableHead className="min-w-[140px]">Gedung</TableHead>
-              <TableHead className="text-right w-16">Skor</TableHead>
+              <TableHead className="w-16 text-right">Skor</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -50,21 +50,21 @@ export const RankingTable = ({
               <TableRow
                 key={building.id}
                 className={
-                  onBuildingClick ? "cursor-pointer hover:bg-muted/50" : ""
+                  onBuildingClick ? "hover:bg-muted/50 cursor-pointer" : ""
                 }
                 onClick={() => onBuildingClick?.(building)}
               >
                 <TableCell className="font-medium">#{index + 1}</TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1">
-                    <span className="font-medium text-sm">{building.name}</span>
+                    <span className="text-sm font-medium">{building.name}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-muted-foreground text-xs">
                         {building.code}
                       </span>
                       <Badge
                         variant={getPriorityBadgeVariant(building.priority)}
-                        className="text-[10px] px-1.5 py-0"
+                        className="px-1.5 py-0 text-[10px]"
                       >
                         {building.priority.replace("Prioritas ", "")}
                       </Badge>
@@ -80,7 +80,7 @@ export const RankingTable = ({
               <TableRow>
                 <TableCell
                   colSpan={3}
-                  className="text-center py-4 text-muted-foreground"
+                  className="text-muted-foreground py-4 text-center"
                 >
                   <span>Not found</span>
                 </TableCell>

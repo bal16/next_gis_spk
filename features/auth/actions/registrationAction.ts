@@ -8,7 +8,7 @@ import type { ActionResponse } from "../types/action";
 import { registerUser } from "../api/registerUser";
 
 export async function registrationAction(
-  formData: RegisterFormData,
+  formData: RegisterFormData
 ): Promise<ActionResponse> {
   const validatedFields = registerSchema.safeParse(formData);
   if (!validatedFields.success) {
@@ -33,11 +33,16 @@ export async function registrationAction(
     // console.error(error);
     if (axios.isAxiosError(error)) {
       const errorData = error.response?.data;
-      const errorMessage = typeof errorData?.message === 'string' 
-        ? errorData.message 
-        : errorData?.message?.message || "Terjadi kesalahan pada server.";
+      const errorMessage =
+        typeof errorData?.message === "string"
+          ? errorData.message
+          : errorData?.message?.message || "Terjadi kesalahan pada server.";
 
-      if (error.response && error.response?.status >= 400 && error.response?.status < 500) {
+      if (
+        error.response &&
+        error.response?.status >= 400 &&
+        error.response?.status < 500
+      ) {
         const localizedMessages: Record<string, string> = {
           "Email already in use": "Email ini sudah terdaftar.",
         };

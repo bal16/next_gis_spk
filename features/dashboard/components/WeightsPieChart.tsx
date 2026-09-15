@@ -27,11 +27,11 @@ export function WeightsPieChart({ weights }: { weights: TWeightSnapshot[] }) {
 
   // 2. Data untuk Lingkaran Luar (Accumulated SubWeights)
   const hasSubweight = weights.filter(
-    (w) => w.subWeights && w.subWeights.length > 0,
+    (w) => w.subWeights && w.subWeights.length > 0
   );
 
   const hasNotSubweight = weights.filter(
-    (w) => !w.subWeights || w.subWeights.length === 0,
+    (w) => !w.subWeights || w.subWeights.length === 0
   );
 
   const accumulatedWeights = [
@@ -40,7 +40,7 @@ export function WeightsPieChart({ weights }: { weights: TWeightSnapshot[] }) {
       w.subWeights!.map((sw) => ({
         ...sw,
         value: w.value * sw.value, // Akumulasi value seperti sebelumnya
-      })),
+      }))
     ),
   ];
 
@@ -61,7 +61,7 @@ export function WeightsPieChart({ weights }: { weights: TWeightSnapshot[] }) {
   } as ChartConfig;
 
   const allUniqueItems = [...weights, ...accumulatedWeights].filter(
-    (item, index, self) => index === self.findIndex((t) => t.key === item.key),
+    (item, index, self) => index === self.findIndex((t) => t.key === item.key)
   ); // Mengambil semua item unik berdasarkan key
 
   allUniqueItems.forEach((w, index) => {
@@ -72,7 +72,7 @@ export function WeightsPieChart({ weights }: { weights: TWeightSnapshot[] }) {
   });
 
   return (
-    <Card className="md:col-span-1 flex flex-col">
+    <Card className="flex flex-col md:col-span-1">
       <CardHeader className="items-center pb-0">
         <CardTitle className="text-sm">Bobot yang Digunakan</CardTitle>
       </CardHeader>
@@ -80,7 +80,7 @@ export function WeightsPieChart({ weights }: { weights: TWeightSnapshot[] }) {
         {weights.length > 0 ? (
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[300px] pb-0 [&_.recharts-pie-label-text]:fill-foreground w-full"
+            className="[&_.recharts-pie-label-text]:fill-foreground mx-auto aspect-square max-h-[300px] w-full pb-0"
           >
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent />} />
@@ -114,7 +114,7 @@ export function WeightsPieChart({ weights }: { weights: TWeightSnapshot[] }) {
             </PieChart>
           </ChartContainer>
         ) : (
-          <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
+          <div className="text-muted-foreground flex h-[200px] items-center justify-center text-sm">
             Belum ada data bobot
           </div>
         )}

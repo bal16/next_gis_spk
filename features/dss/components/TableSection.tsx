@@ -19,7 +19,13 @@ import { getResultDatas } from "../api/get-results";
 import { useRunCalculation } from "../hooks/useDSS";
 
 export const TableSection = () => {
-  const { data: dssResults, isLoading, isError, error, refetch } = useQuery({
+  const {
+    data: dssResults,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
     queryKey: ["dss"],
     queryFn: getResultDatas,
     staleTime: Infinity,
@@ -31,8 +37,15 @@ export const TableSection = () => {
     return (
       <div className="container mx-auto space-y-4">
         <div className="rounded-md border p-4">
-          <p className="text-sm text-destructive">{(error as Error)?.message || "Failed to load SAW runs."}</p>
-          <Button variant="outline" size="sm" onClick={() => (refetch as unknown as () => void)?.()} className="mt-3">
+          <p className="text-destructive text-sm">
+            {(error as Error)?.message || "Failed to load SAW runs."}
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => (refetch as unknown as () => void)?.()}
+            className="mt-3"
+          >
             Retry
           </Button>
         </div>
@@ -63,7 +76,12 @@ export const TableSection = () => {
           <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
             <DialogTrigger asChild>
               <Button disabled={isPending}>
-                {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
+                {isPending && (
+                  <LoaderCircle
+                    data-icon="inline-start"
+                    className="animate-spin"
+                  />
+                )}
                 {isPending ? "Menghitung..." : "Jalankan Perhitungan SAW"}
               </Button>
             </DialogTrigger>
@@ -71,15 +89,29 @@ export const TableSection = () => {
               <DialogHeader>
                 <DialogTitle>Konfirmasi Perhitungan</DialogTitle>
                 <DialogDescription>
-                  Jalankan perhitungan SAW sekarang? Hasil akan disimpan sebagai riwayat baru.
+                  Jalankan perhitungan SAW sekarang? Hasil akan disimpan sebagai
+                  riwayat baru.
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setConfirmOpen(false)} disabled={isPending}>
+                <Button
+                  variant="outline"
+                  onClick={() => setConfirmOpen(false)}
+                  disabled={isPending}
+                >
                   Batal
                 </Button>
-                <Button onClick={handleConfirm} disabled={isPending} aria-busy={isPending}>
-                  {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
+                <Button
+                  onClick={handleConfirm}
+                  disabled={isPending}
+                  aria-busy={isPending}
+                >
+                  {isPending && (
+                    <LoaderCircle
+                      data-icon="inline-start"
+                      className="animate-spin"
+                    />
+                  )}
                   Konfirmasi
                 </Button>
               </DialogFooter>

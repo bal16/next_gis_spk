@@ -16,7 +16,7 @@ export const useFilteredBuildings = () => {
   });
   const flyToBuilding = useMapStore((state) => state.flyToBuilding);
   const setSelectedBuilding = useSelectedBuildingStore(
-    (state) => state.setSelectedBuilding,
+    (state) => state.setSelectedBuilding
   );
   const filter = useFilterStore((state) => state.filter);
   const rawSearchQuery = useSearchStore((state) => state.query);
@@ -26,7 +26,7 @@ export const useFilteredBuildings = () => {
   const getFilteredBuildings = (
     buildings: TBuilding[],
     filter: string,
-    searchQuery: string,
+    searchQuery: string
   ) => {
     return buildings
       .filter((building) => {

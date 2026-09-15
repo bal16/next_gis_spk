@@ -44,7 +44,7 @@ const SCORE_OPTIONS = [
 export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
   const [open, setOpen] = useState(false);
   const { mutateAsync: createAssessment, isPending } = useCreateAssessment(
-    buildingCode || "",
+    buildingCode || ""
   );
 
   const form = useForm<TCreateAssessment>({
@@ -93,17 +93,21 @@ export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
           <DialogHeader>
             <DialogTitle>Tambah Penilaian</DialogTitle>
             <DialogDescription>
-              Isi detail penilaian gedung. Pilih 1–3 untuk kriteria (1 = buruk, 3 = baik). Klik simpan saat selesai.
+              Isi detail penilaian gedung. Pilih 1–3 untuk kriteria (1 = buruk,
+              3 = baik). Klik simpan saat selesai.
             </DialogDescription>
           </DialogHeader>
 
-          <FieldGroup className="flex flex-col gap-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
+          <FieldGroup className="flex max-h-[60vh] flex-col gap-4 overflow-y-auto py-4 pr-2">
             {/* Age — numeric Input, 0+ */}
             <Controller
               control={form.control}
               name="age"
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                <Field
+                  data-invalid={fieldState.invalid}
+                  data-disabled={isPending}
+                >
                   <FieldLabel htmlFor={field.name}>Umur (tahun)</FieldLabel>
                   <Input
                     id={field.name}
@@ -113,12 +117,22 @@ export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
                     min={0}
                     step={1}
                     placeholder="Contoh 10"
-                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value === ""
+                          ? undefined
+                          : e.target.valueAsNumber
+                      )
+                    }
                     disabled={isPending}
                     aria-invalid={fieldState.invalid}
                   />
-                  <FieldDescription>Umur bangunan dalam tahun, minimal 0.</FieldDescription>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  <FieldDescription>
+                    Umur bangunan dalam tahun, minimal 0.
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -126,8 +140,10 @@ export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
             {/* Scored criteria 1-3 as ToggleGroup inside FieldSet */}
             <FieldSet>
               <FieldLegend variant="label">Kriteria Penilaian</FieldLegend>
-              <FieldDescription>Pilih 1 = buruk, 2 = sedang, 3 = baik. Wajib diisi.</FieldDescription>
-              <div className="flex flex-col gap-4 mt-2">
+              <FieldDescription>
+                Pilih 1 = buruk, 2 = sedang, 3 = baik. Wajib diisi.
+              </FieldDescription>
+              <div className="mt-2 flex flex-col gap-4">
                 {(
                   [
                     { name: "structure" as const, label: "Struktur" },
@@ -142,26 +158,39 @@ export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
                     control={form.control}
                     name={item.name}
                     render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
-                        <FieldLabel id={`${item.name}-label`}>{item.label}</FieldLabel>
+                      <Field
+                        data-invalid={fieldState.invalid}
+                        data-disabled={isPending}
+                      >
+                        <FieldLabel id={`${item.name}-label`}>
+                          {item.label}
+                        </FieldLabel>
                         <ToggleGroup
                           type="single"
                           variant="outline"
                           spacing={1}
                           value={field.value != null ? String(field.value) : ""}
-                          onValueChange={(val) => field.onChange(val ? Number(val) : undefined)}
+                          onValueChange={(val) =>
+                            field.onChange(val ? Number(val) : undefined)
+                          }
                           aria-labelledby={`${item.name}-label`}
                           aria-invalid={fieldState.invalid}
                           data-disabled={isPending}
                           disabled={isPending}
                         >
                           {SCORE_OPTIONS.map((opt) => (
-                            <ToggleGroupItem key={opt.value} value={opt.value} aria-label={`${item.label} ${opt.label}`}>
+                            <ToggleGroupItem
+                              key={opt.value}
+                              value={opt.value}
+                              aria-label={`${item.label} ${opt.label}`}
+                            >
                               {opt.label}
                             </ToggleGroupItem>
                           ))}
                         </ToggleGroup>
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -173,18 +202,35 @@ export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
               control={form.control}
               name="lastMaintenance"
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
-                  <FieldLabel htmlFor={field.name}>Pemeliharaan Terakhir</FieldLabel>
+                <Field
+                  data-invalid={fieldState.invalid}
+                  data-disabled={isPending}
+                >
+                  <FieldLabel htmlFor={field.name}>
+                    Pemeliharaan Terakhir
+                  </FieldLabel>
                   <Input
                     id={field.name}
                     type="date"
-                    value={field.value ? new Date(field.value).toISOString().split("T")[0] : ""}
-                    onChange={(e) => field.onChange(e.target.value ? new Date(e.target.value) : undefined)}
+                    value={
+                      field.value
+                        ? new Date(field.value).toISOString().split("T")[0]
+                        : ""
+                    }
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? new Date(e.target.value) : undefined
+                      )
+                    }
                     disabled={isPending}
                     aria-invalid={fieldState.invalid}
                   />
-                  <FieldDescription>Kosongkan jika belum pernah. Format YYYY-MM-DD.</FieldDescription>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  <FieldDescription>
+                    Kosongkan jika belum pernah. Format YYYY-MM-DD.
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -197,7 +243,12 @@ export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isPending || !buildingCode}>
-              {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
+              {isPending && (
+                <LoaderCircle
+                  data-icon="inline-start"
+                  className="animate-spin"
+                />
+              )}
               {isPending ? "Menyimpan..." : "Simpan"}
             </Button>
           </DialogFooter>

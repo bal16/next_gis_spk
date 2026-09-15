@@ -49,7 +49,10 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         onSuccess?.();
       } else {
         const msg = response.message || "";
-        if (msg.includes("Email ini sudah terdaftar") || msg.toLowerCase().includes("email")) {
+        if (
+          msg.includes("Email ini sudah terdaftar") ||
+          msg.toLowerCase().includes("email")
+        ) {
           form.setError("email", { message: msg });
         }
         toast.error("Registration Failed", {
@@ -164,7 +167,12 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isPending}
+          aria-busy={isPending}
+        >
           {isPending ? (
             <LoaderCircle data-icon="inline-start" className="animate-spin" />
           ) : (

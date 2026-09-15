@@ -48,7 +48,10 @@ export function LoginForm() {
       if (response.status === "error") {
         const msg = response.message || "";
         // Map known server messages to field errors for a11y
-        if (msg.includes("Username atau Password salah") || msg.includes("Invalid credentials")) {
+        if (
+          msg.includes("Username atau Password salah") ||
+          msg.includes("Invalid credentials")
+        ) {
           form.setError("email", { message: msg });
           form.setError("password", { message: msg });
         } else if (msg.toLowerCase().includes("email")) {
@@ -122,7 +125,12 @@ export function LoginForm() {
           )}
         />
 
-        <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isPending}
+          aria-busy={isPending}
+        >
           {isPending ? (
             <LoaderCircle data-icon="inline-start" className="animate-spin" />
           ) : (

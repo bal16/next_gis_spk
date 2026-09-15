@@ -16,14 +16,20 @@ import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/features/dashboard/components/ConfirmationDialog";
 import type { TGetResultsResponse } from "../../api/get-results";
 import { useDeleteRunDetail } from "../../hooks/useDSS";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { createSortableHeader } from "@/components/admin/AdminDataTable";
 
 type RunDetail = TGetResultsResponse["sawRunDetails"][0];
 
 const ActionCell = ({ runDetail }: { runDetail: RunDetail }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const { mutateAsync: deleteRunDetail, isPending } = useDeleteRunDetail(runDetail.sawRunId);
+  const { mutateAsync: deleteRunDetail, isPending } = useDeleteRunDetail(
+    runDetail.sawRunId
+  );
 
   return (
     <>
@@ -75,7 +81,14 @@ export const columns: ColumnDef<RunDetail>[] = [
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="sm" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")} aria-label="Sort by Skor Terakhir">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+              aria-label="Sort by Skor Terakhir"
+            >
               Skor Terakhir
             </Button>
           </TooltipTrigger>

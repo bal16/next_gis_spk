@@ -10,11 +10,11 @@ import { useFilterStore } from "@/features/home/store/useFilter";
 import type { TBuilding } from "@/features/buildings/type";
 
 export const SidebarHeader = () => (
-  <div className="p-4 border-b bg-card">
-    <h1 className="text-lg md:text-xl font-bold">
+  <div className="bg-card border-b p-4">
+    <h1 className="text-lg font-bold md:text-xl">
       SPK Prioritas Perawatan Gedung
     </h1>
-    <p className="text-xs md:text-sm text-muted-foreground">
+    <p className="text-muted-foreground text-xs md:text-sm">
       Fakultas Teknik UNNES
     </p>
   </div>
@@ -26,9 +26,9 @@ export const SidebarSearch = () => {
   );
 
   return (
-    <div className="p-4 border-b">
+    <div className="border-b p-4" data-tour="search-input">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
         <Input
           type="text"
           placeholder="Cari gedung (nama/kode)..."
@@ -46,8 +46,8 @@ export const SidebarFilters = () => {
     useShallow((state) => [state.filter, state.setFilter])
   );
   return (
-    <div className="p-4 border-b">
-      <h2 className="text-sm font-semibold mb-3">Filter Prioritas</h2>
+    <div className="border-b p-4" data-tour="priority-filters">
+      <h2 className="mb-3 text-sm font-semibold">Filter Prioritas</h2>
       <BuildingFilters activeFilter={filter} onFilterChange={setFilter} />
     </div>
   );
@@ -62,12 +62,12 @@ export function SidebarContent({
   onBuildingSelect: handleBuildingClick,
 }: SidebarContentProps) {
   return (
-    <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
       <SidebarHeader />
       <SidebarSearch />
       <SidebarFilters />
-      <div className="p-4">
-        <h2 className="text-sm font-semibold mb-3">Daftar Peringkat</h2>
+      <div className="p-4" data-tour="ranking-table">
+        <h2 className="mb-3 text-sm font-semibold">Daftar Peringkat</h2>
         <RankingTable
           buildings={buildings}
           onBuildingClick={handleBuildingClick}

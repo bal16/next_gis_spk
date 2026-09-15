@@ -54,7 +54,9 @@ export function ConfirmationDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>{cancelLabel}</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>
+            {cancelLabel}
+          </AlertDialogCancel>
           <AlertDialogAction asChild>
             <Button
               variant={variant === "destructive" ? "destructive" : "default"}
@@ -62,7 +64,12 @@ export function ConfirmationDialog({
               disabled={isPending}
               aria-busy={isPending}
             >
-              {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
+              {isPending && (
+                <LoaderCircle
+                  data-icon="inline-start"
+                  className="animate-spin"
+                />
+              )}
               {confirmLabel}
             </Button>
           </AlertDialogAction>

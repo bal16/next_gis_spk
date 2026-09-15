@@ -63,7 +63,7 @@ backendClient.interceptors.response.use(
             headers: {
               Authorization: `Bearer ${refreshToken}`,
             },
-          },
+          }
         );
 
         const { accessToken, refreshToken: newRefreshToken } =
@@ -106,7 +106,7 @@ backendClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
 export default backendClient;

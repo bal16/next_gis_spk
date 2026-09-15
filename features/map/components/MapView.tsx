@@ -13,7 +13,13 @@ import Map, {
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { AlertCircle, AlertTriangle, CheckCircle, Home, HelpCircle } from "lucide-react";
+import {
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle,
+  Home,
+  HelpCircle,
+} from "lucide-react";
 
 // import { TBuilding } from "@/types/building";
 import { INITIAL_VIEW } from "@/lib/config";
@@ -40,11 +46,11 @@ export const MapView = ({ buildings }: MapViewProps) => {
       state.setMapRef,
       state.resetView,
       state.flyToBuilding,
-    ]),
+    ])
   );
 
   const [selectedBuilding, setSelectedBuilding] = useSelectedBuildingStore(
-    useShallow((state) => [state.building, state.setSelectedBuilding]),
+    useShallow((state) => [state.building, state.setSelectedBuilding])
   );
 
   const onMapLoad = useCallback(() => {
@@ -60,9 +66,9 @@ export const MapView = ({ buildings }: MapViewProps) => {
       : "/styles/liberty-custom.json";
 
   return (
-    <div className="w-full h-full relative">
+    <div className="relative h-full w-full">
       {!isMapLoaded && (
-        <Skeleton className="absolute inset-0 z-50 w-full h-full rounded-none" />
+        <Skeleton className="absolute inset-0 z-50 h-full w-full rounded-none" />
       )}
       <Map
         ref={mapRef}
@@ -74,12 +80,12 @@ export const MapView = ({ buildings }: MapViewProps) => {
         <AttributionControl position="bottom-right" compact />
 
         {/* Horizontal Control Group - Bottom Right */}
-        <div className="absolute bottom-10 right-4 z-10 flex items-stretch gap-0 bg-background rounded-lg shadow-lg overflow-hidden border border-border ">
+        <div className="bg-background border-border absolute right-4 bottom-10 z-10 flex items-stretch gap-0 overflow-hidden rounded-lg border shadow-lg">
           {/* Reset View Button - Left */}
           <Button
             size="icon"
             variant="ghost"
-            className="h-[29px] w-10 rounded-none hover:bg-accent border-r border-border"
+            className="hover:bg-accent border-border h-[29px] w-10 rounded-none border-r"
             onClick={() => {
               handleResetMap();
               setSelectedBuilding(null);
@@ -110,7 +116,7 @@ export const MapView = ({ buildings }: MapViewProps) => {
             }}
           >
             <div
-              className="cursor-pointer transform hover:scale-110 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full"
+              className="focus-visible:ring-ring transform cursor-pointer rounded-full transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
               role="button"
               tabIndex={0}
               aria-label={`${building.name} — ${building.priority}`}
@@ -154,17 +160,19 @@ const getPriorityIcon = (priority: string) => {
   switch (priority) {
     case "Prioritas Tinggi":
       return (
-        <AlertCircle className="w-8 h-8 text-destructive drop-shadow-lg" />
+        <AlertCircle className="text-destructive h-8 w-8 drop-shadow-lg" />
       );
     case "Prioritas Sedang":
       return (
-        <AlertTriangle className="w-8 h-8 text-yellow-500 drop-shadow-lg" />
+        <AlertTriangle className="h-8 w-8 text-yellow-500 drop-shadow-lg" />
       );
     case "Prioritas Rendah":
-      return <CheckCircle className="w-8 h-8 text-green-500 drop-shadow-lg" />;
+      return <CheckCircle className="h-8 w-8 text-green-500 drop-shadow-lg" />;
     case "Belum Dihitung":
     default:
-      return <HelpCircle className="w-8 h-8 text-muted-foreground drop-shadow-lg" />;
+      return (
+        <HelpCircle className="text-muted-foreground h-8 w-8 drop-shadow-lg" />
+      );
   }
 };
 
@@ -174,8 +182,8 @@ const getPriorityColor = (priority: string) => {
     priority === "Prioritas Sedang" && "bg-yellow-500",
     priority === "Prioritas Rendah" && "bg-green-500",
     !["Prioritas Tinggi", "Prioritas Sedang", "Prioritas Rendah"].includes(
-      priority,
-    ) && "bg-muted",
+      priority
+    ) && "bg-muted"
   );
 };
 

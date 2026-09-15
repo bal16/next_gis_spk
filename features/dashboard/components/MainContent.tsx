@@ -29,11 +29,15 @@ export const MainContent = () => {
 
   if (!isLoading && !data) {
     return (
-      <div className="flex flex-col items-center justify-center h-[50vh] text-center space-y-4">
-        <AlertCircle className="h-16 w-16 text-muted-foreground" />
-        <h2 className="text-2xl font-bold text-muted-foreground">Belum Ada Riwayat Kalkulasi DSS</h2>
+      <div className="flex h-[50vh] flex-col items-center justify-center space-y-4 text-center">
+        <AlertCircle className="text-muted-foreground h-16 w-16" />
+        <h2 className="text-muted-foreground text-2xl font-bold">
+          Belum Ada Riwayat Kalkulasi DSS
+        </h2>
         <p className="text-muted-foreground max-w-md">
-          Sistem belum memiliki data hasil perhitungan SAW. Silahkan jalankan kalkulasi terlebih dahulu di menu SAW Calculation untuk melihat statistik.
+          Sistem belum memiliki data hasil perhitungan SAW. Silahkan jalankan
+          kalkulasi terlebih dahulu di menu SAW Calculation untuk melihat
+          statistik.
         </p>
         <Link href="/admin/dss">
           <Button variant="default">Jalankan Perhitungan SAW</Button>
@@ -55,13 +59,13 @@ export const MainContent = () => {
               : "N/A"}
           </p>
         </div>
-        <Badge variant="outline" className="text-lg px-4 py-2">
+        <Badge variant="outline" className="px-4 py-2 text-lg">
           Avg Score: {data?.averageScore.toFixed(2)}
         </Badge>
       </div>
 
       {/* 2. Statistik Visual */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Snapshot Weights Visualization */}
         <WeightsPieChart weights={data?.snapshotWeights ?? []} />
         {/* Map Preview */}
@@ -69,7 +73,7 @@ export const MainContent = () => {
           <CardHeader>
             <CardTitle className="text-sm">Sebaran Prioritas Gedung</CardTitle>
           </CardHeader>
-          <CardContent className="h-full bg-muted flex items-center justify-center rounded-md">
+          <CardContent className="bg-muted flex h-full items-center justify-center rounded-md">
             <MapView
               buildings={
                 data?.sawRunDetails.map((detail) => ({

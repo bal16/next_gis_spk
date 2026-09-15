@@ -35,9 +35,9 @@ export function ModeToggle() {
         }
       }}
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=light]:scale-100 group-data-[theme=light]:rotate-0 text-primary" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=dark]:scale-100 group-data-[theme=dark]:rotate-0 text-primary" />
-      <Monitor className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=system]:scale-100 group-data-[theme=system]:rotate-0 text-primary" />
+      <Sun className="text-primary h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=light]:scale-100 group-data-[theme=light]:rotate-0" />
+      <Moon className="text-primary absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=dark]:scale-100 group-data-[theme=dark]:rotate-0" />
+      <Monitor className="text-primary absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all group-data-[theme=system]:scale-100 group-data-[theme=system]:rotate-0" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   );

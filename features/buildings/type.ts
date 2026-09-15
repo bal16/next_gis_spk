@@ -1,6 +1,10 @@
 import z from "zod";
 
-type TPriority = "Prioritas Tinggi" | "Prioritas Sedang" | "Prioritas Rendah" | "Belum Dihitung";
+type TPriority =
+  | "Prioritas Tinggi"
+  | "Prioritas Sedang"
+  | "Prioritas Rendah"
+  | "Belum Dihitung";
 
 export interface TBuilding {
   id: string;
@@ -25,7 +29,11 @@ export type PriorityFilter = "Semua" | TPriority;
 
 export const createBuildingSchema = z.object({
   code: z.string().trim().min(1, "Kode wajib diisi"),
-  name: z.string().trim().min(1, "Nama wajib diisi").max(20, "Nama maksimal 20 karakter"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Nama wajib diisi")
+    .max(20, "Nama maksimal 20 karakter"),
   latitude: z.coerce
     .number<number>("Harus berupa angka")
     .min(-90, "Latitude harus di antara -90 dan 90")
@@ -37,7 +45,11 @@ export const createBuildingSchema = z.object({
 });
 
 export const updateBuildingSchema = z.object({
-  name: z.string().trim().min(1, "Nama wajib diisi").max(20, "Nama maksimal 20 karakter"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Nama wajib diisi")
+    .max(20, "Nama maksimal 20 karakter"),
   latitude: z.coerce
     .number<number>("Harus berupa angka")
     .min(-90, "Latitude harus di antara -90 dan 90")

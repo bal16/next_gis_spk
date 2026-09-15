@@ -27,7 +27,7 @@ export default async function RunDetailsPage({
         page={"Run Details"}
         path={[{ pageName: "DSS", url: "/admin/dss" }]}
       />
-      <main className="container max-w-7xl mx-auto p-4">
+      <main className="container mx-auto max-w-7xl p-4">
         <HydrationBoundary state={dehydrate(queryClient)}>
           {/* <TableSection /> */}
           <MainContent runId={runId} />

@@ -14,7 +14,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   createBuildingSchema,
@@ -122,13 +128,16 @@ export function BuildingDialog({
             </DialogDescription>
           </DialogHeader>
 
-          <FieldGroup className="flex flex-col gap-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
+          <FieldGroup className="flex max-h-[60vh] flex-col gap-4 overflow-y-auto py-4 pr-2">
             {!isEdit && (
               <Controller
                 control={form.control}
                 name="code"
                 render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                  <Field
+                    data-invalid={fieldState.invalid}
+                    data-disabled={isPending}
+                  >
                     <FieldLabel htmlFor={field.name}>Kode</FieldLabel>
                     <Input
                       {...field}
@@ -140,8 +149,12 @@ export function BuildingDialog({
                       autoComplete="off"
                       autoFocus
                     />
-                    <FieldDescription>Kode unik, tidak dapat diubah setelah dibuat.</FieldDescription>
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    <FieldDescription>
+                      Kode unik, tidak dapat diubah setelah dibuat.
+                    </FieldDescription>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
                   </Field>
                 )}
               />
@@ -150,7 +163,10 @@ export function BuildingDialog({
               control={form.control}
               name="name"
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                <Field
+                  data-invalid={fieldState.invalid}
+                  data-disabled={isPending}
+                >
                   <FieldLabel htmlFor={field.name}>Nama</FieldLabel>
                   <Input
                     {...field}
@@ -163,7 +179,9 @@ export function BuildingDialog({
                     autoComplete="off"
                   />
                   <FieldDescription>Maks 20 karakter.</FieldDescription>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -171,7 +189,10 @@ export function BuildingDialog({
               control={form.control}
               name="latitude"
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                <Field
+                  data-invalid={fieldState.invalid}
+                  data-disabled={isPending}
+                >
                   <FieldLabel htmlFor={field.name}>Latitude</FieldLabel>
                   <Input
                     id={field.name}
@@ -180,12 +201,22 @@ export function BuildingDialog({
                     inputMode="decimal"
                     step="any"
                     placeholder="-7.2900"
-                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value === ""
+                          ? undefined
+                          : e.target.valueAsNumber
+                      )
+                    }
                     disabled={isPending}
                     aria-invalid={fieldState.invalid}
                   />
-                  <FieldDescription>Desimal -90 s.d. 90. Contoh -7.29 (cek Google Maps).</FieldDescription>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  <FieldDescription>
+                    Desimal -90 s.d. 90. Contoh -7.29 (cek Google Maps).
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -193,7 +224,10 @@ export function BuildingDialog({
               control={form.control}
               name="longitude"
               render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} data-disabled={isPending}>
+                <Field
+                  data-invalid={fieldState.invalid}
+                  data-disabled={isPending}
+                >
                   <FieldLabel htmlFor={field.name}>Longitude</FieldLabel>
                   <Input
                     id={field.name}
@@ -202,12 +236,22 @@ export function BuildingDialog({
                     inputMode="decimal"
                     step="any"
                     placeholder="110.4100"
-                    onChange={(e) => field.onChange(e.target.value === "" ? undefined : e.target.valueAsNumber)}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value === ""
+                          ? undefined
+                          : e.target.valueAsNumber
+                      )
+                    }
                     disabled={isPending}
                     aria-invalid={fieldState.invalid}
                   />
-                  <FieldDescription>Desimal -180 s.d. 180. Contoh 110.41.</FieldDescription>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  <FieldDescription>
+                    Desimal -180 s.d. 180. Contoh 110.41.
+                  </FieldDescription>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -220,7 +264,12 @@ export function BuildingDialog({
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isPending}>
-              {isPending && <LoaderCircle data-icon="inline-start" className="animate-spin" />}
+              {isPending && (
+                <LoaderCircle
+                  data-icon="inline-start"
+                  className="animate-spin"
+                />
+              )}
               {isPending ? "Menyimpan..." : "Simpan"}
             </Button>
           </DialogFooter>

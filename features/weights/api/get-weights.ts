@@ -28,9 +28,8 @@ export type TWeight = {
 export const getWeights = async () => {
   // console.log("Fetching weights...");
   // await new Promise((resolve) => setTimeout(resolve, 500));
-  const response = await backendClient.get<SuccessResponse<TWeight[]>>(
-    "/dss/weights"
-  );
+  const response =
+    await backendClient.get<SuccessResponse<TWeight[]>>("/dss/weights");
   const { data } = response.data;
 
   //transform data sehingga yang punya subWeight ditaruh di index terakhir

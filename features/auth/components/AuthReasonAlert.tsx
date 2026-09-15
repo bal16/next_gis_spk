@@ -7,10 +7,14 @@ import { OctagonXIcon, InfoIcon } from "lucide-react";
 
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
-const REASON_MAP: Record<string, { title: string; description: string; variant: "destructive" | "default" }> = {
+const REASON_MAP: Record<
+  string,
+  { title: string; description: string; variant: "destructive" | "default" }
+> = {
   unauthenticated: {
     title: "Sesi habis",
-    description: "Silakan login kembali. Anda akan diarahkan ke dashboard setelah login.",
+    description:
+      "Silakan login kembali. Anda akan diarahkan ke dashboard setelah login.",
     variant: "destructive",
   },
   forbidden: {

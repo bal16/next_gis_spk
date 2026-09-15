@@ -22,7 +22,7 @@ export default async function OverviewPage() {
   return (
     <div>
       <SiteHeader page="Overview" />
-      <main className="container max-w-7xl mx-auto p-4">
+      <main className="container mx-auto max-w-7xl p-4">
         <HydrationBoundary state={dehydrate(queryClient)}>
           <MainContent />
         </HydrationBoundary>

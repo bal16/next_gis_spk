@@ -8,6 +8,7 @@ import { QueryParamNotifier } from "@/components/QueryParamNotifier";
 import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import { TourProvider } from "@/features/tour/provider";
+import { DemoBanner } from "@/components/DemoBanner";
 
 export const metadata: Metadata = {
   title: "SPK Gedung",
@@ -32,6 +33,7 @@ export default function RootLayout({
         >
           <QueryProvider>
             <TourProvider>
+              <DemoBanner />
               <Toaster />
               <Suspense>
                 <QueryParamNotifier />

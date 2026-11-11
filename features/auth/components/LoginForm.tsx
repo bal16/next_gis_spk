@@ -61,14 +61,18 @@ export function LoginForm() {
           description: msg,
         });
       } else if (response.status === "success") {
+        const targetUrl =
+          (response.data as { redirectUrl?: string } | undefined)
+            ?.redirectUrl || "/admin";
+
         toast.success("Login Successful", {
-          description: "Redirecting to dashboard...",
+          description: response.message || "Redirecting...",
         });
 
         queryClient.invalidateQueries({ queryKey: ["currentUser"] });
 
         setTimeout(() => {
-          router.push("/admin");
+          router.push(targetUrl);
         }, 500);
       }
     });

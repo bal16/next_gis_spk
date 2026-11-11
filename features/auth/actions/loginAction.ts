@@ -29,10 +29,22 @@ export async function loginAction(
         message: "Login gagal, token tidak diterima.",
       };
 
-    const { accessToken: token, refreshToken, username, isAdmin, id } = data;
+    const {
+      accessToken: token,
+      refreshToken,
+      username,
+      isAdmin,
+      id,
+      mustChangePassword,
+    } = data;
     const cookieStore = await cookies();
 
-    const user = { id, username, isAdmin };
+    const user = {
+      id,
+      username,
+      isAdmin,
+      mustChangePassword: Boolean(mustChangePassword),
+    };
 
     cookieStore.set("spk.session", JSON.stringify(user), {
       httpOnly: true,
@@ -59,9 +71,24 @@ export async function loginAction(
         sameSite: "lax",
       });
 
+    const redirectUrl = mustChangePassword
+      ? "/auth/change-password"
+      : isAdmin
+        ? "/admin"
+        : "/";
+
     return {
       status: "success",
-      message: "Login berhasil! Mengarahkan ke dashboard...",
+      message: mustChangePassword
+        ? "Login berhasil! Silakan ubah password Anda terlebih dahulu."
+        : isAdmin
+          ? "Login berhasil! Mengarahkan ke dashboard admin..."
+          : "Login berhasil! Mengarahkan ke beranda...",
+      data: {
+        redirectUrl,
+        mustChangePassword: Boolean(mustChangePassword),
+        isAdmin,
+      },
     };
   } catch (error) {
     console.error(error);

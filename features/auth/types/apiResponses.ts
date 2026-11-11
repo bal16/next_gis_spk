@@ -6,12 +6,14 @@ export interface LoginData {
   username: string;
   isAdmin: boolean;
   id: string;
+  mustChangePassword?: boolean;
 }
 
 export interface User {
   id: string;
   username: string;
   isAdmin: boolean;
+  mustChangePassword?: boolean;
 }
 
 export interface RegistrationData {

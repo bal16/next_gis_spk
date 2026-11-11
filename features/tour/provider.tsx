@@ -5,9 +5,10 @@ import {
   useContext,
   useEffect,
   useCallback,
-  useState,
+  useRef,
 } from "react";
 import { driver, type Driver, type DriveStep } from "driver.js";
+import { useMobileDrawerStore } from "@/features/home/store/useMobileDrawer";
 import {
   publicTourSteps,
   publicMobileTourSteps,
@@ -35,7 +36,7 @@ function isMobileViewport(): boolean {
 function filterVisibleSteps(steps: DriveStep[]): DriveStep[] {
   if (typeof document === "undefined") return steps;
   return steps.filter((step) => {
-    if (!step.element) return true;
+    if (!step.element || step.data?.insideDrawer) return true;
     if (typeof step.element !== "string") return true;
     const el = document.querySelector(step.element);
     if (!el) return false;
@@ -44,15 +45,22 @@ function filterVisibleSteps(steps: DriveStep[]): DriveStep[] {
   });
 }
 
+function cleanupMobileDrawerTourState() {
+  const drawerStore = useMobileDrawerStore.getState();
+  drawerStore.setOpen(false);
+  drawerStore.setTourActive(false);
+}
+
 export function TourProvider({ children }: { children: React.ReactNode }) {
-  const [driverObj, setDriverObj] = useState<Driver | null>(null);
+  const driverRef = useRef<Driver | null>(null);
 
   const destroyDriver = useCallback(() => {
-    if (driverObj) {
-      driverObj.destroy();
-      setDriverObj(null);
+    if (driverRef.current) {
+      driverRef.current.destroy();
+      driverRef.current = null;
     }
-  }, [driverObj]);
+    cleanupMobileDrawerTourState();
+  }, []);
 
   const createAndRunTour = useCallback(
     (steps: DriveStep[], storageKey: string) => {
@@ -62,6 +70,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       if (visibleSteps.length === 0) return;
 
       const mobile = isMobileViewport();
+      useMobileDrawerStore.getState().setTourActive(true);
 
       const tour = driver({
         popoverClass: "spk-tour",
@@ -72,21 +81,24 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
         doneBtnText: "Selesai",
         showButtons: ["next", "previous", "close"],
         allowClose: true,
+        allowKeyboardControl: !mobile,
         skipMissingElement: true,
         stagePadding: mobile ? 6 : 10,
         popoverOffset: mobile ? 8 : 10,
         steps: visibleSteps,
         onDestroyStarted: () => {
+          cleanupMobileDrawerTourState();
           tour.destroy();
-          setDriverObj(null);
+          driverRef.current = null;
         },
         onDestroyed: () => {
+          cleanupMobileDrawerTourState();
           localStorage.setItem(storageKey, "true");
-          setDriverObj(null);
+          driverRef.current = null;
         },
       });
 
-      setDriverObj(tour);
+      driverRef.current = tour;
       tour.drive();
     },
     [destroyDriver]
@@ -109,11 +121,13 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     return () => {
-      if (driverObj) {
-        driverObj.destroy();
+      if (driverRef.current) {
+        driverRef.current.destroy();
+        driverRef.current = null;
       }
+      cleanupMobileDrawerTourState();
     };
-  }, [driverObj]);
+  }, []);
 
   return (
     <TourContext.Provider

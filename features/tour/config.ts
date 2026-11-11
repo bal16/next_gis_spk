@@ -1,4 +1,10 @@
 import type { DriveStep } from "driver.js";
+import { useMobileDrawerStore } from "@/features/home/store/useMobileDrawer";
+
+const DRAWER_OPEN_DELAY_MS = 520;
+const DRAWER_CLOSE_DELAY_MS = 400;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const publicTourSteps: DriveStep[] = [
   {
@@ -34,6 +40,88 @@ export const publicTourSteps: DriveStep[] = [
       title: "Pencarian",
       description: "Cari gedung berdasarkan nama atau kode secara real-time.",
       side: "bottom",
+    },
+  },
+];
+
+export const publicMobileTourSteps: DriveStep[] = [
+  {
+    popover: {
+      title: "Peta Gedung Interaktif",
+      description:
+        "Peta menampilkan semua gedung Fakultas Teknik UNNES. Warna marker menunjukkan level prioritas perawatan. Ketuk marker untuk melihat detail.",
+    },
+  },
+  {
+    element: "[data-tour='mobile-drawer-trigger']",
+    popover: {
+      title: "Daftar & Filter Gedung",
+      description:
+        'Ketuk tombol "Lihat Daftar" untuk membuka pencarian gedung, filter prioritas, dan tabel peringkat SAW.',
+      side: "top",
+      align: "center",
+      onNextClick: async (_el, _step, { driver }) => {
+        useMobileDrawerStore.getState().setOpen(true);
+        await wait(DRAWER_OPEN_DELAY_MS);
+        driver.moveNext();
+      },
+    },
+  },
+  {
+    element: "[data-tour='mobile-search-input']",
+    data: { insideDrawer: true },
+    popover: {
+      title: "Pencarian",
+      description: "Cari gedung berdasarkan nama atau kode secara real-time.",
+      side: "bottom",
+      align: "center",
+      onPrevClick: async (_el, _step, { driver }) => {
+        useMobileDrawerStore.getState().setOpen(false);
+        await wait(DRAWER_CLOSE_DELAY_MS);
+        driver.movePrevious();
+      },
+    },
+  },
+  {
+    element: "[data-tour='mobile-priority-filters']",
+    data: { insideDrawer: true },
+    popover: {
+      title: "Filter Prioritas",
+      description:
+        "Tampilkan gedung berdasarkan level prioritas: Semua, Tinggi, Sedang, atau Rendah.",
+      side: "top",
+      align: "center",
+    },
+  },
+  {
+    element: "[data-tour='mobile-ranking-table']",
+    data: { insideDrawer: true },
+    popover: {
+      title: "Tabel Peringkat",
+      description:
+        "Gedung diurutkan berdasarkan skor SAW. Skor lebih tinggi berarti prioritas perawatan lebih tinggi. Ketuk baris untuk terbang ke gedung di peta.",
+      side: "top",
+      align: "center",
+      onNextClick: async (_el, _step, { driver }) => {
+        useMobileDrawerStore.getState().setOpen(false);
+        await wait(DRAWER_CLOSE_DELAY_MS);
+        driver.moveNext();
+      },
+    },
+  },
+  {
+    element: "[data-tour='public-header-actions']",
+    popover: {
+      title: "Menu & Panduan",
+      description:
+        "Buka panduan kembali kapan saja, ubah tema tampilan (terang/gelap), atau login ke akun Anda.",
+      side: "bottom",
+      align: "end",
+      onPrevClick: async (_el, _step, { driver }) => {
+        useMobileDrawerStore.getState().setOpen(true);
+        await wait(DRAWER_OPEN_DELAY_MS);
+        driver.movePrevious();
+      },
     },
   },
 ];
@@ -99,6 +187,29 @@ export const adminTourSteps: DriveStep[] = [
       title: "Menu Pengguna",
       description: "Akses profil, ganti tema (terang/gelap), dan logout.",
       side: "bottom",
+    },
+  },
+];
+
+export const adminMobileTourSteps: DriveStep[] = [
+  {
+    element: "[data-tour='admin-sidebar-trigger']",
+    popover: {
+      title: "Navigasi Admin",
+      description:
+        "Ketuk tombol ini untuk membuka menu sidebar: Overview, Buildings, Bobot Kriteria, Perhitungan SAW, dan Token Undangan.",
+      side: "bottom",
+      align: "start",
+    },
+  },
+  {
+    element: "[data-tour='user-menu']",
+    popover: {
+      title: "Menu Pengguna",
+      description:
+        "Akses profil akun, kembali ke beranda, ganti tema (terang/gelap), dan logout.",
+      side: "bottom",
+      align: "end",
     },
   },
 ];

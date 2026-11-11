@@ -5,10 +5,16 @@ import {
   useContext,
   useEffect,
   useCallback,
-  useState,
+  useRef,
 } from "react";
 import { driver, type Driver, type DriveStep } from "driver.js";
-import { publicTourSteps, adminTourSteps } from "./config";
+import { useMobileDrawerStore } from "@/features/home/store/useMobileDrawer";
+import {
+  publicTourSteps,
+  publicMobileTourSteps,
+  adminTourSteps,
+  adminMobileTourSteps,
+} from "./config";
 import "./styles.css";
 
 interface TourContextValue {
@@ -22,19 +28,49 @@ const TourContext = createContext<TourContextValue | null>(null);
 const STORAGE_KEY_PUBLIC = "spk-tour-completed-public";
 const STORAGE_KEY_ADMIN = "spk-tour-completed-admin";
 
+function isMobileViewport(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 767px)").matches;
+}
+
+function filterVisibleSteps(steps: DriveStep[]): DriveStep[] {
+  if (typeof document === "undefined") return steps;
+  return steps.filter((step) => {
+    if (!step.element || step.data?.insideDrawer) return true;
+    if (typeof step.element !== "string") return true;
+    const el = document.querySelector(step.element);
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  });
+}
+
+function cleanupMobileDrawerTourState() {
+  const drawerStore = useMobileDrawerStore.getState();
+  drawerStore.setOpen(false);
+  drawerStore.setTourActive(false);
+}
+
 export function TourProvider({ children }: { children: React.ReactNode }) {
-  const [driverObj, setDriverObj] = useState<Driver | null>(null);
+  const driverRef = useRef<Driver | null>(null);
 
   const destroyDriver = useCallback(() => {
-    if (driverObj) {
-      driverObj.destroy();
-      setDriverObj(null);
+    if (driverRef.current) {
+      driverRef.current.destroy();
+      driverRef.current = null;
     }
-  }, [driverObj]);
+    cleanupMobileDrawerTourState();
+  }, []);
 
   const createAndRunTour = useCallback(
     (steps: DriveStep[], storageKey: string) => {
       destroyDriver();
+
+      const visibleSteps = filterVisibleSteps(steps);
+      if (visibleSteps.length === 0) return;
+
+      const mobile = isMobileViewport();
+      useMobileDrawerStore.getState().setTourActive(true);
 
       const tour = driver({
         popoverClass: "spk-tour",
@@ -45,29 +81,37 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
         doneBtnText: "Selesai",
         showButtons: ["next", "previous", "close"],
         allowClose: true,
-        steps,
+        allowKeyboardControl: !mobile,
+        skipMissingElement: true,
+        stagePadding: mobile ? 6 : 10,
+        popoverOffset: mobile ? 8 : 10,
+        steps: visibleSteps,
         onDestroyStarted: () => {
+          cleanupMobileDrawerTourState();
           tour.destroy();
-          setDriverObj(null);
+          driverRef.current = null;
         },
         onDestroyed: () => {
+          cleanupMobileDrawerTourState();
           localStorage.setItem(storageKey, "true");
-          setDriverObj(null);
+          driverRef.current = null;
         },
       });
 
-      setDriverObj(tour);
+      driverRef.current = tour;
       tour.drive();
     },
     [destroyDriver]
   );
 
   const startPublicTour = useCallback(() => {
-    createAndRunTour(publicTourSteps, STORAGE_KEY_PUBLIC);
+    const steps = isMobileViewport() ? publicMobileTourSteps : publicTourSteps;
+    createAndRunTour(steps, STORAGE_KEY_PUBLIC);
   }, [createAndRunTour]);
 
   const startAdminTour = useCallback(() => {
-    createAndRunTour(adminTourSteps, STORAGE_KEY_ADMIN);
+    const steps = isMobileViewport() ? adminMobileTourSteps : adminTourSteps;
+    createAndRunTour(steps, STORAGE_KEY_ADMIN);
   }, [createAndRunTour]);
 
   const resetTour = useCallback((type: "public" | "admin") => {
@@ -77,11 +121,13 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     return () => {
-      if (driverObj) {
-        driverObj.destroy();
+      if (driverRef.current) {
+        driverRef.current.destroy();
+        driverRef.current = null;
       }
+      cleanupMobileDrawerTourState();
     };
-  }, [driverObj]);
+  }, []);
 
   return (
     <TourContext.Provider

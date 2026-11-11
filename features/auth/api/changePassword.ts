@@ -11,6 +11,10 @@ export interface ChangePasswordPayload {
 export const changePassword = async (payload: ChangePasswordPayload) => {
   const { data } = await backendClient.post<
     SuccessResponse<{ message?: string }>
-  >("/auth/change-password", payload);
+  >("/auth/change-password", {
+    oldPassword: payload.currentPassword,
+    currentPassword: payload.currentPassword,
+    newPassword: payload.newPassword,
+  });
   return data;
 };

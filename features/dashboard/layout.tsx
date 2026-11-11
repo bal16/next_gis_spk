@@ -14,6 +14,14 @@ export default async function AdminLayout({
 }: {
   children: ReactNode;
 }) {
+  let user:
+    | {
+        isAdmin?: boolean;
+        role?: string;
+        mustChangePassword?: boolean;
+      }
+    | undefined;
+
   try {
     const response = await backendClient.get("/auth/me", {
       headers: { "Cache-Control": "no-store" },
@@ -29,29 +37,15 @@ export default async function AdminLayout({
       role?: string;
       mustChangePassword?: boolean;
     };
-    const user = (payload?.data ?? payload) as
-      | {
-          isAdmin?: boolean;
-          role?: string;
-          mustChangePassword?: boolean;
-        }
-      | undefined;
-
-    if (user?.mustChangePassword) {
-      redirect("/auth/change-password");
-    }
-
-    const isAdmin = Boolean(user?.isAdmin ?? user?.role === "admin");
-
-    if (!isAdmin) {
-      redirect("/auth?reason=forbidden");
-    }
+    user = (payload?.data ?? payload) as typeof user;
   } catch (error) {
     if (
       typeof error === "object" &&
       error !== null &&
       "digest" in error &&
-      (error as { digest?: string }).digest === "DYNAMIC_SERVER_USAGE"
+      typeof (error as { digest?: string }).digest === "string" &&
+      ((error as { digest: string }).digest.startsWith("NEXT_REDIRECT") ||
+        (error as { digest: string }).digest === "DYNAMIC_SERVER_USAGE")
     ) {
       throw error;
     }
@@ -76,6 +70,16 @@ export default async function AdminLayout({
     }
 
     redirect("/auth?next=/admin&reason=unauthenticated");
+  }
+
+  if (user?.mustChangePassword) {
+    redirect("/auth/change-password");
+  }
+
+  const isAdmin = Boolean(user?.isAdmin ?? user?.role === "admin");
+
+  if (!isAdmin) {
+    redirect("/auth?reason=forbidden");
   }
 
   return (

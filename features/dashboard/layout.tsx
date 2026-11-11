@@ -20,12 +20,27 @@ export default async function AdminLayout({
     } as never);
 
     const payload = response.data as {
-      data?: { isAdmin?: boolean; role?: string };
+      data?: {
+        isAdmin?: boolean;
+        role?: string;
+        mustChangePassword?: boolean;
+      };
       isAdmin?: boolean;
       role?: string;
+      mustChangePassword?: boolean;
     };
     const user = (payload?.data ?? payload) as
-      { isAdmin?: boolean; role?: string } | undefined;
+      | {
+          isAdmin?: boolean;
+          role?: string;
+          mustChangePassword?: boolean;
+        }
+      | undefined;
+
+    if (user?.mustChangePassword) {
+      redirect("/auth/change-password");
+    }
+
     const isAdmin = Boolean(user?.isAdmin ?? user?.role === "admin");
 
     if (!isAdmin) {

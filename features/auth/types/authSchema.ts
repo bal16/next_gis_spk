@@ -13,6 +13,7 @@ export const registerSchema = z
     confirmPassword: z
       .string()
       .min(8, "Konfirmasi password minimal 8 karakter"),
+    invitationToken: z.string().min(1, "Token undangan wajib diisi"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Password dan konfirmasi password tidak cocok",

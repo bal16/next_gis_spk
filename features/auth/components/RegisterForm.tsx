@@ -35,6 +35,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
       email: "",
       password: "",
       confirmPassword: "",
+      invitationToken: "",
     },
   });
 
@@ -54,6 +55,11 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           msg.toLowerCase().includes("email")
         ) {
           form.setError("email", { message: msg });
+        } else if (
+          msg.toLowerCase().includes("token") ||
+          msg.toLowerCase().includes("undangan")
+        ) {
+          form.setError("invitationToken", { message: msg });
         }
         toast.error("Registration Failed", {
           description: msg,
@@ -163,6 +169,30 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                 // Zod refine akan menempatkan error di field ini
                 <FieldError errors={[fieldState.error]} />
               )}
+            </Field>
+          )}
+        />
+
+        {/* Field: Token Undangan */}
+        <Controller
+          control={form.control}
+          name="invitationToken"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel
+                data-invalid={fieldState.invalid}
+                htmlFor={field.name}
+              >
+                Token Undangan
+              </FieldLabel>
+              <Input
+                {...field}
+                id={field.name}
+                placeholder="Masukkan token dari admin"
+                value={field.value || ""}
+                aria-invalid={Boolean(fieldState.invalid)}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />

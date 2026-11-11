@@ -19,18 +19,15 @@ export async function registrationAction(
   }
 
   try {
-    const { username, email, password } = validatedFields.data;
+    const { username, email, password, invitationToken } = validatedFields.data;
 
-    await registerUser({ username, email, password });
-    // console.log("Mendaftarkan pengguna (server):", { name, email });
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    await registerUser({ username, email, password, invitationToken });
 
     return {
       status: "success",
       message: "Registrasi berhasil! Mengarahkan ke login...",
     };
   } catch (error) {
-    // console.error(error);
     if (axios.isAxiosError(error)) {
       const errorData = error.response?.data;
       const errorMessage =
@@ -45,6 +42,14 @@ export async function registrationAction(
       ) {
         const localizedMessages: Record<string, string> = {
           "Email already in use": "Email ini sudah terdaftar.",
+          "Invalid or expired invitation token":
+            "Token undangan tidak valid atau sudah kedaluwarsa.",
+          "Invalid invitation token": "Token undangan tidak valid.",
+          "Invitation token expired": "Token undangan sudah kedaluwarsa.",
+          "Invitation token already used":
+            "Token undangan sudah pernah digunakan.",
+          "Invitation token not found":
+            "Token undangan tidak ditemukan atau tidak valid.",
         };
 
         return {
@@ -61,7 +66,7 @@ export async function registrationAction(
     }
     return {
       status: "error",
-      message: "Email ini mungkin sudah terdaftar.", // Ganti dengan pesan error asli
+      message: "Registrasi gagal. Pastikan token dan data yang diisi benar.",
     };
   }
 }

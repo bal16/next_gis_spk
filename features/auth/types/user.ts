@@ -4,4 +4,5 @@ export interface User {
   email: string;
   avatarUrl?: string;
   isAdmin: boolean;
+  mustChangePassword?: boolean;
 }

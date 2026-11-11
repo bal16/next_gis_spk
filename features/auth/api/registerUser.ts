@@ -11,19 +11,19 @@ import { publicClient } from "@/lib/api/public";
 type RegistrationData = Omit<z.infer<typeof registerSchema>, "confirmPassword">;
 
 export const registerUser = async (data: RegistrationData) => {
-  // console.log("Registering user with data:", data);
-  await publicClient.post("/auth/register", data);
+  // Support both token and invitationToken keys for compatibility with backend DTO
+  const payload = {
+    username: data.username,
+    email: data.email,
+    password: data.password,
+    token: data.invitationToken,
+    invitationToken: data.invitationToken,
+  };
+
+  await publicClient.post("/auth/register", payload);
 
   return {
     status: "success",
     message: "Registrasi berhasil! Mengarahkan ke login...",
   };
-  // console.log("Mock register with:", data);
-  // await new Promise((resolve) => setTimeout(resolve, 1000));
-  // return Promise.resolve({
-  //   statusCode: 201,
-  //   success: true,
-  //   message: "Registration successfull",
-  //   data: { id: "", email: "" },
-  // });
 };

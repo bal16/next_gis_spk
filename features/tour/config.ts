@@ -1,4 +1,10 @@
 import type { DriveStep } from "driver.js";
+import { useMobileDrawerStore } from "@/features/home/store/useMobileDrawer";
+
+const DRAWER_OPEN_DELAY_MS = 520;
+const DRAWER_CLOSE_DELAY_MS = 400;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const publicTourSteps: DriveStep[] = [
   {
@@ -51,9 +57,56 @@ export const publicMobileTourSteps: DriveStep[] = [
     popover: {
       title: "Daftar & Filter Gedung",
       description:
-        "Ketuk tombol ini untuk membuka pencarian gedung, filter tingkat prioritas, dan daftar peringkat SAW.",
+        'Ketuk tombol "Lihat Daftar" untuk membuka pencarian gedung, filter prioritas, dan tabel peringkat SAW.',
       side: "top",
       align: "center",
+      onNextClick: async (_el, _step, { driver }) => {
+        useMobileDrawerStore.getState().setOpen(true);
+        await wait(DRAWER_OPEN_DELAY_MS);
+        driver.moveNext();
+      },
+    },
+  },
+  {
+    element: "[data-tour='mobile-search-input']",
+    data: { insideDrawer: true },
+    popover: {
+      title: "Pencarian",
+      description: "Cari gedung berdasarkan nama atau kode secara real-time.",
+      side: "bottom",
+      align: "center",
+      onPrevClick: async (_el, _step, { driver }) => {
+        useMobileDrawerStore.getState().setOpen(false);
+        await wait(DRAWER_CLOSE_DELAY_MS);
+        driver.movePrevious();
+      },
+    },
+  },
+  {
+    element: "[data-tour='mobile-priority-filters']",
+    data: { insideDrawer: true },
+    popover: {
+      title: "Filter Prioritas",
+      description:
+        "Tampilkan gedung berdasarkan level prioritas: Semua, Tinggi, Sedang, atau Rendah.",
+      side: "top",
+      align: "center",
+    },
+  },
+  {
+    element: "[data-tour='mobile-ranking-table']",
+    data: { insideDrawer: true },
+    popover: {
+      title: "Tabel Peringkat",
+      description:
+        "Gedung diurutkan berdasarkan skor SAW. Skor lebih tinggi berarti prioritas perawatan lebih tinggi. Ketuk baris untuk terbang ke gedung di peta.",
+      side: "top",
+      align: "center",
+      onNextClick: async (_el, _step, { driver }) => {
+        useMobileDrawerStore.getState().setOpen(false);
+        await wait(DRAWER_CLOSE_DELAY_MS);
+        driver.moveNext();
+      },
     },
   },
   {
@@ -64,6 +117,11 @@ export const publicMobileTourSteps: DriveStep[] = [
         "Buka panduan kembali kapan saja, ubah tema tampilan (terang/gelap), atau login ke akun Anda.",
       side: "bottom",
       align: "end",
+      onPrevClick: async (_el, _step, { driver }) => {
+        useMobileDrawerStore.getState().setOpen(true);
+        await wait(DRAWER_OPEN_DELAY_MS);
+        driver.movePrevious();
+      },
     },
   },
 ];

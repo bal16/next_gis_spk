@@ -7,6 +7,7 @@ import {
   BuildingIcon,
   LayoutDashboardIcon,
   SquareFunctionIcon,
+  TicketIcon,
   WeightIcon,
 } from "lucide-react";
 
@@ -46,6 +47,11 @@ const data = {
       url: "/admin/dss",
       icon: SquareFunctionIcon,
     },
+    {
+      title: "Invitations",
+      url: "/admin/invitations",
+      icon: TicketIcon,
+    },
   ],
 };
 
@@ -54,6 +60,7 @@ const tourMap: Record<string, string> = {
   "/admin/buildings": "nav-buildings",
   "/admin/weights": "nav-weights",
   "/admin/dss": "nav-dss",
+  "/admin/invitations": "nav-invitations",
 };
 
 export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {

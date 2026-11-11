@@ -85,6 +85,15 @@ export const adminTourSteps: DriveStep[] = [
     },
   },
   {
+    element: "[data-tour='nav-invitations']",
+    popover: {
+      title: "Token Undangan",
+      description:
+        "Kelola dan buat kode token undangan untuk registrasi staf atau surveyor baru.",
+      side: "right",
+    },
+  },
+  {
     element: "[data-tour='user-menu']",
     popover: {
       title: "Menu Pengguna",

@@ -36,6 +36,7 @@ const MobileDrawer = () => {
       <DrawerTrigger asChild onClick={() => setIsOpen(true)}>
         <Button
           variant="default"
+          data-tour="mobile-drawer-trigger"
           className="fixed bottom-6 left-1/2 z-20 -translate-x-1/2 px-6 shadow-2xl"
         >
           <Search className="mr-2 h-4 w-4" />

@@ -38,6 +38,36 @@ export const publicTourSteps: DriveStep[] = [
   },
 ];
 
+export const publicMobileTourSteps: DriveStep[] = [
+  {
+    popover: {
+      title: "Peta Gedung Interaktif",
+      description:
+        "Peta menampilkan semua gedung Fakultas Teknik UNNES. Warna marker menunjukkan level prioritas perawatan. Ketuk marker untuk melihat detail.",
+    },
+  },
+  {
+    element: "[data-tour='mobile-drawer-trigger']",
+    popover: {
+      title: "Daftar & Filter Gedung",
+      description:
+        "Ketuk tombol ini untuk membuka pencarian gedung, filter tingkat prioritas, dan daftar peringkat SAW.",
+      side: "top",
+      align: "center",
+    },
+  },
+  {
+    element: "[data-tour='public-header-actions']",
+    popover: {
+      title: "Menu & Panduan",
+      description:
+        "Buka panduan kembali kapan saja, ubah tema tampilan (terang/gelap), atau login ke akun Anda.",
+      side: "bottom",
+      align: "end",
+    },
+  },
+];
+
 export const adminTourSteps: DriveStep[] = [
   {
     element: "[data-tour='admin-sidebar']",
@@ -99,6 +129,29 @@ export const adminTourSteps: DriveStep[] = [
       title: "Menu Pengguna",
       description: "Akses profil, ganti tema (terang/gelap), dan logout.",
       side: "bottom",
+    },
+  },
+];
+
+export const adminMobileTourSteps: DriveStep[] = [
+  {
+    element: "[data-tour='admin-sidebar-trigger']",
+    popover: {
+      title: "Navigasi Admin",
+      description:
+        "Ketuk tombol ini untuk membuka menu sidebar: Overview, Buildings, Bobot Kriteria, Perhitungan SAW, dan Token Undangan.",
+      side: "bottom",
+      align: "start",
+    },
+  },
+  {
+    element: "[data-tour='user-menu']",
+    popover: {
+      title: "Menu Pengguna",
+      description:
+        "Akses profil akun, kembali ke beranda, ganti tema (terang/gelap), dan logout.",
+      side: "bottom",
+      align: "end",
     },
   },
 ];

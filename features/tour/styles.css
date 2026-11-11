@@ -2,16 +2,23 @@
 
 /* ── Popover card ─────────────────────────────────────────── */
 .driver-popover.spk-tour {
+  box-sizing: border-box;
   background-color: var(--popover);
   color: var(--popover-foreground);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   font-family: var(--font-sans);
   padding: 1.25rem 1.25rem 1rem;
-  max-width: 380px;
+  width: min(380px, calc(100vw - 1.5rem));
+  max-width: min(380px, calc(100vw - 1.5rem));
+  min-width: 0;
   box-shadow:
     0 10px 30px -10px rgb(0 0 0 / 0.25),
     0 4px 12px -4px rgb(0 0 0 / 0.1);
+}
+
+.driver-popover.spk-tour * {
+  box-sizing: border-box;
 }
 
 .driver-popover.spk-tour .driver-popover-title {
@@ -58,6 +65,9 @@
 /* ── Footer: progress + navigation ────────────────────────── */
 .driver-popover.spk-tour .driver-popover-footer {
   margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.75rem;
 }
 
@@ -72,6 +82,7 @@
   font-weight: 500;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .driver-popover.spk-tour .driver-popover-navigation-btns {
@@ -79,6 +90,10 @@
   justify-content: flex-end;
   align-items: center;
   gap: 0.5rem;
+}
+
+.driver-popover.spk-tour .driver-popover-navigation-btns button + button {
+  margin-left: 0;
 }
 
 /* ── Buttons ──────────────────────────────────────────────── */
@@ -96,6 +111,7 @@
   line-height: 1.25;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
   transition:
     background-color 0.15s ease,
     color 0.15s ease,
@@ -163,4 +179,41 @@
 /* ── Overlay ──────────────────────────────────────────────── */
 .driver-overlay {
   opacity: 0.45;
+}
+
+/* ── Mobile responsiveness ────────────────────────────────── */
+@media (max-width: 640px) {
+  .driver-popover.spk-tour {
+    width: calc(100vw - 1.5rem);
+    max-width: calc(100vw - 1.5rem);
+    padding: 1rem 1rem 0.875rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .driver-popover.spk-tour .driver-popover-title {
+    font-size: 0.9375rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .driver-popover.spk-tour .driver-popover-description {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .driver-popover.spk-tour .driver-popover-footer {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.875rem;
+  }
+
+  .driver-popover.spk-tour .driver-popover-navigation-btns {
+    flex: 1 1 auto;
+    gap: 0.375rem;
+  }
+
+  .driver-popover.spk-tour .driver-popover-footer-btn {
+    min-width: 3.75rem;
+    padding: 0.375rem 0.6875rem;
+    font-size: 0.75rem;
+  }
 }

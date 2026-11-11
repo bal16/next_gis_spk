@@ -31,7 +31,10 @@ export default async function HomePage() {
           <MobileDrawer />
         </section>
 
-        <section className="absolute top-4 right-4 z-20 flex items-center gap-3">
+        <section
+          className="absolute top-4 right-4 z-20 flex items-center gap-3"
+          data-tour="public-header-actions"
+        >
           <TourTriggers page="public" />
           <UserNav adminLink />
         </section>

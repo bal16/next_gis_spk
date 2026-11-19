@@ -2,15 +2,6 @@
 
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontalIcon } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { Button } from "@/components/ui/button";
 import { createSortableHeader } from "@/components/admin/AdminDataTable";
@@ -24,27 +15,13 @@ const ActionCell = ({ assessment }: { assessment: TAssessment }) => {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="size-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontalIcon data-icon="inline-end" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-              setConfirmOpen(true);
-            }}
-          >
-            Hapus
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
+      <Button
+        variant="destructive"
+        size="sm"
+        onClick={() => setConfirmOpen(true)}
+      >
+        Hapus
+      </Button>
       <ConfirmationDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
@@ -60,10 +37,6 @@ const ActionCell = ({ assessment }: { assessment: TAssessment }) => {
 };
 
 export const columns: ColumnDef<TAssessment>[] = [
-  {
-    accessorKey: "id",
-    header: createSortableHeader("id"),
-  },
   {
     accessorKey: "age",
     header: createSortableHeader("Umur"),
@@ -89,20 +62,17 @@ export const columns: ColumnDef<TAssessment>[] = [
     header: createSortableHeader("Kerusakan"),
   },
   {
-    accessorKey: "lastMaintenance",
-    // accessorFn: ,
-    accessorFn: (row) =>
-      row.lastMaintenance
-        ? new Intl.DateTimeFormat("id-ID", {
-            dateStyle: "long",
-            timeStyle: "short",
-          }).format(new Date(row.lastMaintenance as Date))
-        : "N/A",
-    header: createSortableHeader("Pemeliharaan Terakhir"),
+    accessorKey: "createdAt",
+    header: createSortableHeader("Dibuat"),
+    cell: (info) => {
+      const value = info.getValue() as string | Date | undefined;
+      if (!value) return "-";
+      return new Date(value).toLocaleDateString("id-ID");
+    },
   },
   {
     id: "actions",
-    header: "Actions",
+    header: "Aksi",
     cell: ({ row }) => <ActionCell assessment={row.original} />,
   },
 ];

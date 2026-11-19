@@ -14,7 +14,10 @@ export const createAssessment = async (
   // await new Promise((resolve) => setTimeout(resolve, 500));
   const response = await backendClient.post<SuccessResponse<boolean>>(
     `/buildings/${code}/assessments`,
-    data
+    {
+      ...data,
+      lastMaintenance: data.lastMaintenance ?? null,
+    }
   );
   const responseData = response.data;
   const { statusCode, data: assessmentData } = responseData;

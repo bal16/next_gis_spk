@@ -24,6 +24,7 @@ export const getBuildingsDatas = async (): Promise<TBuilding[]> => {
       damage: b.sawRunDetails?.[0]?.assessment.damage,
       lastMaintenance: b.sawRunDetails?.[0]?.assessment.lastMaintenance,
     },
+    assessmentCount: b.assessmentCount ?? 0,
     priority:
       b.sawRunDetails?.[0]?.priority === 1
         ? "Prioritas Rendah"

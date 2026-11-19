@@ -1,7 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { columns } from "./column";
+import { getColumns } from "./column";
 import { AdminDataTable } from "@/components/admin/AdminDataTable";
 import { getBuildingAssessmentsDatas } from "@/features/buildings/api/get-building-assessments";
 import { CreateDialog } from "./CreateDialog";
@@ -20,6 +21,8 @@ export const TableSection = ({ code }: { code: string }) => {
     queryFn: () => getBuildingAssessmentsDatas(code),
     staleTime: Infinity,
   });
+
+  const columns = useMemo(() => getColumns(code), [code]);
 
   if (isError) {
     return (
@@ -50,11 +53,12 @@ export const TableSection = ({ code }: { code: string }) => {
         columns={columns}
         data={building?.assessments ?? []}
         isLoading={isLoading}
-        renderAction={<CreateDialog buildingCode={building?.code} />}
+        initialSorting={[{ id: "createdAt", desc: true }]}
+        renderAction={<CreateDialog buildingCode={code} />}
         empty={{
           title: "No assessments yet",
           description: `Building ${code} has no assessments. Add the first assessment.`,
-          action: <CreateDialog buildingCode={building?.code} />,
+          action: <CreateDialog buildingCode={code} />,
         }}
       />
     </div>

@@ -23,6 +23,8 @@ import { AssessmentFormFields } from "./AssessmentFormFields";
 interface CreateDialogProps {
   trigger?: ReactNode;
   buildingCode?: TBuilding["code"];
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const EMPTY_VALUES: TCreateAssessment = {
@@ -35,8 +37,18 @@ const EMPTY_VALUES: TCreateAssessment = {
   lastMaintenance: undefined,
 };
 
-export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
-  const [open, setOpen] = useState(false);
+export function CreateDialog({
+  trigger,
+  buildingCode,
+  open: controlledOpen,
+  onOpenChange,
+}: CreateDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = (nextOpen: boolean) => {
+    if (onOpenChange) onOpenChange(nextOpen);
+    else setInternalOpen(nextOpen);
+  };
   const { mutateAsync: createAssessment, isPending } = useCreateAssessment(
     buildingCode || ""
   );
@@ -59,9 +71,13 @@ export function CreateDialog({ trigger, buildingCode }: CreateDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger ?? <Button variant="default">Add New Assessment</Button>}
-      </DialogTrigger>
+      {trigger ? (
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
+      ) : controlledOpen === undefined ? (
+        <DialogTrigger asChild>
+          <Button variant="default">Add New Assessment</Button>
+        </DialogTrigger>
+      ) : null}
       <DialogContent className="sm:max-w-md">
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>

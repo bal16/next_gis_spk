@@ -82,6 +82,7 @@ export type TGetBuildingsResponse = Omit<
 
 export type TAssessment = TBuilding["criterias"] & {
   id: string;
+  createdAt?: string | Date;
 };
 
 export type TGetBuildingAssessmentsResponse = Omit<

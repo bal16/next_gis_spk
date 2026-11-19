@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createAssessment } from "../api/create-assessments";
 import { deleteAssessment } from "../api/delete-assessments";
+import { updateAssessment } from "../api/update-assessment";
 import type { TCreateAssessment } from "../../assessments/type";
 import type {
   TGetBuildingAssessmentsResponse,
@@ -117,6 +118,74 @@ export const useDeleteAssessment = (onSuccessCallback?: () => void) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["building-assessments"] });
+    },
+  });
+};
+
+export const useUpdateAssessment = (
+  buildingCode: string,
+  onSuccessCallback?: () => void
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      assessmentId,
+      data,
+    }: {
+      assessmentId: string;
+      data: TCreateAssessment;
+    }) => updateAssessment(buildingCode, assessmentId, data),
+    onMutate: async ({ assessmentId, data }) => {
+      await queryClient.cancelQueries({
+        queryKey: ["building-assessments", buildingCode],
+      });
+
+      const previousData =
+        queryClient.getQueryData<TGetBuildingAssessmentsResponse>([
+          "building-assessments",
+          buildingCode,
+        ]);
+
+      if (previousData) {
+        queryClient.setQueryData<TGetBuildingAssessmentsResponse>(
+          ["building-assessments", buildingCode],
+          {
+            ...previousData,
+            assessments: previousData.assessments.map((assessment) =>
+              assessment.id === assessmentId
+                ? {
+                    ...assessment,
+                    ...data,
+                    lastMaintenance: data.lastMaintenance
+                      ? new Date(data.lastMaintenance)
+                      : null,
+                  }
+                : assessment
+            ),
+          }
+        );
+      }
+
+      return { previousData };
+    },
+    onError: (err, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          ["building-assessments", buildingCode],
+          context.previousData
+        );
+      }
+      toast.error(err.message || "Gagal memperbarui assessment");
+    },
+    onSuccess: () => {
+      toast.success("Assessment berhasil diperbarui!");
+      onSuccessCallback?.();
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["building-assessments", buildingCode],
+      });
     },
   });
 };

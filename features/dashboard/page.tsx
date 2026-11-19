@@ -6,6 +6,8 @@ import {
 import { SiteHeader } from "./components/header";
 import { MainContent } from "./components/MainContent";
 import { getLastRunDatas } from "../dss/api/get-last-run";
+import { getBuildingsDatas } from "../buildings/api/get-all-buildings";
+import { getWeights } from "../weights/api/get-weights";
 import { queryKeys } from "@/lib/queryKeys";
 // import { MapWidget } from "./components/MapWidget";
 // import { Button } from "@/components/ui/button";
@@ -14,10 +16,20 @@ import { queryKeys } from "@/lib/queryKeys";
 export default async function OverviewPage() {
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.dss.latest(),
-    queryFn: getLastRunDatas,
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.dss.latest(),
+      queryFn: getLastRunDatas,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.buildings.all(),
+      queryFn: getBuildingsDatas,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.weights.all(),
+      queryFn: getWeights,
+    }),
+  ]);
 
   return (
     <div>

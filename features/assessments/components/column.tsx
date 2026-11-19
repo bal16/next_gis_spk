@@ -1,10 +1,7 @@
-export const dynamic = "force-dynamic";
-
 "use client";
 
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontalIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { createSortableHeader } from "@/components/admin/AdminDataTable";
@@ -25,12 +22,16 @@ const ActionCell = ({ assessment }: { assessment: TAssessment }) => {
       >
         Hapus
       </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => window.location.href = `/admin/buildings/${assessment.code}/assessments/${assessment.id}`}>
-        Lihat
-      </Button>
+      <ConfirmationDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Hapus Assessment?"
+        description="Hapus assessment ini? Tindakan tidak dapat dibatalkan."
+        onConfirm={async () => {
+          await deleteAssessment(assessment.id);
+        }}
+        isPending={isPending}
+      />
     </>
   );
 };
@@ -62,33 +63,16 @@ export const columns: ColumnDef<TAssessment>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Dibuat",
-    cell: info => {
-      if (!info.getRow().original.createdAt) return "-";
-      return new Date(info.getRow().original.createdAt).toLocaleDateString("id-ID");
+    header: createSortableHeader("Dibuat"),
+    cell: (info) => {
+      const value = info.getValue() as string | Date | undefined;
+      if (!value) return "-";
+      return new Date(value).toLocaleDateString("id-ID");
     },
   },
   {
-    accessorKey: "actions",
+    id: "actions",
     header: "Aksi",
-    cell: ({ row }) => {
-      return (
-        <>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setConfirmOpen(true)}
-          >
-            Hapus
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => window.location.href = `/admin/buildings/${row.original.code}/assessments/${row.original.id}`}>
-            Lihat
-          </Button>
-        </>
-      );
-    },
+    cell: ({ row }) => <ActionCell assessment={row.original} />,
   },
 ];

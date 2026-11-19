@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getColumns } from "./column";
 import { AdminDataTable } from "@/components/admin/AdminDataTable";
@@ -9,7 +9,14 @@ import { CreateDialog } from "./CreateDialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
-export const TableSection = ({ code }: { code: string }) => {
+export const TableSection = ({
+  code,
+  autoOpenCreate = false,
+}: {
+  code: string;
+  autoOpenCreate?: boolean;
+}) => {
+  const [createOpen, setCreateOpen] = useState(autoOpenCreate);
   const {
     data: building,
     isLoading,
@@ -47,6 +54,8 @@ export const TableSection = ({ code }: { code: string }) => {
     );
   }
 
+  const openCreate = () => setCreateOpen(true);
+
   return (
     <div className="container mx-auto">
       <AdminDataTable
@@ -54,12 +63,21 @@ export const TableSection = ({ code }: { code: string }) => {
         data={building?.assessments ?? []}
         isLoading={isLoading}
         initialSorting={[{ id: "createdAt", desc: true }]}
-        renderAction={<CreateDialog buildingCode={code} />}
+        renderAction={<Button onClick={openCreate}>Add New Assessment</Button>}
         empty={{
           title: "No assessments yet",
           description: `Building ${code} has no assessments. Add the first assessment.`,
-          action: <CreateDialog buildingCode={code} />,
+          action: (
+            <Button variant="outline" onClick={openCreate}>
+              Tambah Penilaian Pertama
+            </Button>
+          ),
         }}
+      />
+      <CreateDialog
+        buildingCode={code}
+        open={createOpen}
+        onOpenChange={setCreateOpen}
       />
     </div>
   );

@@ -10,12 +10,16 @@ import { TableSection } from "./components/TableSection";
 
 export default async function AssessmentsPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ code: string }>;
+  searchParams: Promise<{ create?: string }>;
 }) {
   // ambil url dari params
   // misal localhost:3000/admin/buildings/E11/assessments, ambil E11 nya
   const buildingCode = (await params).code;
+  const { create } = await searchParams;
+  const autoOpenCreate = create === "true";
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -39,7 +43,11 @@ export default async function AssessmentsPage({
 
           {/* Table Section */}
 
-          <TableSection code={buildingCode} />
+          <TableSection
+            key={`${buildingCode}-${autoOpenCreate ? "create" : "default"}`}
+            code={buildingCode}
+            autoOpenCreate={autoOpenCreate}
+          />
 
           {/* <section>INI TABEL</section> */}
         </HydrationBoundary>

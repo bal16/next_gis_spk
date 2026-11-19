@@ -6,7 +6,12 @@ import { getBuildingsDatas } from "../api/get-all-buildings";
 import { createBuilding } from "../api/create-building";
 import { updateBuilding } from "../api/update-building";
 import { deleteBuilding } from "../api/delete-building";
-import type { TBuilding, TCreateBuilding, TUpdateBuilding } from "../type";
+import type {
+  TBuilding,
+  TCreateBuilding,
+  TCreateBuildingResponse,
+  TUpdateBuilding,
+} from "../type";
 
 export const useBuildings = () => {
   return useQuery({
@@ -15,7 +20,9 @@ export const useBuildings = () => {
   });
 };
 
-export const useAddBuilding = (onSuccessCallback?: () => void) => {
+export const useAddBuilding = (
+  onSuccessCallback?: (createdBuilding: TCreateBuildingResponse) => void
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -64,9 +71,8 @@ export const useAddBuilding = (onSuccessCallback?: () => void) => {
       }
       toast.error(err.message || "Failed to create building");
     },
-    onSuccess: () => {
-      toast.success("Gedung baru berhasil ditambahkan.");
-      onSuccessCallback?.();
+    onSuccess: (createdBuilding) => {
+      onSuccessCallback?.(createdBuilding);
     },
     onSettled: () => {
       // Always refetch after error or success to ensure we have the correct server state

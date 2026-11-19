@@ -31,6 +31,8 @@ import {
 } from "../type";
 import { useAddBuilding, useUpdateBuilding } from "../hooks/useBuildings";
 import { LoaderCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface BuildingDialogProps {
   variant?: "add" | "edit";
@@ -55,7 +57,20 @@ export function BuildingDialog({
   const setOpen =
     setControlledOpen !== undefined ? setControlledOpen : setInternalOpen;
 
-  const { mutateAsync: addBuilding, isPending: isAdding } = useAddBuilding();
+  const router = useRouter();
+  const { mutateAsync: addBuilding, isPending: isAdding } = useAddBuilding(
+    (createdBuilding) => {
+      toast.success("Gedung baru berhasil ditambahkan.", {
+        action: {
+          label: "Tambah Penilaian",
+          onClick: () =>
+            router.push(
+              `/admin/buildings/${createdBuilding.code}/assessments?create=true`
+            ),
+        },
+      });
+    }
+  );
   const { mutateAsync: updateBuilding, isPending: isUpdating } =
     useUpdateBuilding();
 

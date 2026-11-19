@@ -22,7 +22,9 @@ export const createAssessmentSchema = z.object({
     .number<number>("Harus berupa angka")
     .min(1, "Minimal 1")
     .max(3, "Maksimal 3"),
-  lastMaintenance: z.coerce.date<Date>("Tanggal pemeliharaan tidak valid"),
+  lastMaintenance: z.coerce
+    .date<Date>("Tanggal pemeliharaan tidak valid")
+    .optional(),
 });
 
 export type TCreateAssessment = z.infer<typeof createAssessmentSchema>;

@@ -1,16 +1,10 @@
+export const dynamic = "force-dynamic";
+
 "use client";
 
 import { useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontalIcon } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { Button } from "@/components/ui/button";
 import { createSortableHeader } from "@/components/admin/AdminDataTable";
@@ -24,46 +18,24 @@ const ActionCell = ({ assessment }: { assessment: TAssessment }) => {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="size-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontalIcon data-icon="inline-end" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-              setConfirmOpen(true);
-            }}
-          >
-            Hapus
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      <ConfirmationDialog
-        open={confirmOpen}
-        onOpenChange={setConfirmOpen}
-        title="Hapus Assessment?"
-        description="Hapus assessment ini? Tindakan tidak dapat dibatalkan."
-        onConfirm={async () => {
-          await deleteAssessment(assessment.id);
-        }}
-        isPending={isPending}
-      />
+      <Button
+        variant="destructive"
+        size="sm"
+        onClick={() => setConfirmOpen(true)}
+      >
+        Hapus
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => window.location.href = `/admin/buildings/${assessment.code}/assessments/${assessment.id}`}>
+        Lihat
+      </Button>
     </>
   );
 };
 
 export const columns: ColumnDef<TAssessment>[] = [
-  {
-    accessorKey: "id",
-    header: createSortableHeader("id"),
-  },
   {
     accessorKey: "age",
     header: createSortableHeader("Umur"),
@@ -89,20 +61,34 @@ export const columns: ColumnDef<TAssessment>[] = [
     header: createSortableHeader("Kerusakan"),
   },
   {
-    accessorKey: "lastMaintenance",
-    // accessorFn: ,
-    accessorFn: (row) =>
-      row.lastMaintenance
-        ? new Intl.DateTimeFormat("id-ID", {
-            dateStyle: "long",
-            timeStyle: "short",
-          }).format(new Date(row.lastMaintenance as Date))
-        : "N/A",
-    header: createSortableHeader("Pemeliharaan Terakhir"),
+    accessorKey: "createdAt",
+    header: "Dibuat",
+    cell: info => {
+      if (!info.getRow().original.createdAt) return "-";
+      return new Date(info.getRow().original.createdAt).toLocaleDateString("id-ID");
+    },
   },
   {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => <ActionCell assessment={row.original} />,
+    accessorKey: "actions",
+    header: "Aksi",
+    cell: ({ row }) => {
+      return (
+        <>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => setConfirmOpen(true)}
+          >
+            Hapus
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.location.href = `/admin/buildings/${row.original.code}/assessments/${row.original.id}`}>
+            Lihat
+          </Button>
+        </>
+      );
+    },
   },
 ];

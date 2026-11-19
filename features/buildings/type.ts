@@ -14,6 +14,7 @@ export interface TBuilding {
   latitude: number;
   score: number;
   priority: TPriority;
+  assessmentCount?: number;
   criterias: {
     age: number;
     structure: number;

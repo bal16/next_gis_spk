@@ -40,6 +40,7 @@ export const useAddBuilding = (onSuccessCallback?: () => void) => {
               id: `temp-${Date.now()}`, // Temporary ID
               score: 0,
               priority: "Belum Dihitung",
+              assessmentCount: 0,
               criterias: {
                 age: 0,
                 structure: 0,

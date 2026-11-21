@@ -200,59 +200,57 @@ export function AdminDataTable<TData, TValue>({
         </Table>
       </section>
 
-      {!isLoading &&
-        table.getRowModel().rows.length > 0 &&
-        table.getPageCount() > 1 && (
-          <section className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-muted-foreground flex items-center gap-2 text-sm">
-              <span>
-                Page {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </span>
-              <span>·</span>
-              <span>{table.getFilteredRowModel().rows.length} row(s)</span>
-            </div>
+      {!isLoading && table.getFilteredRowModel().rows.length > 0 && (
+        <section className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-muted-foreground flex items-center gap-2 text-sm">
+            <span>
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount() || 1}
+            </span>
+            <span>·</span>
+            <span>{table.getFilteredRowModel().rows.length} row(s)</span>
+          </div>
+          <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground hidden text-sm sm:inline">
-                  Rows per page
-                </span>
-                <Select
-                  value={String(table.getState().pagination.pageSize)}
-                  onValueChange={(val) => table.setPageSize(Number(val))}
-                >
-                  <SelectTrigger size="sm" className="h-8 w-[70px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent side="top">
-                    <SelectItem value="8">8</SelectItem>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="25">25</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  Next
-                </Button>
-              </div>
+              <span className="text-muted-foreground hidden text-sm sm:inline">
+                Rows per page
+              </span>
+              <Select
+                value={String(table.getState().pagination.pageSize)}
+                onValueChange={(val) => table.setPageSize(Number(val))}
+              >
+                <SelectTrigger size="sm" className="h-8 w-[70px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  <SelectItem value="8">8</SelectItem>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </section>
-        )}
+            <div className="flex gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

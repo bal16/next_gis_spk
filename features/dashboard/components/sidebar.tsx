@@ -92,7 +92,10 @@ export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {data.menu.map((item) => {
                 const isActive =
-                  pathname === item.url || pathname.startsWith(item.url + "/");
+                  item.url === "/admin"
+                    ? pathname === "/admin"
+                    : pathname === item.url ||
+                      pathname.startsWith(item.url + "/");
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton

@@ -27,9 +27,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowUpDownIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // ---------------------------------------------------------------------------
 // Deep module: AdminDataTable
@@ -214,16 +217,20 @@ export function AdminDataTable<TData, TValue>({
                 <span className="text-muted-foreground hidden text-sm sm:inline">
                   Rows per page
                 </span>
-                <NativeSelect
+                <Select
                   value={String(table.getState().pagination.pageSize)}
-                  onChange={(e) => table.setPageSize(Number(e.target.value))}
-                  className="h-8 w-[70px]"
+                  onValueChange={(val) => table.setPageSize(Number(val))}
                 >
-                  <NativeSelectOption value="8">8</NativeSelectOption>
-                  <NativeSelectOption value="10">10</NativeSelectOption>
-                  <NativeSelectOption value="25">25</NativeSelectOption>
-                  <NativeSelectOption value="50">50</NativeSelectOption>
-                </NativeSelect>
+                  <SelectTrigger size="sm" className="h-8 w-[70px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent side="top">
+                    <SelectItem value="8">8</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex gap-1">
                 <Button

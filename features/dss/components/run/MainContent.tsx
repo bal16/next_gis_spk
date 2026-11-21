@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { getRunDetailsDatas } from "../../api/get-run-details";
@@ -11,10 +12,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AdminDataTable } from "@/components/admin/AdminDataTable";
+import { ShortId } from "@/components/admin/ShortId";
 import { columns } from "./column";
 // import { Progress } from "@/components/ui/progress";
 import { MapView } from "@/features/map/components/MapView";
 import { WeightsPieChart } from "@/features/dashboard/components/WeightsPieChart";
+import { OverviewSkeleton } from "@/features/dashboard/components/OverviewSkeleton";
 
 export const MainContent = ({ runId }: { runId: string }) => {
   const { data, isLoading } = useQuery({
@@ -22,16 +25,34 @@ export const MainContent = ({ runId }: { runId: string }) => {
     queryFn: () => getRunDetailsDatas(runId),
     staleTime: Infinity,
   });
+
+  const rankedRunDetails = useMemo(() => {
+    if (!data?.sawRunDetails) return [];
+    return [...data.sawRunDetails]
+      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+      .map((detail, index) => ({
+        ...detail,
+        rank: index + 1,
+      }));
+  }, [data]);
+
+  if (isLoading) {
+    return <OverviewSkeleton />;
+  }
+
   return (
     <div className="space-y-6">
       {/* 1. Header Summary */}
       <div className="flex items-center justify-between border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold">Detail Run DSS</h1>
-          <p className="text-muted-foreground text-sm">ID Run: {data?.id}</p>
+          <div className="text-muted-foreground mt-1 flex items-center gap-2 text-sm">
+            <span>ID Run:</span>
+            <ShortId id={data?.id} />
+          </div>
         </div>
         <Badge variant="outline" className="px-4 py-2 text-lg">
-          Avg Score: {data?.averageScore.toFixed(2)}
+          Avg Score: {data?.averageScore ? data.averageScore.toFixed(2) : "N/A"}
         </Badge>
       </div>
 
@@ -57,7 +78,7 @@ export const MainContent = ({ runId }: { runId: string }) => {
                   score: detail.score,
                   // ...detail.building,
                   priority:
-                    detail.priority === 1
+                    detail.priority === 3
                       ? "Prioritas Tinggi"
                       : detail.priority === 2
                         ? "Prioritas Sedang"
@@ -90,7 +111,7 @@ export const MainContent = ({ runId }: { runId: string }) => {
         <CardContent>
           <AdminDataTable
             columns={columns}
-            data={data?.sawRunDetails ?? []}
+            data={rankedRunDetails}
             isLoading={isLoading}
             initialSorting={[{ id: "score", desc: true }]}
             empty={{

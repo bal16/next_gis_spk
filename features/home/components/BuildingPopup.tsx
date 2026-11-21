@@ -22,6 +22,11 @@ import {
 } from "@/components/animate-ui/primitives/radix/collapsible";
 import { ChevronsUpDown } from "lucide-react";
 import type { TBuilding } from "@/features/buildings/type";
+import {
+  CRITERIA_METADATA,
+  formatCriteriaLabel,
+  formatCriteriaValue,
+} from "../utils/formatCriteria";
 
 interface Props {
   building: TBuilding;
@@ -67,21 +72,26 @@ export const BuildingPopup: FC<Props> = ({
             </div>
           </CollapsibleTrigger>
           <CollapsibleContent>
-            {/* beri fallback ketika null (belum di ada history run) */}
-            {Object.entries(building.criterias).map(([key, value]) => (
-              <div key={key} className="mb-2 flex items-center justify-between">
-                <span className="text-muted-foreground text-sm capitalize">
-                  {key.replace(/_/g, " ")}
-                </span>
-                <span className="text-foreground text-sm font-medium">
-                  {value instanceof Date
-                    ? value.toLocaleDateString()
-                    : value === null || value === undefined
-                      ? "N/A"
-                      : String(value)}
-                </span>
-              </div>
-            ))}
+            {/* beri fallback ketika null (belum ada history run) */}
+            {Object.entries(building.criterias || {})
+              .sort(
+                ([a], [b]) =>
+                  (CRITERIA_METADATA[a]?.order ?? 99) -
+                  (CRITERIA_METADATA[b]?.order ?? 99)
+              )
+              .map(([key, value]) => (
+                <div
+                  key={key}
+                  className="mb-2 flex items-center justify-between"
+                >
+                  <span className="text-muted-foreground text-sm">
+                    {formatCriteriaLabel(key)}
+                  </span>
+                  <span className="text-foreground text-sm font-medium">
+                    {formatCriteriaValue(key, value)}
+                  </span>
+                </div>
+              ))}
           </CollapsibleContent>
         </Collapsible>
 

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/features/dashboard/components/ConfirmationDialog";
 import { useDeleteRun } from "../hooks/useDSS";
 import { createSortableHeader } from "@/components/admin/AdminDataTable";
+import { ShortId } from "@/components/admin/ShortId";
 // import { BuildingDialog } from "./BuildingDialog";
 
 export type Results = {
@@ -79,7 +80,8 @@ export const columns: ColumnDef<Results>[] = [
   },
   {
     accessorKey: "id",
-    header: createSortableHeader("Id"),
+    header: createSortableHeader("ID"),
+    cell: (info) => <ShortId id={info.getValue() as string} />,
   },
   {
     accessorKey: "date",

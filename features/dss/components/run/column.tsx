@@ -22,8 +22,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { createSortableHeader } from "@/components/admin/AdminDataTable";
+import { ShortId } from "@/components/admin/ShortId";
 
-type RunDetail = TGetResultsResponse["sawRunDetails"][0];
+export type RunDetail = TGetResultsResponse["sawRunDetails"][0] & {
+  rank?: number;
+};
 
 const ActionCell = ({ runDetail }: { runDetail: RunDetail }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -70,13 +73,21 @@ const ActionCell = ({ runDetail }: { runDetail: RunDetail }) => {
 
 export const columns: ColumnDef<RunDetail>[] = [
   {
-    accessorKey: "id",
-    header: createSortableHeader("id"),
+    accessorKey: "rank",
+    header: createSortableHeader("#"),
+    cell: (info) => {
+      const rank = info.row.original.rank ?? info.row.index + 1;
+      return <span className="font-medium">#{rank}</span>;
+    },
   },
   {
-    //transform data nya tofixed(2)
+    accessorKey: "id",
+    header: createSortableHeader("ID"),
+    cell: (info) => <ShortId id={info.getValue() as string} />,
+  },
+  {
     accessorKey: "score",
-    accessorFn: (row) => row.score?.toFixed(2) || "N/A",
+    sortingFn: "basic",
     header: ({ column }) => {
       return (
         <Tooltip>
@@ -101,10 +112,40 @@ export const columns: ColumnDef<RunDetail>[] = [
         </Tooltip>
       );
     },
+    cell: (info) => {
+      const val = info.getValue() as number | undefined;
+      return typeof val === "number" ? val.toFixed(2) : "N/A";
+    },
   },
   {
     accessorKey: "priority",
     header: createSortableHeader("Priority"),
+    cell: (info) => {
+      const val = info.getValue() as number | string;
+      const num = Number(val);
+      if (num === 3 || val === "Prioritas Tinggi") {
+        return (
+          <span className="bg-destructive/10 text-destructive inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold">
+            Prioritas Tinggi
+          </span>
+        );
+      }
+      if (num === 2 || val === "Prioritas Sedang") {
+        return (
+          <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+            Prioritas Sedang
+          </span>
+        );
+      }
+      if (num === 1 || val === "Prioritas Rendah") {
+        return (
+          <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold">
+            Prioritas Rendah
+          </span>
+        );
+      }
+      return String(val ?? "-");
+    },
   },
   {
     accessorKey: "building.name",

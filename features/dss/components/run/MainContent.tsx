@@ -11,10 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AdminDataTable } from "@/components/admin/AdminDataTable";
+import { ShortId } from "@/components/admin/ShortId";
 import { columns } from "./column";
 // import { Progress } from "@/components/ui/progress";
 import { MapView } from "@/features/map/components/MapView";
 import { WeightsPieChart } from "@/features/dashboard/components/WeightsPieChart";
+import { OverviewSkeleton } from "@/features/dashboard/components/OverviewSkeleton";
 
 export const MainContent = ({ runId }: { runId: string }) => {
   const { data, isLoading } = useQuery({
@@ -22,16 +24,24 @@ export const MainContent = ({ runId }: { runId: string }) => {
     queryFn: () => getRunDetailsDatas(runId),
     staleTime: Infinity,
   });
+
+  if (isLoading) {
+    return <OverviewSkeleton />;
+  }
+
   return (
     <div className="space-y-6">
       {/* 1. Header Summary */}
       <div className="flex items-center justify-between border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold">Detail Run DSS</h1>
-          <p className="text-muted-foreground text-sm">ID Run: {data?.id}</p>
+          <div className="text-muted-foreground mt-1 flex items-center gap-2 text-sm">
+            <span>ID Run:</span>
+            <ShortId id={data?.id} />
+          </div>
         </div>
         <Badge variant="outline" className="px-4 py-2 text-lg">
-          Avg Score: {data?.averageScore.toFixed(2)}
+          Avg Score: {data?.averageScore ? data.averageScore.toFixed(2) : "N/A"}
         </Badge>
       </div>
 

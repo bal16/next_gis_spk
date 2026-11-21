@@ -19,6 +19,8 @@ import { WeightsPieChart } from "./WeightsPieChart";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
+import { ShortId } from "@/components/admin/ShortId";
+import { OverviewSkeleton } from "./OverviewSkeleton";
 
 export const MainContent = () => {
   const { data, isLoading } = useQuery({
@@ -27,7 +29,11 @@ export const MainContent = () => {
     staleTime: Infinity,
   });
 
-  if (!isLoading && !data) {
+  if (isLoading) {
+    return <OverviewSkeleton />;
+  }
+
+  if (!data) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center space-y-4 text-center">
         <AlertCircle className="text-muted-foreground h-16 w-16" />
@@ -52,12 +58,20 @@ export const MainContent = () => {
       <div className="flex items-center justify-between border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold">Last Run Overview</h1>
-          <p className="text-muted-foreground text-sm">
-            ID Run: {data?.id} | {/* make ddmmyy */}
-            {data?.date
-              ? new Date(data.date).toLocaleDateString("en-GB")
-              : "N/A"}
-          </p>
+          <div className="text-muted-foreground mt-1 flex flex-wrap items-center gap-2 text-sm">
+            <span>ID Run:</span>
+            <ShortId id={data?.id} />
+            <span>|</span>
+            <span>
+              {data?.date
+                ? new Date(data.date).toLocaleDateString("id-ID", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "N/A"}
+            </span>
+          </div>
         </div>
         <Badge variant="outline" className="px-4 py-2 text-lg">
           Avg Score: {data?.averageScore.toFixed(2)}

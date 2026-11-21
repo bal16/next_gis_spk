@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { getRunDetailsDatas } from "../../api/get-run-details";
@@ -24,6 +25,16 @@ export const MainContent = ({ runId }: { runId: string }) => {
     queryFn: () => getRunDetailsDatas(runId),
     staleTime: Infinity,
   });
+
+  const rankedRunDetails = useMemo(() => {
+    if (!data?.sawRunDetails) return [];
+    return [...data.sawRunDetails]
+      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+      .map((detail, index) => ({
+        ...detail,
+        rank: index + 1,
+      }));
+  }, [data]);
 
   if (isLoading) {
     return <OverviewSkeleton />;
@@ -100,7 +111,7 @@ export const MainContent = ({ runId }: { runId: string }) => {
         <CardContent>
           <AdminDataTable
             columns={columns}
-            data={data?.sawRunDetails ?? []}
+            data={rankedRunDetails}
             isLoading={isLoading}
             initialSorting={[{ id: "score", desc: true }]}
             empty={{

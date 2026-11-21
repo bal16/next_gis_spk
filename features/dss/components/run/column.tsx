@@ -123,7 +123,7 @@ export const columns: ColumnDef<RunDetail>[] = [
     cell: (info) => {
       const val = info.getValue() as number | string;
       const num = Number(val);
-      if (num === 1 || val === "Prioritas Tinggi") {
+      if (num === 3 || val === "Prioritas Tinggi") {
         return (
           <span className="bg-destructive/10 text-destructive inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold">
             Prioritas Tinggi
@@ -137,7 +137,7 @@ export const columns: ColumnDef<RunDetail>[] = [
           </span>
         );
       }
-      if (num === 3 || val === "Prioritas Rendah") {
+      if (num === 1 || val === "Prioritas Rendah") {
         return (
           <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold">
             Prioritas Rendah

@@ -93,7 +93,7 @@ export const MainContent = () => {
                   score: detail.score,
                   // ...detail.building,
                   priority:
-                    detail.priority === 1
+                    detail.priority === 3
                       ? "Prioritas Tinggi"
                       : detail.priority === 2
                         ? "Prioritas Sedang"

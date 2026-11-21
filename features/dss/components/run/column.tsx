@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { createSortableHeader } from "@/components/admin/AdminDataTable";
+import { ShortId } from "@/components/admin/ShortId";
 
 type RunDetail = TGetResultsResponse["sawRunDetails"][0];
 
@@ -70,8 +71,14 @@ const ActionCell = ({ runDetail }: { runDetail: RunDetail }) => {
 
 export const columns: ColumnDef<RunDetail>[] = [
   {
+    accessorKey: "number",
+    cell: (info) => info.row.index + 1,
+    header: createSortableHeader("#"),
+  },
+  {
     accessorKey: "id",
-    header: createSortableHeader("id"),
+    header: createSortableHeader("ID"),
+    cell: (info) => <ShortId id={info.getValue() as string} />,
   },
   {
     //transform data nya tofixed(2)

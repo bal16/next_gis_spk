@@ -7,6 +7,7 @@ import { SiteHeader } from "@/features/dashboard/components/header";
 // import { Button } from "@/components/ui/button";
 import { getBuildingAssessmentsDatas } from "../buildings/api/get-building-assessments";
 import { TableSection } from "./components/TableSection";
+import { BuildingInfoSection } from "./components/BuildingInfoSection";
 
 export default async function AssessmentsPage({
   params,
@@ -39,7 +40,7 @@ export default async function AssessmentsPage({
           {/* <section className="flex justify-end">
           <Button>Add New Building</Button>
         </section> */}
-          {/* <BuildingInfoSection /> */}
+          <BuildingInfoSection code={buildingCode} />
 
           {/* Table Section */}
 

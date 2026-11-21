@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { ReactNode, useState, useEffect } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { ReactNode, useCallback, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,6 +33,7 @@ import { useAddBuilding, useUpdateBuilding } from "../hooks/useBuildings";
 import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { MapPicker } from "./MapPicker";
 
 interface BuildingDialogProps {
   variant?: "add" | "edit";
@@ -52,6 +53,9 @@ export function BuildingDialog({
   onOpenChange: setControlledOpen,
 }: BuildingDialogProps) {
   const isEdit = variant === "edit";
+  const [coordinateMode, setCoordinateMode] = useState<"manual" | "map">(
+    "manual"
+  );
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen =
@@ -85,6 +89,24 @@ export function BuildingDialog({
       longitude: initialData?.longitude,
     },
   });
+
+  const latitude = useWatch({ control: form.control, name: "latitude" });
+  const longitude = useWatch({ control: form.control, name: "longitude" });
+  const { setValue } = form;
+
+  const handleMapChange = useCallback(
+    ({ latitude, longitude }: { latitude: number; longitude: number }) => {
+      setValue("latitude", latitude, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      setValue("longitude", longitude, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    },
+    [setValue]
+  );
 
   // Reset form when dialog opens with new data
   useEffect(() => {
@@ -200,76 +222,132 @@ export function BuildingDialog({
                 </Field>
               )}
             />
-            <Controller
-              control={form.control}
-              name="latitude"
-              render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  data-disabled={isPending}
-                >
-                  <FieldLabel htmlFor={field.name}>Latitude</FieldLabel>
-                  <Input
-                    id={field.name}
-                    value={field.value ?? ""}
-                    type="number"
-                    inputMode="decimal"
-                    step="any"
-                    placeholder="-7.2900"
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value === ""
-                          ? undefined
-                          : e.target.valueAsNumber
-                      )
-                    }
-                    disabled={isPending}
-                    aria-invalid={fieldState.invalid}
-                  />
-                  <FieldDescription>
-                    Desimal -90 s.d. 90. Contoh -7.29 (cek Google Maps).
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+            <div
+              className="flex flex-wrap gap-2"
+              role="tablist"
+              aria-label="Metode input koordinat"
+            >
+              <Button
+                type="button"
+                role="tab"
+                aria-selected={coordinateMode === "manual"}
+                variant={coordinateMode === "manual" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCoordinateMode("manual")}
+              >
+                Input Manual
+              </Button>
+              <Button
+                type="button"
+                role="tab"
+                aria-selected={coordinateMode === "map"}
+                variant={coordinateMode === "map" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setCoordinateMode("map")}
+              >
+                Pilih dari Peta
+              </Button>
+            </div>
+
+            {coordinateMode === "manual" ? (
+              <>
+                <Controller
+                  control={form.control}
+                  name="latitude"
+                  render={({ field, fieldState }) => (
+                    <Field
+                      data-invalid={fieldState.invalid}
+                      data-disabled={isPending}
+                    >
+                      <FieldLabel htmlFor={field.name}>Latitude</FieldLabel>
+                      <Input
+                        id={field.name}
+                        value={field.value ?? ""}
+                        type="number"
+                        inputMode="decimal"
+                        step="any"
+                        placeholder="-7.2900"
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : e.target.valueAsNumber
+                          )
+                        }
+                        disabled={isPending}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      <FieldDescription>
+                        Desimal -90 s.d. 90. Contoh -7.29 (cek Google Maps).
+                      </FieldDescription>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
-              )}
-            />
-            <Controller
-              control={form.control}
-              name="longitude"
-              render={({ field, fieldState }) => (
-                <Field
-                  data-invalid={fieldState.invalid}
-                  data-disabled={isPending}
-                >
-                  <FieldLabel htmlFor={field.name}>Longitude</FieldLabel>
-                  <Input
-                    id={field.name}
-                    value={field.value ?? ""}
-                    type="number"
-                    inputMode="decimal"
-                    step="any"
-                    placeholder="110.4100"
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value === ""
-                          ? undefined
-                          : e.target.valueAsNumber
-                      )
-                    }
-                    disabled={isPending}
-                    aria-invalid={fieldState.invalid}
-                  />
-                  <FieldDescription>
-                    Desimal -180 s.d. 180. Contoh 110.41.
-                  </FieldDescription>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
+                />
+                <Controller
+                  control={form.control}
+                  name="longitude"
+                  render={({ field, fieldState }) => (
+                    <Field
+                      data-invalid={fieldState.invalid}
+                      data-disabled={isPending}
+                    >
+                      <FieldLabel htmlFor={field.name}>Longitude</FieldLabel>
+                      <Input
+                        id={field.name}
+                        value={field.value ?? ""}
+                        type="number"
+                        inputMode="decimal"
+                        step="any"
+                        placeholder="110.4100"
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === ""
+                              ? undefined
+                              : e.target.valueAsNumber
+                          )
+                        }
+                        disabled={isPending}
+                        aria-invalid={fieldState.invalid}
+                      />
+                      <FieldDescription>
+                        Desimal -180 s.d. 180. Contoh 110.41.
+                      </FieldDescription>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
-              )}
-            />
+                />
+              </>
+            ) : (
+              <Field>
+                <FieldLabel>Lokasi Gedung</FieldLabel>
+                <FieldDescription>
+                  Klik peta untuk menempatkan marker, lalu geser marker untuk
+                  menyesuaikan posisi.
+                </FieldDescription>
+                <MapPicker
+                  latitude={latitude}
+                  longitude={longitude}
+                  onChange={handleMapChange}
+                  disabled={isPending}
+                />
+                {latitude != null && longitude != null && (
+                  <p className="text-muted-foreground text-xs">
+                    {latitude.toFixed(6)}, {longitude.toFixed(6)}
+                  </p>
+                )}
+                {(form.formState.errors.latitude ||
+                  form.formState.errors.longitude) && (
+                  <p className="text-destructive text-xs">
+                    Koordinat wajib diisi dan harus valid.
+                  </p>
+                )}
+              </Field>
+            )}
           </FieldGroup>
 
           <DialogFooter>

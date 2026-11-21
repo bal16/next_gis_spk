@@ -16,9 +16,7 @@ import { getLastRunDatas } from "@/features/dss/api/get-last-run";
 import { queryKeys } from "@/lib/queryKeys";
 import { Badge } from "@/components/ui/badge";
 import { WeightsPieChart } from "./WeightsPieChart";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { AlertCircle } from "lucide-react";
+import { FirstRunChecklist } from "./FirstRunChecklist";
 import { ShortId } from "@/components/admin/ShortId";
 import { OverviewSkeleton } from "./OverviewSkeleton";
 
@@ -34,22 +32,7 @@ export const MainContent = () => {
   }
 
   if (!data) {
-    return (
-      <div className="flex h-[50vh] flex-col items-center justify-center space-y-4 text-center">
-        <AlertCircle className="text-muted-foreground h-16 w-16" />
-        <h2 className="text-muted-foreground text-2xl font-bold">
-          Belum Ada Riwayat Kalkulasi DSS
-        </h2>
-        <p className="text-muted-foreground max-w-md">
-          Sistem belum memiliki data hasil perhitungan SAW. Silahkan jalankan
-          kalkulasi terlebih dahulu di menu SAW Calculation untuk melihat
-          statistik.
-        </p>
-        <Link href="/admin/dss">
-          <Button variant="default">Jalankan Perhitungan SAW</Button>
-        </Link>
-      </div>
-    );
+    return <FirstRunChecklist />;
   }
 
   return (

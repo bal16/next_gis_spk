@@ -23,6 +23,7 @@ import { ConfirmationDialog } from "@/features/dashboard/components/Confirmation
 import type { TBuilding } from "../type";
 import { useDeleteBuilding } from "../hooks/useBuildings";
 import { createSortableHeader } from "@/components/admin/AdminDataTable";
+import { Badge } from "@/components/ui/badge";
 
 const ActionCell = ({ building }: { building: TBuilding }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -45,6 +46,15 @@ const ActionCell = ({ building }: { building: TBuilding }) => {
               Lihat Assessment
             </Link>
           </DropdownMenuItem>
+          {building.assessmentCount === 0 && (
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/admin/buildings/${building.code}/assessments?create=true`}
+              >
+                Isi Penilaian
+              </Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onSelect={(e) => {
@@ -133,6 +143,25 @@ export const columns: ColumnDef<TBuilding>[] = [
   {
     accessorKey: "priority",
     header: createSortableHeader("Prioritas"),
+  },
+  {
+    accessorKey: "assessmentCount",
+    header: createSortableHeader("Assessment"),
+    cell: (info) => {
+      const count = Number(info.getValue()) || 0;
+      return (
+        <Badge
+          variant={count > 0 ? "secondary" : "destructive"}
+          className={
+            count > 0
+              ? undefined
+              : "border-transparent bg-amber-500 text-white hover:bg-amber-600"
+          }
+        >
+          {count > 0 ? `${count} penilaian` : "Belum dinilai"}
+        </Badge>
+      );
+    },
   },
   {
     id: "actions",
